@@ -1,0 +1,20 @@
+<div data-ng-controller="HomeCtrl">
+  <div class="row">
+    <div class="col-sm-12 col-lg-10 col-lg-offset-1">
+      <div class="panel">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>Token is {{ apiService.token }}</p>
+
+            <button ng-click="message()">
+              CLICK ME
+            </button>
+
+            <p>Config is {{ apiService.config }}</p>
+
+          </div>
+        </div>
+      </div> <!-- panel -->
+    </div>
+  </div>
+</div>

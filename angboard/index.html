@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" id="ng-app">
+<head>
+
+  <title>OpenStack Dashboard</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-simplex.css">
+
+  <script src="js/libs/angular-1.2.23/angular.js"></script>
+  <script src="js/libs/angular-1.2.23/angular-route.js"></script>
+  <script src="js/libs/angular-1.2.23/angular-cookies.js"></script>
+  <script src="js/libs/ui-bootstrap-0.10.0/ui-bootstrap-tpls-0.10.0.js"></script>
+  <script src="js/libs/ng-table-0.3.2/ng-table.src.js"></script>
+
+  <script src="js/libs/underscorejs-1.6.0/underscore.js"></script>
+
+  <script src="app/app.js"></script>
+  <script src="app/services.js"></script>
+  <script src="app/identity.js"></script>
+  <script src="app/home.js"></script>
+
+</head>
+<body>
+
+  <header>
+    <div class="panel panel-transparent">
+      <div class="panel-body">
+        <div class="container-liquid">
+          <div class="row">
+            <div class="col-sm-12">
+              <div id="alert-container">
+                <alert class="alert-fixed" ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">
+                  {{alert.msg}}
+                </alert>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <h1 style="margin: 0 20px;">
+                <img src="img/openstack-logo.png" alt="OpenStack" title="OpenStack" />
+                OpenStack Dashboard</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-header">
+      <div class="container-liquid">
+        <div class="row">
+          <div class="col-sm-12" ng-if="pageHeading">
+            <h1 style="margin: 0 20px;">{{pageHeading}}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="view-container">
+    <div class="container-liquid">
+      <div class="panel panel-transparent">
+        <div class="panel-body">
+          <div ng-view></div>
+        </div>
+        <div class="panel-body">
+          <label for="show-credentials">Show Credentials</label>
+          <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
+          <pre ng-show="showCredentials" class="ng-hide">{{ credentials | json }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
