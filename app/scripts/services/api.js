@@ -123,5 +123,20 @@
         this.POST = function (svcName, url, data, onSuccess, onError) {
           dataCall(svcName, 'POST', url, data, onSuccess, onError);
         };
+
+        /*jslint unparam: true*/
+        this.HEAD = function (svcName, url, data, onSuccess, onError) {
+          return apiCall({
+            method: 'HEAD',
+            url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
+            headers : {
+              'Accept': 'application/json'
+            },
+            timeout: httpTimeoutMs,
+            cache: false
+          }, onSuccess, onError);
+        };
+        /*jslint unparam: false*/
       });
 }());
+

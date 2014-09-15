@@ -19,11 +19,16 @@
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
+    var proxyPort = 8000,
     // Configurable paths for the application
-    var appConfig = {
-      app: require('./bower.json').appPath || 'app',
-      dist: 'dist'
-    };
+      appConfig = {
+        app: require('./bower.json').appPath || 'app',
+        dist: 'dist'
+      };
+
+    if (grunt.option('proxy-port')) {
+      proxyPort = grunt.option('proxy-port');
+    }
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -73,7 +78,7 @@
           {
             context: '/api',
             host: 'localhost',
-            port: 8000,
+            port: proxyPort,
             https: false,
             changeOrigin: false
           }

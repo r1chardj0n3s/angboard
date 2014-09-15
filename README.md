@@ -2,6 +2,11 @@ New dashboard for OpenStack using angularjs talking directly to the APIs.
 
 This is currently *very* raw, proof-of-concept.
 
+Installation
+============
+
+**Note: requires python3.4 or higher**
+
 To set up:
 
     git clone https://github.com/r1chardj0n3s/angboard

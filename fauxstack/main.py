@@ -79,12 +79,24 @@ def setup_logging():    # pragma: no cover
 
 
 def foreground_runner(app, *args, **kwargs):    # pragma: no cover
-    app.run(*args, **kwargs)
+    # snippet for debugging w/ wingIDE:
+    if __debug__:
+        from os import environ
+        if 'WINGDB_ACTIVE' in environ:
+            app.debug = False
+        app.run(*args, **kwargs)
 
 
 def background_runner(app, *args, **kwargs):    # pragma: no cover
     kwargs["use_reloader"] = False
-    kwargs["debug"] = True
+    
+    # snippet for debugging w/ wingIDE:
+    if __debug__:
+        from os import environ
+        if 'WINGDB_ACTIVE' in environ:
+            kwargs["debug"] = False    
+    else:
+        kwargs["debug"] = True
     process = Thread(target=app.run, args=args, kwargs=kwargs,
             daemon=False)
     process.start()
@@ -139,6 +151,11 @@ def main():  # pragma: no cover
         'debug': True,
         'host': '0.0.0.0'
     }
+
+    if __debug__:
+        from os import environ
+        if 'WINGDB_ACTIVE' in environ:
+            runner_kw["debug"] = False    
 
     if args.proxy:
         logging.info("Using real backend")
