@@ -1,0 +1,95 @@
+<div data-ng-controller="SwiftContainersCtrl">
+
+    <script type="text/ng-template" id="viewDetails.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Container Details</h3>
+        </div>
+        <div class="modal-body">
+          <dl>
+            <dt>Container Name</dt>
+            <dd>{{containerDetails.name}}</dd>
+            <dt>Container Access</dt>
+            <dd>{{containerDetails.access}}</dd>
+            <dt>Object Count</dt>
+            <dd>{{containerDetails.count}}</dd>
+            <dt>Size</dt>
+            <dd>{{containerDetails.size}}</dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Close</button>
+        </div>
+    </script>
+
+  <div class="navigation_wrapper">
+    <div class="table_header">
+      <h3>Containers</h3>
+    </div>
+    <table class="table table-bordered table-hover table-striped" st-table="containers">
+      <thead>
+          <th>Name</th>
+          <th>Details</th>
+          <th>Actions</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="container in containers">
+          <td>{{ container.name }}</td>
+          <td>
+            <div>
+              Object Count: {{container.count}}<br/>	
+              Size: {{container.size}}<br/>
+              Access: {{container.access}}
+            </div>
+          </td>
+          <td>
+            <div>
+              <button class="btn btn-default" ng-click="open(container)">View Details</button>
+              <div class="btn-group" dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+                  More <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Make Private</a></li>
+                  <li><a href="#">Delete</a></li>
+                </ul>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-bordered table-hover table-striped" tr-ng-grid="" enable-filtering="false" items="containers" order-by="'name'">
+      <thead>
+          <th field-name="name" display-name="Name"></th>
+          <th>
+            <div class="tr-ng-title">
+              Details
+            </div>
+          </th>
+          <th>
+            <div class="tr-ng-title">
+              Actions
+            </div>
+          </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div>
+              Object Count: {{gridItem.count}}<br/>	
+              Size: {{gridItem.size}}<br/>
+              Access: {{gridItem.access}}
+            </div>
+          </td>
+          <td>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="content_wrapper">
+    <div class="table_header">
+      <h3>Objects</h3>
+    </div>
+  </div>
+</div>
