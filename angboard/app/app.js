@@ -27,17 +27,22 @@ app.config(['$routeProvider',
 
 
 app.run([
-  '$rootScope', '$cookies', '$location', 'alertService',
-  function ($rootScope, $cookies, $location, alertService) {
+  '$rootScope', '$cookies', '$location', '$cookieStore', 'apiService', 'alertService',
+  function ($rootScope, $cookies, $location, $cookieStore, apiService, alertService) {
     // listen for route changes to ensure we're logged in on all pages except
     // the login page
     /*jslint unparam: true*/
     $rootScope.$on("$routeChangeStart", function (event, next) {
+      var auth_token = $cookieStore.get('x-auth-token');
+      if (auth_token) {
+        apiService.ensureServiceCatalog();
+      }
+
       // set the defaults for the index page elements - these are overridden
       // in the few controllers that need to
       $rootScope.showNavBar = true;
       $rootScope.pageSubTitle = '';
-      if (!angular.isDefined($rootScope.credentials)) {
+      if (!apiService.catalog) {
         console.log($location.path());
         if ($location.path() !== "/logout") {
           $location.path("/login");
@@ -47,5 +52,9 @@ app.run([
 
     // root binding for alertService
     $rootScope.closeAlert = alertService.closeAlert;
+
+    // XXX debugging, remove me
+    $rootScope.apiService = apiService;
+    $rootScope.cookies = $cookieStore;
   }
 ]);

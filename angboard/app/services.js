@@ -29,41 +29,51 @@ appServices.factory('apiService', [
   'alertService', '$http',
   function (alertService, $http) {
     var service = {};
-
-    service.configure = function (credentials) {
-      service.token = credentials.access.token.id;
-    };
+    service.catalog = null;
 
     // helper which displays a generic error or more specific one if we got one
     function displayError(alertService, data) {
-      var message = "An error has occurred. Please try again.";
+      var message = "An error has occurred (no message). Please try again.";
       try {
         if (data.hasOwnProperty('error')) {
           message = data.error.message;
         }
       } catch (e) {
-        message = "An error has occurred. Please try again.";
+        message = "An error has occurred (bad response). Please try again.";
       }
       alertService.add("danger", message);
     }
 
-    service.GET = function (svc_name, url, onSuccess) {
+    service.ensureServiceCatalog = function () {
+      if (service.catalog && service.catalog.hasOwnProperty('serviceCatalog')) {
+        return;
+      }
       var config = {
         method: "GET",
-        url: '/' + svc_name + '/' + url,
+        url: '/:service_catalog:/',
         headers : {
           'Accept': 'application/json'
         },
         timeout: httpTimeoutMs,
         cache: false
       };
+      return $http(config).success(function (data, status) {
+        service.catalog = data;
+      }).error(function (data) {
+        displayError(alertService, data);
+      });
+    };
 
-      if (angular.isDefined(service.token)) {
-        config.headers['X-Auth-Token'] = service.token;
-      }
-
-      service.config = config;
-
+    service.GET = function (svc_name, url, onSuccess) {
+      var config = {
+        method: "GET",
+        url: '/' + svc_name + '/0/' + url,
+        headers : {
+          'Accept': 'application/json'
+        },
+        timeout: httpTimeoutMs,
+        cache: false
+      };
       return $http(config).success(function (data, status) {
         return onSuccess(data, status);
       }).error(function (data) {
@@ -74,7 +84,7 @@ appServices.factory('apiService', [
     function dataCall(svc_name, method, url, data, onSuccess, onError) {
       var config = {
         method: method,
-        url: '/' + svc_name + '/' + url,
+        url: '/' + svc_name + '/0/' + url,
         data: data,
         headers : {
           'Accept': 'application/json',
@@ -82,10 +92,6 @@ appServices.factory('apiService', [
         },
         timeout: httpTimeoutMs
       };
-
-      if (angular.isDefined(service.token)) {
-        config.headers['X-Auth-Token'] = service.token;
-      }
       $http(config).success(function (data, status) {
         try {
           onSuccess(data, status);

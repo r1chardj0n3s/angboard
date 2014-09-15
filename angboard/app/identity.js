@@ -8,6 +8,11 @@ appControllers.controller('LoginCtrl', [
     $scope.$root.pageHeading = "Login";
     alertService.clearAlerts();
 
+    if (apiService.catalog) {
+      $location.path('/home');
+      return;
+    }
+
     $scope.tenantName = 'demo';
     $scope.username = 'admin';
     $scope.password = 'secrete';

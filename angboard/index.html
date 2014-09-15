@@ -65,11 +65,13 @@
         <div class="panel-body">
           <div ng-view></div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" ng-if="apiService.catalog">
           <label for="show-credentials">Show Credentials</label>
           <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
-          <pre ng-show="showCredentials" class="ng-hide">{{ credentials | json }}</pre>
+          <pre ng-show="showCredentials" class="ng-hide">{{ apiService.catalog | json }}</pre>
         </div>
+
+          <pre>{{ cookies | json }}</pre>
       </div>
     </div>
   </div>
