@@ -6,11 +6,11 @@
           <div class="col-sm-12">
             <p>Token is {{ apiService.token }}</p>
 
-            <button ng-click="message()">
+            <button ng-click="fetchLimits()">
               CLICK ME
             </button>
 
-            <p>Config is {{ apiService.config }}</p>
+            <pre>{{ nova_limits | json }}</pre>
 
           </div>
         </div>

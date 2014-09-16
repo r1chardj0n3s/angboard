@@ -26,13 +26,17 @@ appServices.factory('alertService', function ($rootScope) {
 
 
 appServices.factory('apiService', [
-  'alertService', '$cookieStore', '$http', '$location', '$log',
-  function (alertService, $cookieStore, $http, $location, $log) {
+  'alertService', '$cookieStore', '$http', '$log',
+  function (alertService, $cookieStore, $http, $log) {
     var service = {};
-    service.catalog = null;
+    service.access = null;
 
-    service.configure = function (catalog) {
-      service.catalog = catalog;
+    service.configure = function (access) {
+      service.access = access;
+    };
+
+    service.authenticated = function () {
+      return service.access;
     };
 
     // helper which displays a generic error or more specific one if we got one
@@ -50,9 +54,12 @@ appServices.factory('apiService', [
     }
 
     service.ensureServiceCatalog = function () {
-      if (service.catalog && service.catalog.hasOwnProperty('serviceCatalog')) {
+      if (service.access && service.access.catalog && service.access.catalog.hasOwnProperty('serviceCatalog')) {
+        $log.debug('ensureServiceCatalog: got valid service.access');
         return;
       }
+      $log.debug('ensureServiceCatalog: cookie:', $cookieStore.get('x-auth-token'));
+
       var config = {
         method: "GET",
         url: '/:service_catalog:/',
@@ -63,40 +70,41 @@ appServices.factory('apiService', [
         cache: false
       };
       return $http(config).success(function (response, status) {
+        $log.debug('ensureServiceCatalog response', status, response);
         if (status !== 200) {
           displayError(alertService, response);
         } else if (response.status === 'ok') {
-          service.catalog = response.data;
+          service.access = response.data;
         } else {
+          $log.debug('ensureServiceCatalog: clearing access/cookie');
           var auth_token = $cookieStore.get('x-auth-token');
           if (auth_token) {
-            service.catalog = null;
+            service.access = null;
             $cookieStore.remove('x-auth-token');
           }
         }
-      }).error(function (data) {
-        displayError(alertService, data);
+      }).error(function (response, status) {
+        $log.error('ensureServiceCatalog error', status, response);
+        displayError(alertService, response);
       });
     };
 
     function apiCall(config, onSuccess, onError) {
       return $http(config).success(function (response, status) {
-        if (status >= 400) {
-          // 4xx, 5xx responses indicate errors, yes
+        $log.debug('apiCall success', status, response);
+        try {
+          onSuccess(response, status);
+        } catch (e) {
+          $log.error('Error handling response', e);
           displayError(alertService, response);
-        } else {
-          try {
-            onSuccess(response, status);
-          } catch (e) {
-            $log.error('Error handling', onSuccess, response, e)
-            displayError(alertService, response);
-          }
         }
       }).error(function (response, status) {
+        $log.error('apiCall error', status, response);
         if (onError) {
           try {
             onError(response, status);
           } catch (e) {
+            $log.error('Error handling error', e);
             displayError(alertService, response);
           }
         }

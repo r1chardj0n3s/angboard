@@ -27,8 +27,8 @@ app.config(['$routeProvider',
 
 
 app.run([
-  '$rootScope', '$cookies', '$location', '$cookieStore', 'apiService', 'alertService',
-  function ($rootScope, $cookies, $location, $cookieStore, apiService, alertService) {
+  '$rootScope', '$cookies', '$location', '$log', '$cookieStore', 'apiService', 'alertService',
+  function ($rootScope, $cookies, $location, $log, $cookieStore, apiService, alertService) {
     // listen for route changes to ensure we're logged in on all pages except
     // the login page
     /*jslint unparam: true*/
@@ -42,8 +42,8 @@ app.run([
       // in the few controllers that need to
       $rootScope.showNavBar = true;
       $rootScope.pageSubTitle = '';
-      if (!apiService.catalog) {
-        console.log($location.path());
+      if (!apiService.authenticated()) {
+        $log.debug($location.path());
         if ($location.path() !== "/logout") {
           $location.path("/login");
         }

@@ -9,13 +9,13 @@ appControllers.controller('HomeCtrl', [
 
     $scope.apiService = apiService;
 
-    $scope.message = function () {
+    $scope.fetchLimits = function () {
       alertService.clearAlerts();
       apiService.GET(
         'nova',
         "limits",
         function (data) {
-          alertService.add('info', 'Hello:' + angular.toJson(data));
+          $scope.nova_limits = data;
         }
       );
     };
