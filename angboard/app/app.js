@@ -11,15 +11,9 @@ var app = angular.module('app', modules);
 
 app.config(['$routeProvider',
   function ($routeProvider) {
-    var partials = [
-      'login', 'home'
-    ];
-    angular.forEach(partials, function (partial) {
-      $routeProvider.when('/' + partial, {
-        templateUrl: 'app/partials/' + partial + '.html'
-      });
+    $routeProvider.when('/home', {
+      templateUrl: 'app/partials/home.html'
     });
-
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
@@ -33,6 +27,8 @@ app.run([
     // the login page
     /*jslint unparam: true*/
     $rootScope.$on("$routeChangeStart", function (event, next) {
+      // check that the current auth token is valid, and make sure we have
+      // the service catalog loaded for it
       var auth_token = $cookieStore.get('x-auth-token');
       if (auth_token) {
         apiService.ensureServiceCatalog();
@@ -44,8 +40,8 @@ app.run([
       $rootScope.pageSubTitle = '';
       if (!apiService.authenticated()) {
         $log.debug($location.path());
-        if ($location.path() !== "/logout") {
-          $location.path("/login");
+        if ($location.path() !== "/keystone/logout") {
+          $location.path("/keystone/login");
         }
       }
     });

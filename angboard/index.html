@@ -19,7 +19,7 @@
 
   <script src="app/app.js"></script>
   <script src="app/services.js"></script>
-  <script src="app/identity.js"></script>
+  <script src="app/keystone.js"></script>
   <script src="app/home.js"></script>
 
 </head>
@@ -65,13 +65,11 @@
         <div class="panel-body">
           <div ng-view></div>
         </div>
-        <div class="panel-body" ng-if="apiService.catalog">
+        <div class="panel-body" ng-if="apiService.access">
           <label for="show-credentials">Show Credentials</label>
           <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
-          <pre ng-show="showCredentials" class="ng-hide">{{ apiService.catalog | json }}</pre>
+          <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access | json }}</pre>
         </div>
-
-          <pre>Cookies: {{ cookies | json }}</pre>
       </div>
     </div>
   </div>

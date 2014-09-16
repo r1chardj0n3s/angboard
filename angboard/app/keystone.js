@@ -2,16 +2,19 @@
 // its dependencies
 var appControllers = angular.module('appControllers', []);
 
+
+appControllers.config(['$routeProvider', function ($routeProvider) {
+  $routeProvider.when('/keystone/login', {
+    templateUrl: 'app/partials/keystone_login.html'
+  });
+}]);
+
+
 appControllers.controller('LoginCtrl', [
   '$scope', '$location', 'apiService', 'alertService',
   function ($scope, $location, apiService, alertService) {
     $scope.$root.pageHeading = "Login";
     alertService.clearAlerts();
-
-    if (apiService.catalog) {
-      $location.path('/home');
-      return;
-    }
 
     $scope.tenantName = 'demo';
     $scope.username = 'admin';
