@@ -1,4 +1,26 @@
-var appControllers = angular.module('appControllers');
+// this file has the canonical definition of the module by including
+// its dependencies
+var appControllers = angular.module('appControllers', []);
+
+
+appControllers.config([
+  '$routeProvider',
+  function ($routeProvider) {
+    $routeProvider.when('/home', {
+      templateUrl: 'app/partials/home.html'
+    });
+  }
+]);
+
+
+appControllers.run([
+  'menuService',
+  function (menuService) {
+    var menu = {'title': 'Home', 'action': '#/home'};
+    menuService.menus.push(menu);
+  }
+]);
+
 
 // Login Controller
 appControllers.controller('HomeCtrl', [

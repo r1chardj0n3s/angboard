@@ -2,7 +2,15 @@ var httpTimeoutMs = 60000;
 
 var appServices = angular.module('appServices', []);
 
-appServices.factory('alertService', function ($rootScope) {
+
+appServices.factory('menuService', function () {
+  var menuService = {};
+  menuService.menus = [];
+  return menuService;
+});
+
+
+appServices.factory('alertService', ['$rootScope', function ($rootScope) {
   var alertService = {};
 
   // create an array of alerts available globally
@@ -22,7 +30,7 @@ appServices.factory('alertService', function ($rootScope) {
   };
 
   return alertService;
-});
+}]);
 
 
 appServices.factory('apiService', [

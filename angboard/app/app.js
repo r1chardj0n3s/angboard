@@ -9,20 +9,26 @@ var modules = [
 
 var app = angular.module('app', modules);
 
-app.config(['$routeProvider',
+app.config([
+  '$routeProvider',
   function ($routeProvider) {
+    // set up the default route
     $routeProvider.when('/home', {
       templateUrl: 'app/partials/home.html'
     });
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
-  }]);
+  }
+]);
 
 
 app.run([
-  '$rootScope', '$cookies', '$location', '$log', '$cookieStore', 'apiService', 'alertService',
-  function ($rootScope, $cookies, $location, $log, $cookieStore, apiService, alertService) {
+  '$rootScope', '$cookies', '$location', '$log', '$cookieStore', 'apiService', 'alertService', 'menuService',
+  function ($rootScope, $cookies, $location, $log, $cookieStore, apiService, alertService, menuService) {
+    // somewhere to put the menu, yes!
+    $rootScope.menus = menuService.menus;
+
     // listen for route changes to ensure we're logged in on all pages except
     // the login page
     /*jslint unparam: true*/
@@ -52,5 +58,6 @@ app.run([
     // XXX debugging, remove me
     $rootScope.apiService = apiService;
     $rootScope.cookies = $cookieStore;
+
   }
 ]);

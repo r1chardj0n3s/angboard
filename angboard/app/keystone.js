@@ -1,13 +1,25 @@
-// this file has the canonical definition of the module by including
-// its dependencies
-var appControllers = angular.module('appControllers', []);
+var appControllers = angular.module('appControllers');
 
 
-appControllers.config(['$routeProvider', function ($routeProvider) {
-  $routeProvider.when('/keystone/login', {
-    templateUrl: 'app/partials/keystone_login.html'
-  });
-}]);
+appControllers.config([
+  '$routeProvider',
+  function ($routeProvider) {
+    $routeProvider.when('/keystone/login', {
+      templateUrl: 'app/partials/keystone_login.html'
+    });
+  }
+]);
+
+
+appControllers.run([
+  'menuService',
+  function (menuService) {
+    var menu = {'title': 'Identity', 'action': '#', 'menus': []};
+    menu.menus.push({'title': 'Login', 'action': '#/keystone/login'});
+    menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout'});
+    menuService.menus.push(menu);
+  }
+]);
 
 
 appControllers.controller('LoginCtrl', [

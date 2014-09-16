@@ -1,0 +1,18 @@
+<div data-ng-controller="ImagesCtrl">
+  <div class="row">
+    <div class="col-sm-12 col-lg-10 col-lg-offset-1">
+
+      <div>
+        <table class="table table-bordered table-hover" ng-table="tableParams">
+          <tbody>
+            <tr id="image.{{ image.id }}" ng-repeat="image in $data">
+              <td data-title="'Image'" sortable="'name'" class="vertical-top">{{ image.name }}</td>
+              <td data-title="'ID'" class="vertical-top">{{ image.id }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
