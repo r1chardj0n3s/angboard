@@ -34,8 +34,8 @@ appServices.factory('alertService', ['$rootScope', function ($rootScope) {
 
 
 appServices.factory('apiService', [
-  'alertService', '$cookieStore', '$http', '$log',
-  function (alertService, $cookieStore, $http, $log) {
+  'alertService', '$cookieStore', '$http', '$log', '$location',
+  function (alertService, $cookieStore, $http, $log, $location) {
     var service = {};
     service.access = null;
 
@@ -83,6 +83,9 @@ appServices.factory('apiService', [
           displayError(alertService, response);
         } else if (response.status === 'ok') {
           service.access = response.data;
+          if ($location.path() === '/keystone/login') {
+            $location.path('/home');
+          }
         } else {
           $log.debug('ensureServiceCatalog: clearing access/cookie');
           var auth_token = $cookieStore.get('x-auth-token');

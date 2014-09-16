@@ -39,7 +39,7 @@ def service_catalog():
             'reason': 'invalid x-auth-token cookie'
         })
 
-    return jsonify({'status': 'error', 'data': service_catalogs[access_token]})
+    return jsonify({'status': 'ok', 'data': service_catalogs[access_token]})
 
 
 @proxy.route('/:logout:/', methods=["GET"])

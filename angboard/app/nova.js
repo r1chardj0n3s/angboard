@@ -14,7 +14,8 @@ appControllers.config([
 appControllers.run([
   'menuService',
   function (menuService) {
-    var menu = {'title': 'Home', 'action': '#/nova/images'};
+    var menu = {'title': 'Compute', 'action': '#', 'menus': []};
+    menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
     menuService.menus.push(menu);
   }
 ]);
