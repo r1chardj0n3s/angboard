@@ -30,25 +30,28 @@ def service_catalog():
     access_token = get_access_token()
     if not access_token:
         log.debug('/:service_catalog:/ with no x-auth-token cookie')
-        raise exceptions.Forbidden('no x-auth-token cookie')
+        return jsonify({'status': 'error', 'reason': 'no x-auth-token cookie'})
 
     if access_token not in service_catalogs:
         log.debug('/:service_catalog:/ with invalid x-auth-token cookie')
-        raise exceptions.Forbidden('invalid x-auth-token')
+        return jsonify({
+            'status': 'error',
+            'reason': 'invalid x-auth-token cookie'
+        })
 
-    return jsonify(service_catalogs[access_token])
+    return jsonify({'status': 'error', 'data': service_catalogs[access_token]})
 
 
 @proxy.route('/:logout:/', methods=["GET"])
 def logout():
     access_token = get_access_token()
     if not access_token:
-        return jsonify({'result': 'ok'})
+        return jsonify({'status': 'ok'})
 
     if access_token in service_catalogs:
         del service_catalogs[access_token]
 
-    response = jsonify({'result': 'ok'})
+    response = jsonify({'status': 'ok'})
     response.set_cookie('x-auth-token', '', expires=0)
     return response
 
@@ -67,6 +70,9 @@ def proxy_request(service, endpoint, file):
     if access_token:
         request_headers['X-Auth-Token'] = access_token
 
+        if access_token not in user_mappings:
+            raise exceptions.Forbidden('invalid x-auth-token')
+
     if request.query_string:
         path = "%s?%s" % (file, request.query_string.decode('utf8'))
     else:
@@ -81,6 +87,8 @@ def proxy_request(service, endpoint, file):
     if service == 'keystone':
         url = posixpath.join(proxy.keystone_url, path)
     else:
+        if not access_token:
+            raise exceptions.Forbidden('no x-auth-token')
         mapped = user_mappings[access_token][service][endpoint]['publicURL']
         url = posixpath.join(mapped, path)
 
@@ -111,6 +119,7 @@ def proxy_request(service, endpoint, file):
     # spy on serviceCatalog responses
     if service == 'keystone' and file == 'tokens' and \
             upstream.status_code == 200:
+        log.info('got a service catalog response, mapping and cookie')
         data = upstream.json()
 
         access_token = data['access']['token']['id']

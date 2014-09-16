@@ -26,17 +26,22 @@ appServices.factory('alertService', function ($rootScope) {
 
 
 appServices.factory('apiService', [
-  'alertService', '$http',
-  function (alertService, $http) {
+  'alertService', '$cookieStore', '$http', '$location', '$log',
+  function (alertService, $cookieStore, $http, $location, $log) {
     var service = {};
     service.catalog = null;
 
+    service.configure = function (catalog) {
+      service.catalog = catalog;
+    };
+
     // helper which displays a generic error or more specific one if we got one
     function displayError(alertService, data) {
+      $log.error('Error Data:', data);
       var message = "An error has occurred (no message). Please try again.";
       try {
-        if (data.hasOwnProperty('error')) {
-          message = data.error.message;
+        if (data.hasOwnProperty('reason')) {
+          message = data.reason;
         }
       } catch (e) {
         message = "An error has occurred (bad response). Please try again.";
@@ -57,15 +62,49 @@ appServices.factory('apiService', [
         timeout: httpTimeoutMs,
         cache: false
       };
-      return $http(config).success(function (data, status) {
-        service.catalog = data;
+      return $http(config).success(function (response, status) {
+        if (status !== 200) {
+          displayError(alertService, response);
+        } else if (response.status === 'ok') {
+          service.catalog = response.data;
+        } else {
+          var auth_token = $cookieStore.get('x-auth-token');
+          if (auth_token) {
+            service.catalog = null;
+            $cookieStore.remove('x-auth-token');
+          }
+        }
       }).error(function (data) {
         displayError(alertService, data);
       });
     };
 
-    service.GET = function (svc_name, url, onSuccess) {
-      var config = {
+    function apiCall(config, onSuccess, onError) {
+      return $http(config).success(function (response, status) {
+        if (status >= 400) {
+          // 4xx, 5xx responses indicate errors, yes
+          displayError(alertService, response);
+        } else {
+          try {
+            onSuccess(response, status);
+          } catch (e) {
+            $log.error('Error handling', onSuccess, response, e)
+            displayError(alertService, response);
+          }
+        }
+      }).error(function (response, status) {
+        if (onError) {
+          try {
+            onError(response, status);
+          } catch (e) {
+            displayError(alertService, response);
+          }
+        }
+      });
+    }
+
+    service.GET = function (svc_name, url, onSuccess, onError) {
+      return apiCall({
         method: "GET",
         url: '/' + svc_name + '/0/' + url,
         headers : {
@@ -73,16 +112,11 @@ appServices.factory('apiService', [
         },
         timeout: httpTimeoutMs,
         cache: false
-      };
-      return $http(config).success(function (data, status) {
-        return onSuccess(data, status);
-      }).error(function (data) {
-        displayError(alertService, data);
-      });
+      }, onSuccess, onError);
     };
 
     function dataCall(svc_name, method, url, data, onSuccess, onError) {
-      var config = {
+      return apiCall({
         method: method,
         url: '/' + svc_name + '/0/' + url,
         data: data,
@@ -91,23 +125,7 @@ appServices.factory('apiService', [
           'Content-Type': 'application/json'
         },
         timeout: httpTimeoutMs
-      };
-      $http(config).success(function (data, status) {
-        try {
-          onSuccess(data, status);
-        } catch (e) {
-          displayError(alertService, data);
-        }
-      }).error(function (data, status) {
-        if (onError) {
-          try {
-            onError(data, status);
-          } catch (e) {
-            displayError(alertService, data);
-          }
-        }
-
-      });
+      }, onSuccess, onError);
     }
 
     service.PUT = function (svc_name, url, data, onSuccess, onError) {
