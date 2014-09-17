@@ -37,15 +37,15 @@ API calls.
 The proxy maps using service endpoint names, allowing exposure of all of the
 compute APIs, for example. The URL structure exposed by the proxy is:
 
-    /service_name/endpoint_number/api_path
+    /service_name/region/api_path
 
-The publicURL for the service_name / endpoint_number is looked up in the
+The publicURL for the service_name / region is looked up in the
 service catalog, and the call is made using:
 
     publicURL/api_path
 
-The proxy also stores the service_catalog by access token so that information
-is not lost if the Javascript front end is reloaded.
+If there's more than one endpoint per region then we just choose the first
+at the moment; using multiple is outside the scope of this prototype.
 
 The angboard application has the following structure:
 
@@ -59,6 +59,8 @@ The angboard application has the following structure:
 4. other services implemented as a "service_name.js" which extends the
    appControllers module, the $routeProvider and the menuService. Such
    services should also be added to the <link> list in index.html.
+5. all API-calling functionality is implemented in the apiService which also
+   handles storing the auth token.
 
 
 Components
@@ -82,7 +84,8 @@ Inteded Areas Of Development (aka TODO)
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * implement creation and management of nova instances
 * *perhaps* investigate angular strap vs ui-bootstrap
-
+* region selection
+* handle multiple endpoints per region
 
 Security
 ========
