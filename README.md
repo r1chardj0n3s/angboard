@@ -61,6 +61,16 @@ The angboard application has the following structure:
    services should also be added to the <link> list in index.html.
 
 
+Components
+----------
+
+* AngularJS, Bootstrap are straight-forward.
+* Bootstrap-UI for Angular/Bootstrap integration.
+* angular-local-storage from https://github.com/grevory/angular-local-storage
+* underscore.js for many convenience functions (for a python programmer)
+* ng-table from https://github.com/esvit/ng-table
+
+
 Inteded Areas Of Development (aka TODO)
 =======================================
 
@@ -74,6 +84,7 @@ Inteded Areas Of Development (aka TODO)
 * implement creation and management of nova instances
 * handle an API 401 response in the proxy - clear the auth info for the user
 * *perhaps* investigate angular strap vs ui-bootstrap
+
 
 Security
 ========

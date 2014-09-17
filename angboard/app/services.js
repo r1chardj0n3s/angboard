@@ -1,6 +1,14 @@
 var httpTimeoutMs = 60000;
 
-var appServices = angular.module('appServices', []);
+var appServices = angular.module('appServices', ['LocalStorageModule']);
+
+
+appServices.config([
+  'localStorageServiceProvider',
+  function (localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('angboard');
+  }
+]);
 
 
 appServices.factory('menuService', function () {
@@ -34,17 +42,25 @@ appServices.factory('alertService', ['$rootScope', function ($rootScope) {
 
 
 appServices.factory('apiService', [
-  'alertService', '$cookieStore', '$http', '$log', '$location',
-  function (alertService, $cookieStore, $http, $log, $location) {
+  'alertService', '$http', '$log', '$location', 'localStorageService',
+  function (alertService, $http, $log, $location, localStorageService) {
     var service = {};
-    service.access = null;
 
-    service.configure = function (access) {
-      service.access = access;
+    service.setAccess = function (access) {
+      $log.info('setAccess:', access);
+      localStorageService.set('access', angular.toJson(access));
+    };
+
+    service.access = function () {
+      var access = localStorageService.get('access');
+      if (access) {
+        return angular.fromJson(access);
+      }
+      return null;
     };
 
     service.authenticated = function () {
-      return service.access;
+      return localStorageService.get('access');
     };
 
     // helper which displays a generic error or more specific one if we got one
@@ -62,8 +78,8 @@ appServices.factory('apiService', [
     }
 
     function apiCall(config, onSuccess, onError) {
-      if (service.access) {
-        config.headers['X-Auth-Token'] = service.access.token.id;
+      if (service.authenticated()) {
+        config.headers['X-Auth-Token'] = service.access().token.id;
       }
       return $http(config).success(function (response, status) {
         $log.debug('apiCall success', status, response);
@@ -79,7 +95,7 @@ appServices.factory('apiService', [
           // backend has indicated authentication required which means our
           // access token is no longer valid
           alertService.add("danger", 'Authentication required');
-          service.access = null;
+          localStorageService.remove('access');
           $location.path('/keystone/login');
         }
         if (onError) {
