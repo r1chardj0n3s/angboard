@@ -80,7 +80,6 @@ def proxy_request(service, region, file):
         data = upstream.json()
 
         access_token = data['access']['token']['id']
-
         for service in data['access']['serviceCatalog']:
             mapping = user_mappings.setdefault(access_token, {})
             s = mapping[service['name']] = {}

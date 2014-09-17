@@ -78,11 +78,9 @@ Inteded Areas Of Development (aka TODO)
   * admin actions
   * modify elements for context (login/logout, service catalog)
   * stylings
-* have the client-side service catalog persistence be on the client side (local storage)
-* cover off the OWASP top 10 (at a minimum) where possible
+* cover off the OWASP top 10 (at a minimum) where possible/appropriate
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * implement creation and management of nova instances
-* handle an API 401 response in the proxy - clear the auth info for the user
 * *perhaps* investigate angular strap vs ui-bootstrap
 
 
