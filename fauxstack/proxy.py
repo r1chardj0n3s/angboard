@@ -111,7 +111,9 @@ def proxy_request(service, endpoint, file):
     log.info('RESPONSE: %s %s\n%s', upstream.status_code, response_headers,
         upstream.text)
 
-    response = Response(response=upstream.text,
+    # return the response plus the JSONP protection
+    # (https://docs.angularjs.org/api/ng/service/$http)
+    response = Response(response=")]}',\n" + upstream.text,
                         status=upstream.status_code,
                         headers=response_headers,
                         content_type=upstream.headers['Content-Type'])
