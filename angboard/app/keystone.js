@@ -51,7 +51,7 @@ appControllers.controller('LoginCtrl', [
         function (data, status) {
           alertService.add('info', 'Hello:' + angular.toJson(data));
           if (status === 200) {
-            apiService.configure(data);
+            apiService.configure(data.access);
             $location.path('/home');
           } else {
             throw 'bad status: ' + status;

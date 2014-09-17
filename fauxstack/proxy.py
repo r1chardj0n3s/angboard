@@ -1,11 +1,10 @@
 # pragma: no cover
-import json
 import logging
 import posixpath
 
 import requests
 
-from flask import Blueprint, request, Response, jsonify
+from flask import Blueprint, request, Response
 from werkzeug.datastructures import Headers
 from werkzeug import exceptions
 
@@ -14,64 +13,19 @@ proxy = Blueprint('proxy', __name__)
 log = logging.getLogger(__name__)
 
 user_mappings = {}
-service_catalogs = {}
 
 
-def get_access_token():
-    access_token = request.cookies.get('x-auth-token')
-    if not access_token:
-        return None
-    log.debug('got x-auth-token %r', access_token)
-    return json.loads(access_token)['token']
-
-
-@proxy.route('/:service_catalog:/', methods=["GET"])
-def service_catalog():
-    access_token = get_access_token()
-    if not access_token:
-        log.debug('/:service_catalog:/ with no x-auth-token cookie')
-        return jsonify({'status': 'error', 'reason': 'no x-auth-token cookie'})
-
-    if access_token not in service_catalogs:
-        log.debug('/:service_catalog:/ with invalid x-auth-token cookie')
-        return jsonify({
-            'status': 'error',
-            'reason': 'invalid x-auth-token cookie'
-        })
-
-    return jsonify({'status': 'ok', 'data': service_catalogs[access_token]})
-
-
-@proxy.route('/:logout:/', methods=["GET"])
-def logout():
-    access_token = get_access_token()
-    if not access_token:
-        return jsonify({'status': 'ok'})
-
-    if access_token in service_catalogs:
-        del service_catalogs[access_token]
-
-    response = jsonify({'status': 'ok'})
-    response.set_cookie('x-auth-token', '', expires=0)
-    return response
-
-
-@proxy.route('/<service>/<int:endpoint>/<path:file>',
+@proxy.route('/<service>/<region>/<path:file>',
              methods=["GET", "POST"])
-def proxy_request(service, endpoint, file):
+def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
 
-    for h in ['X-Requested-With', 'Authorization', 'Accept']:
+    for h in ['X-Requested-With', 'Authorization', 'Accept', 'X-Auth-Token']:
         if h in request.headers:
             request_headers[h] = request.headers[h]
 
-    access_token = get_access_token()
-    if access_token:
-        request_headers['X-Auth-Token'] = access_token
-
-        if access_token not in user_mappings:
-            raise exceptions.Forbidden('invalid x-auth-token')
+    access_token = request.headers.get('X-Auth-Token')
 
     if request.query_string:
         path = "%s?%s" % (file, request.query_string.decode('utf8'))
@@ -89,7 +43,8 @@ def proxy_request(service, endpoint, file):
     else:
         if not access_token:
             raise exceptions.Forbidden('no x-auth-token')
-        mapped = user_mappings[access_token][service][endpoint]['publicURL']
+        log.debug(user_mappings[access_token][service])
+        mapped = user_mappings[access_token][service][region][0]['publicURL']
         url = posixpath.join(mapped, path)
 
     log.info('ATTEMPTING to %s\n\tURL %s\n\tWITH headers=%s and data=%s',
@@ -121,16 +76,15 @@ def proxy_request(service, endpoint, file):
     # spy on serviceCatalog responses
     if service == 'keystone' and file == 'tokens' and \
             upstream.status_code == 200:
-        log.info('got a service catalog response, mapping and cookie')
+        log.info('got a service catalog response; mapping')
         data = upstream.json()
 
         access_token = data['access']['token']['id']
-        response.set_cookie('x-auth-token',
-                            json.dumps({'token': access_token}))
-        service_catalogs[access_token] = data
 
         for service in data['access']['serviceCatalog']:
             mapping = user_mappings.setdefault(access_token, {})
-            mapping[service['name']] = service['endpoints']
+            s = mapping[service['name']] = {}
+            for endpoint in service['endpoints']:
+                s.setdefault(endpoint['region'], []).append(endpoint)
 
     return response

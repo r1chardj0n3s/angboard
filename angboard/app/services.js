@@ -61,46 +61,10 @@ appServices.factory('apiService', [
       alertService.add("danger", message);
     }
 
-    service.ensureServiceCatalog = function () {
-      if (service.access && service.access.catalog && service.access.catalog.hasOwnProperty('serviceCatalog')) {
-        $log.debug('ensureServiceCatalog: got valid service.access');
-        return;
-      }
-      $log.debug('ensureServiceCatalog: cookie:', $cookieStore.get('x-auth-token'));
-
-      var config = {
-        method: "GET",
-        url: '/:service_catalog:/',
-        headers : {
-          'Accept': 'application/json'
-        },
-        timeout: httpTimeoutMs,
-        cache: false
-      };
-      return $http(config).success(function (response, status) {
-        $log.debug('ensureServiceCatalog response', status, response);
-        if (status !== 200) {
-          displayError(alertService, response);
-        } else if (response.status === 'ok') {
-          service.access = response.data;
-          if ($location.path() === '/keystone/login') {
-            $location.path('/home');
-          }
-        } else {
-          $log.debug('ensureServiceCatalog: clearing access/cookie');
-          var auth_token = $cookieStore.get('x-auth-token');
-          if (auth_token) {
-            service.access = null;
-            $cookieStore.remove('x-auth-token');
-          }
-        }
-      }).error(function (response, status) {
-        $log.error('ensureServiceCatalog error', status, response);
-        displayError(alertService, response);
-      });
-    };
-
     function apiCall(config, onSuccess, onError) {
+      if (service.access) {
+        config.headers['X-Auth-Token'] = service.access.token.id;
+      }
       return $http(config).success(function (response, status) {
         $log.debug('apiCall success', status, response);
         try {
@@ -116,7 +80,6 @@ appServices.factory('apiService', [
           // access token is no longer valid
           alertService.add("danger", 'Authentication required');
           service.access = null;
-          $cookieStore.remove('x-auth-token');
           $location.path('/keystone/login');
         }
         if (onError) {
@@ -133,7 +96,7 @@ appServices.factory('apiService', [
     service.GET = function (svc_name, url, onSuccess, onError) {
       return apiCall({
         method: "GET",
-        url: '/' + svc_name + '/0/' + url,
+        url: '/' + svc_name + '/RegionOne/' + url, // XXX REGION
         headers : {
           'Accept': 'application/json'
         },
@@ -145,7 +108,7 @@ appServices.factory('apiService', [
     function dataCall(svc_name, method, url, data, onSuccess, onError) {
       return apiCall({
         method: method,
-        url: '/' + svc_name + '/0/' + url,
+        url: '/' + svc_name + '/RegionOne/' + url,   // XXX REGION
         data: data,
         headers : {
           'Accept': 'application/json',

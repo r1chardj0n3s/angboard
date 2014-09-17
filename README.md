@@ -73,6 +73,7 @@ Inteded Areas Of Development (aka TODO)
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * implement creation and management of nova instances
 * handle an API 401 response in the proxy - clear the auth info for the user
+* *perhaps* investigate angular strap vs ui-bootstrap
 
 Security
 ========
