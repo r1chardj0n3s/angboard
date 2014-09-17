@@ -71,3 +71,13 @@ Inteded Areas Of Development (aka TODO)
 * cover off the OWASP top 10 (at a minimum) where possible
 ** XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * implement creation and management of nova instances
+
+
+
+Security
+========
+
+Specific areas of security that have been addressed:
+
+1. authentication through keystone username/password
+2. JSONP vulnerability of APIs in proxy
