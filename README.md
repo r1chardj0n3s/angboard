@@ -65,11 +65,11 @@ Inteded Areas Of Development (aka TODO)
 =======================================
 
 * fix the menu
-** admin actions
-** modify elements for context (login/logout, service catalog)
+  * admin actions
+  * modify elements for context (login/logout, service catalog)
 * have the client-side service catalog persistence be on the client side (local storage)
 * cover off the OWASP top 10 (at a minimum) where possible
-** XSRF per https://docs.angularjs.org/api/ng/service/$http 
+  * XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * implement creation and management of nova instances
 
 
