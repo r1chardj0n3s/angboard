@@ -1,54 +1,40 @@
 <div data-ng-controller="LoginCtrl">
-  <div class="row">
-    <div class="col-sm-12 col-lg-10 col-lg-offset-1">
+  <form name="form" role="form">
 
-      <div class="panel">
-        <div class="row">
-          <div class="col-sm-12">
-
-            <div class="panel-body">
-              <form name="form" role="form">
-
-                <div class="row">
-                  <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-                    <label for="lastName">Tenant Name</label>
-                    <input type="text" class="form-control" name="tenantName" ng-model="tenantName" id="tenantName" required>
-                  </div>
-                  <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-                    <label for="soNumber">Username</label>
-                    <input type="text" class="form-control" name="username" ng-model="username" id="username" required>
-                  </div>
-                  <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-                    <label for="firstName">Password</label>
-                    <input type="password" class="form-control" name="password" ng-model="password" id="password" required>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-                    <small>
-                      <strong>Note:</strong> All fields are mandatory
-                    </small>
-                  </div>
-                </div>
-
-                <hr/>
-
-                <div class="row">
-                  <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-                    <button type="submit" ng-click="login()"
-                            class="btn btn-primary btn-right btn-md btn-md-block"
-                            ng-disabled="form.$invalid" id="btn-login">
-                      Login <span class="glyphicon glyphicon-arrow-right"></span>
-                    </button>
-                  </div>
-                </div>
-
-              </form>
-            </div> <!-- panel-body -->
-          </div>
-        </div>
-      </div> <!-- panel -->
+    <div class="row">
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <label for="lastName">Tenant Name</label>
+        <input type="text" class="form-control" name="tenantName" ng-model="tenantName" id="tenantName" required>
+      </div>
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <label for="soNumber">Username</label>
+        <input type="text" class="form-control" name="username" ng-model="username" id="username" required>
+      </div>
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <label for="firstName">Password</label>
+        <input type="password" class="form-control" name="password" ng-model="password" id="password" required>
+      </div>
     </div>
-  </div>
+
+    <div class="row">
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <small>
+          <strong>Note:</strong> All fields are mandatory
+        </small>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <button type="submit" ng-click="login()"
+                class="btn btn-primary btn-right btn-md btn-md-block"
+                ng-disabled="form.$invalid" id="btn-login">
+          Login <span class="glyphicon glyphicon-arrow-right"></span>
+        </button>
+      </div>
+    </div>
+
+  </form>
 </div>

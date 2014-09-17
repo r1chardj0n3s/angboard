@@ -111,6 +111,14 @@ appServices.factory('apiService', [
         }
       }).error(function (response, status) {
         $log.error('apiCall error', status, response);
+        if (status === 401) {
+          // backend has indicated authentication required which means our
+          // access token is no longer valid
+          alertService.add("danger", 'Authentication required');
+          service.access = null;
+          $cookieStore.remove('x-auth-token');
+          $location.path('/keystone/login');
+        }
         if (onError) {
           try {
             onError(response, status);

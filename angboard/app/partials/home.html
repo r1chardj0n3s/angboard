@@ -1,20 +1,9 @@
 <div data-ng-controller="HomeCtrl">
-  <div class="row">
-    <div class="col-sm-12 col-lg-10 col-lg-offset-1">
-      <div class="panel">
-        <div class="row">
-          <div class="col-sm-12">
-            <p>Token is {{ apiService.token }}</p>
+  <p>Token is {{ apiService.token }}</p>
 
-            <button ng-click="fetchLimits()">
-              CLICK ME
-            </button>
+  <button ng-click="fetchLimits()">
+    CLICK ME
+  </button>
 
-            <pre>{{ nova_limits | json }}</pre>
-
-          </div>
-        </div>
-      </div> <!-- panel -->
-    </div>
-  </div>
+  <pre>{{ nova_limits | json }}</pre>
 </div>
