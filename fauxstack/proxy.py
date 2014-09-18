@@ -42,7 +42,10 @@ def proxy_request(service, region, file):
         url = posixpath.join(proxy.keystone_url, path)
     else:
         if not access_token:
-            raise exceptions.Forbidden('no x-auth-token')
+            raise exceptions.Unauthorized('no x-auth-token')
+        if access_token not in user_mappings:
+            raise exceptions.Unauthorized('invalid x-auth-token')
+
         log.debug(user_mappings[access_token][service])
         mapped = user_mappings[access_token][service][region][0]['publicURL']
         url = posixpath.join(mapped, path)

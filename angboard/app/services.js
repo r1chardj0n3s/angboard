@@ -50,6 +50,10 @@ appServices.factory('apiService', [
       $log.info('setAccess:', access);
       localStorageService.set('access', angular.toJson(access));
     };
+    service.clearAccess = function (reason) {
+      $log.info('clearAccess:', reason);
+      localStorageService.remove('access');
+    };
 
     service.access = function () {
       var access = localStorageService.get('access');
@@ -95,7 +99,7 @@ appServices.factory('apiService', [
           // backend has indicated authentication required which means our
           // access token is no longer valid
           alertService.add("danger", 'Authentication required');
-          localStorageService.remove('access');
+          service.clearAccess('got an API/proxy 401');
           $location.path('/keystone/login');
         }
         if (onError) {

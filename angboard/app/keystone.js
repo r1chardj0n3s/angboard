@@ -7,6 +7,19 @@ appControllers.config([
     $routeProvider.when('/keystone/login', {
       templateUrl: 'app/partials/keystone_login.html'
     });
+
+    $routeProvider.when('/keystone/logout', {
+      resolve: {
+        redirect: [
+          '$location', '$log', 'apiService',
+          function ($location, $log, apiService) {
+            $log.info('log out');
+            apiService.clearAccess('logout');
+            $location.path('/keystone/login');
+          }
+        ]
+      }
+    });
   }
 ]);
 
