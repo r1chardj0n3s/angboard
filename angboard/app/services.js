@@ -13,7 +13,28 @@ appServices.config([
 
 appServices.factory('menuService', function () {
   var menuService = {};
+  menuService.hidden_menus = null;
   menuService.menus = [];
+
+  menuService.hide = function (menu) {
+    menuService.hidden_menus = menuService.menus;
+    menuService.menus = [];
+  }
+
+  menuService.show = function (menu) {
+    if (menuService.hidden_menus) {
+      menuService.menus = menuService.hidden_menus;
+      menuService.hidden_menus = null;
+    }
+  }
+
+  menuService.shouldShow = function (menu) {
+    if (menu.hasOwnProperty('show')) {
+      return menu.show();
+    }
+    return true;
+  }
+
   return menuService;
 });
 

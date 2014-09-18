@@ -25,21 +25,24 @@ appControllers.config([
 
 
 appControllers.run([
-  'menuService',
-  function (menuService) {
+  'menuService', 'apiService',
+  function (menuService, apiService) {
     var menu = {'title': 'Identity', 'action': '#', 'menus': []};
-    menu.menus.push({'title': 'Login', 'action': '#/keystone/login'});
-    menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout'});
+    menu.menus.push({'title': 'Login', 'action': '#/keystone/login',
+      'show': function () {return !apiService.authenticated(); }});
+    menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
+      'show': function () {return apiService.authenticated(); }});
     menuService.menus.push(menu);
   }
 ]);
 
 
 appControllers.controller('LoginCtrl', [
-  '$scope', '$location', 'apiService', 'alertService',
-  function ($scope, $location, apiService, alertService) {
+  '$scope', '$location', 'apiService', 'alertService', 'menuService',
+  function ($scope, $location, apiService, alertService, menuService) {
     $scope.$root.pageHeading = "Login";
     alertService.clearAlerts();
+    menuService.hide();
 
     $scope.tenantName = 'demo';
     $scope.username = 'admin';
@@ -66,6 +69,7 @@ appControllers.controller('LoginCtrl', [
           if (status === 200) {
             apiService.setAccess(data.access);
             $location.path('/home');
+            menuService.show();
           } else {
             throw 'bad status: ' + status;
           }

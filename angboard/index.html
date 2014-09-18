@@ -45,31 +45,27 @@
             <div class="col-sm-12">
               <h1 style="margin: 0 20px;">
                 <img src="img/openstack-logo.png" alt="OpenStack" title="OpenStack" />
-                OpenStack Dashboard</h1>
+                {{pageHeading}}</h1>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="page-header">
-      <h1 style="margin: 0 20px;">{{pageHeading}}</h1>
-    </div>
   </header>
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-2">
-        <ul>
-          <li ng-repeat="menu in menus">
-            <a href="{{menu.action}}">{{menu.title}}</a>
-            <ul ng-if="menu.menus">
-              <li ng-repeat="submenu in menu.menus">
-                <a href="{{submenu.action}}">{{submenu.title}}</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
+      <div class="panel col-sm-2">
+          <ul>
+            <li ng-repeat="menu in menus.menus" ng-if="menus.shouldShow(menu)">
+              <a href="{{menu.action}}">{{menu.title}}</a>
+              <ul ng-if="menu.menus">
+                <li ng-repeat="submenu in menu.menus" ng-if="menus.shouldShow(submenu)">
+                  <a href="{{submenu.action}}">{{submenu.title}}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
       </div>
       <div class="col-sm-10">
         <div class="container-fluid">

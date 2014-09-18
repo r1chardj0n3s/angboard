@@ -26,7 +26,7 @@ app.run([
   '$rootScope', '$location', '$log', 'apiService', 'alertService', 'menuService',
   function ($rootScope, $location, $log, apiService, alertService, menuService) {
     // somewhere to put the menu, yes!
-    $rootScope.menus = menuService.menus;
+    $rootScope.menus = menuService;
 
     // listen for route changes to ensure we're logged in on all pages except
     // the login page
