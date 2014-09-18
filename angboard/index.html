@@ -55,17 +55,17 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="panel col-sm-2">
-          <ul>
-            <li ng-repeat="menu in menus.menus" ng-if="menus.shouldShow(menu)">
-              <a href="{{menu.action}}">{{menu.title}}</a>
-              <ul ng-if="menu.menus">
-                <li ng-repeat="submenu in menu.menus" ng-if="menus.shouldShow(submenu)">
-                  <a href="{{submenu.action}}">{{submenu.title}}</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
+      <div class="panel col-sm-2" ng-if="menus.visible">
+        <ul>
+          <li ng-repeat="menu in menus.list()" ng-if="menus.shouldShow(menu)">
+            <a href="{{menu.action}}">{{menu.title}}</a>
+            <ul ng-if="menu.menus">
+              <li ng-repeat="submenu in menu.menus" ng-if="menus.shouldShow(submenu)">
+                <a href="{{submenu.action}}">{{submenu.title}}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
       <div class="col-sm-10">
         <div class="container-fluid">

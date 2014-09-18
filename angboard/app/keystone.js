@@ -42,7 +42,7 @@ appControllers.controller('LoginCtrl', [
   function ($scope, $location, apiService, alertService, menuService) {
     $scope.$root.pageHeading = "Login";
     alertService.clearAlerts();
-    menuService.hide();
+    menuService.visible = false;
 
     $scope.tenantName = 'demo';
     $scope.username = 'admin';
@@ -69,7 +69,7 @@ appControllers.controller('LoginCtrl', [
           if (status === 200) {
             apiService.setAccess(data.access);
             $location.path('/home');
-            menuService.show();
+            menuService.visible = true;
           } else {
             throw 'bad status: ' + status;
           }
