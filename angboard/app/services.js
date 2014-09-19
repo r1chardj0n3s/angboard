@@ -61,14 +61,17 @@ appServices.factory('apiService', [
   'alertService', '$http', '$log', '$location', 'localStorageService',
   function (alertService, $http, $log, $location, localStorageService) {
     var service = {};
+    service.is_authenticated = false;
 
     service.setAccess = function (access) {
       $log.info('setAccess:', access);
       localStorageService.set('access', angular.toJson(access));
+      service.is_authenticated = true;
     };
     service.clearAccess = function (reason) {
       $log.info('clearAccess:', reason);
       localStorageService.remove('access');
+      service.is_authenticated = false;
     };
 
     service.access = function () {
@@ -77,10 +80,6 @@ appServices.factory('apiService', [
         return angular.fromJson(access);
       }
       return null;
-    };
-
-    service.authenticated = function () {
-      return localStorageService.get('access');
     };
 
     // helper which displays a generic error or more specific one if we got one
@@ -98,7 +97,7 @@ appServices.factory('apiService', [
     }
 
     function apiCall(config, onSuccess, onError) {
-      if (service.authenticated()) {
+      if (service.is_authenticated) {
         config.headers['X-Auth-Token'] = service.access().token.id;
       }
       return $http(config).success(function (response, status) {

@@ -36,7 +36,7 @@ app.run([
       // in the few controllers that need to
       $rootScope.showNavBar = true;
       $rootScope.pageSubTitle = '';
-      if (!apiService.authenticated()) {
+      if (!apiService.is_authenticated) {
         $log.debug($location.path());
         if ($location.path() !== "/keystone/logout") {
           $location.path("/keystone/login");

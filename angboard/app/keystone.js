@@ -29,9 +29,9 @@ appControllers.run([
   function (menuService, apiService) {
     var menu = {'title': 'Identity', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Login', 'action': '#/keystone/login',
-      'show': function () {return !apiService.authenticated(); }});
+      'show': function () {return !apiService.is_authenticated; }});
     menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
-      'show': function () {return apiService.authenticated(); }});
+      'show': function () {return apiService.is_authenticated; }});
     menuService.menus.push(menu);
   }
 ]);
