@@ -94,3 +94,18 @@ Specific areas of security that have been addressed:
 
 1. authentication through keystone username/password
 2. JSONP vulnerability of APIs in proxy
+
+
+
+Tabular Data
+============
+
+Three angularjs modules for table support have been tried:
+
+1. ngTable, which is very cumbersome to use, requiring a bunch of manual
+   boilerplate in the controller for each table.
+2. smart-table which was very promising except sorting just didn't work.
+3. trNgGrid which is simple enough to use, though a little odd and can't
+   handle some object attribute names (eg. "OS-FLV-EXT-DATA:ephemeral").
+
+Currently using trNgGrid.
