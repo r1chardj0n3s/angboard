@@ -86,6 +86,10 @@ Inteded Areas Of Development (aka TODO)
 * *perhaps* investigate angular strap vs ui-bootstrap
 * region selection
 * handle multiple endpoints per region
+* revisit the table stuff; trNgGrid has yuck issues with some of our data;
+  smart-table was much nicer but had the sort bug, but also has a huge
+  rewrite in the works which looks way cool.
+
 
 Security
 ========

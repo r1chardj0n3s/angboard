@@ -3,16 +3,16 @@
 
     <div class="row">
       <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-        <label for="lastName">Tenant Name</label>
-        <input type="text" class="form-control" name="tenantName" ng-model="tenantName" id="tenantName" required>
+        <label for="tenantName">Tenant Name</label>
+        <input type="text" class="form-control" name="tenantName" ng-model="auth.tenantName" id="tenantName" required>
       </div>
       <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-        <label for="soNumber">Username</label>
-        <input type="text" class="form-control" name="username" ng-model="username" id="username" required>
+        <label for="username">Username</label>
+        <input type="text" class="form-control" name="username" ng-model="auth.passwordCredentials.username" id="username" required>
       </div>
       <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-        <label for="firstName">Password</label>
-        <input type="password" class="form-control" name="password" ng-model="password" id="password" required>
+        <label for="password">Password</label>
+        <input type="password" class="form-control" name="password" ng-model="auth.passwordCredentials.password" id="password" required>
       </div>
     </div>
 

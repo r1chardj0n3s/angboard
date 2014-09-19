@@ -44,9 +44,13 @@ appControllers.controller('LoginCtrl', [
     alertService.clearAlerts();
     menuService.visible = false;
 
-    $scope.tenantName = 'demo';
-    $scope.username = 'admin';
-    $scope.password = 'secrete';
+    $scope.auth = {
+      "tenantName": 'demo',
+      "passwordCredentials": {
+        "username": 'admin',
+        "password": 'secrete'
+      }
+    };
 
     $scope.login = function () {
       alertService.clearAlerts();
@@ -55,15 +59,7 @@ appControllers.controller('LoginCtrl', [
       apiService.POST(
         'keystone',
         "tokens",
-        {
-          "auth": {
-            "tenantName": $scope.tenantName,
-            "passwordCredentials": {
-              "username": $scope.username,
-              "password": $scope.password
-            }
-          }
-        },
+        {"auth": $scope.auth},
         function (data, status) {
           alertService.add('info', 'Hello:' + angular.toJson(data));
           if (status === 200) {

@@ -1,0 +1,53 @@
+<div data-ng-controller="ServersCtrl">
+  <table class="table table-bordered table-hover table-striped" tr-ng-grid="" enable-filtering="false" items="servers" order-by="'name'">
+    <thead>
+        <th field-name="name" display-name="Name"></th>
+        <th field-name="flavor.id" display-name="Flavor"></th>
+        <th field-name="image.id" display-name="Image"></th>
+        <th field-name="status" display-name="Status"></th>
+        <th field-name="created" display-name="Created"></th>
+        <th field-name="updated" display-name="Updated"></th>
+    </thead>
+  </table>
+
+  <hr/>
+
+  <form name="form" role="form">
+
+    <div class="row">
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <label for="name">Server Name</label>
+        <input type="text" class="form-control" name="name" ng-model="new_server.name" id="name" required>
+      </div>
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <label for="image">Image</label>
+        <select class="form-control" name="image" ng-model="new_server.imageRef" id="image" required ng-options="image.id as image.name for image in images"></select>
+      </div>
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <label for="flavor">Flavor</label>
+        <select class="form-control" name="flavor" ng-model="new_server.flavorRef" id="flavor" required ng-options="flavor.id as flavor.name for flavor in flavors"></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <small>
+          <strong>Note:</strong> All fields are mandatory
+        </small>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+        <button type="submit" ng-click="create_server()"
+                class="btn btn-primary btn-right btn-md btn-md-block"
+                ng-disabled="form.$invalid" id="btn-login">
+          Create Server <span class="glyphicon glyphicon-arrow-right"></span>
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+
+</div>

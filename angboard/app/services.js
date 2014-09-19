@@ -41,7 +41,7 @@ appServices.factory('alertService', ['$rootScope', function ($rootScope) {
   $rootScope.alerts = [];
 
   alertService.add = function (type, msg) {
-    // type may be one of "danger", "success", "warning", "info"
+    // type may be one of "error", "success", "warning", "info"
     $rootScope.alerts[0] = {'type': type, 'msg': msg};
   };
 
@@ -94,7 +94,7 @@ appServices.factory('apiService', [
       } catch (e) {
         message = "An error has occurred (bad response). Please try again.";
       }
-      alertService.add("danger", message);
+      alertService.add("error", message);
     }
 
     function apiCall(config, onSuccess, onError) {
@@ -114,7 +114,7 @@ appServices.factory('apiService', [
         if (status === 401) {
           // backend has indicated authentication required which means our
           // access token is no longer valid
-          alertService.add("danger", 'Authentication required');
+          alertService.add("error", 'Authentication required');
           service.clearAccess('got an API/proxy 401');
           $location.path('/keystone/login');
         }
@@ -125,6 +125,8 @@ appServices.factory('apiService', [
             $log.error('Error handling error', e);
             displayError(alertService, response);
           }
+        } else {
+          alertService.add("error", 'An error occurred.');
         }
       });
     }
@@ -142,6 +144,7 @@ appServices.factory('apiService', [
     };
 
     function dataCall(svc_name, method, url, data, onSuccess, onError) {
+      $log.info('data call', data);
       return apiCall({
         method: method,
         url: '/' + svc_name + '/RegionOne/' + url,   // XXX REGION
