@@ -25,6 +25,20 @@ appControllers.run([
 ]);
 
 
+// the name prefixes on some elements cause trNgGrid to have issues, so just
+// strip them off
+function filterNames(array) {
+  var narray = [];
+  angular.forEach(array, function (object) {
+    var nobj = {};
+    angular.forEach(object, function (value, key) {
+      var nkey = key.replace(/(^.+?:)/, '');
+      nobj[nkey] = value;
+    });
+    narray.push(nobj);
+  });
+  return narray;
+}
 
 
 appControllers.controller('ImagesCtrl', [
@@ -35,13 +49,9 @@ appControllers.controller('ImagesCtrl', [
 
     $scope.apiService = apiService;
 
-    apiService.GET(
-      'nova',
-      "images",
-      function (data) {
-        $scope.images = data.images;
-      }
-    );
+    apiService.GET('nova', "images/detail", function (data) {
+      $scope.images = filterNames(data.images);
+    });
   }
 ]);
 
@@ -58,7 +68,7 @@ appControllers.controller('FlavorsCtrl', [
       'nova',
       "flavors/detail",
       function (data) {
-        $scope.flavors = data.flavors;
+        $scope.flavors = filterNames(data.flavors);
       }
     );
   }
