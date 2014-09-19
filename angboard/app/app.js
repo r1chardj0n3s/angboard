@@ -3,7 +3,7 @@ var modules = [
   'ngRoute',
   'appControllers',
   'appServices',
-  'ngTable'
+  'trNgGrid'
 ];
 
 var app = angular.module('app', modules);

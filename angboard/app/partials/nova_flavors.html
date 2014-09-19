@@ -1,17 +1,15 @@
 <div data-ng-controller="FlavorsCtrl">
-  <table class="table table-bordered table-hover" ng-table="tableParams">
-    <tbody>
-      <tr id="flavor.{{ flavor.id }}" ng-repeat="flavor in $data">
-        <td data-title="'ID'" class="vertical-top">{{ flavor.id }}</td>
-        <td data-title="'Flavor'" sortable="'name'" class="vertical-top">{{ flavor.name }}</td>
-        <td data-title="'Memory MB'" sortable="'ram'" class="vertical-top"> {{ flavor.ram }}</td>
-        <td data-title="'Swap'" sortable="'swap'" class="vertical-top"> {{ flavor.swap }}</td>
-        <td data-title="'Disk'" sortable="'disk'" class="vertical-top"> {{ flavor.disk }}</td>
-        <td data-title="'VCPUs'" sortable="'vcpus'" class="vertical-top"> {{ flavor.vcpus }}</td>
-        <td data-title="'Ephemeral'" sortable="'OS-FLV-EXT-DATA:ephemeral'" class="vertical-top"> {{ flavor["OS-FLV-EXT-DATA:ephemeral"] }}</td>
-        <td data-title="'RXTX Factor'" sortable="'rxtx_factor'" class="vertical-top"> {{ flavor.rxtx_factor }}</td>
-        <td data-title="'Is Public'" sortable="'os-flavor-access:is_public'" class="vertical-top"> {{ flavor["os-flavor-access:is_public"] }}</td>
-      </tr>
-    </tbody>
+  <table class="table table-bordered table-hover table-striped" tr-ng-grid="" enable-filtering="false" items="flavors">
+    <thead>
+        <th field-name="id" display-name="ID"></th>
+        <th field-name="name" display-name="Flavor"></th>
+        <th field-name="ram" display-name="Memory MB"></th>
+        <th field-name="swap" display-name="Swap"></th>
+        <th field-name="disk" display-name="Disk"></th>
+        <th field-name="vcpus" display-name="VCPUs"></th>
+        <th field-name="OS-FLV-EXT-DATA:ephemeral" display-name="Ephemeral"></th>
+        <th field-name="rxtx_factor" display-name="RXTX Factor"></th>
+        <th field-name="os-flavor-access:is_public" display-name="Is Public"></th>
+    </thead>
   </table>
 </div>

@@ -61,7 +61,6 @@ appServices.factory('apiService', [
   'alertService', '$http', '$log', '$location', 'localStorageService',
   function (alertService, $http, $log, $location, localStorageService) {
     var service = {};
-    service.is_authenticated = false;
 
     service.setAccess = function (access) {
       $log.info('setAccess:', access);
@@ -81,6 +80,8 @@ appServices.factory('apiService', [
       }
       return null;
     };
+
+    service.is_authenticated = !!service.access();
 
     // helper which displays a generic error or more specific one if we got one
     function displayError(alertService, data) {

@@ -1,10 +1,10 @@
 <div data-ng-controller="ImagesCtrl">
-  <table class="table table-bordered table-hover" ng-table="tableParams">
-    <tbody>
-      <tr id="image.{{ image.id }}" ng-repeat="image in $data">
-        <td data-title="'Image'" sortable="'name'" class="vertical-top">{{ image.name }}</td>
-        <td data-title="'ID'" class="vertical-top">{{ image.id }}</td>
+  <table class="table table-bordered table-hover table-striped" tr-ng-grid="" enable-filtering="false" items="images">
+    <thead>
+      <tr>
+        <th field-name="name" display-name="Image"></th>
+        <th field-name="id" display-name="ID"></th>
       </tr>
-    </tbody>
+    </thead>
   </table>
 </div>
