@@ -1,35 +1,33 @@
 New dashboard for OpenStack using angularjs talking directly to the APIs.
 
-This is currently *very* raw, proof-of-concept. You can authenticate and
-hit *one* nova API call using those credentials.
-
+This is currently *very* raw, proof-of-concept.
 
 To set up:
 
-  git clone https://github.com/r1chardj0n3s/angboard
-  cd angboard
-  mkvirtualenv angboard
-  source angboard/bin/activate
-  pip install -r requirements.txt
+    git clone https://github.com/r1chardj0n3s/angboard
+    cd angboard
+    mkvirtualenv angboard
+    source angboard/bin/activate
+    pip install -r requirements.txt
 
 And then:
 
-  source angboard/bin/activate
-  ./run <URL to keystone API>
+    source angboard/bin/activate
+    ./run <URL to keystone API>
 
 For example, given devstack on 10.0.0.1:
 
-  ./run http://10.0.0.1:5000/v2.0
+    ./run http://10.0.0.1:5000/v2.0
 
 And then set up the Javascript stuff with (note: I assume you have npm
 installed):
 
-  npm install -g grunt bower
-  bower install
+    npm install -g grunt bower
+    bower install
 
 Once that's running, use a separate shell to fire up the grunt server:
 
-  grunt serve
+    grunt serve
 
 This will open Chrome (or whatever) to view the site. Install the "live
 reload" browser extension / plugin and you'll see your changes LIVE when you
