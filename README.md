@@ -42,11 +42,47 @@ Application Structure
 
 This repository contains two applications:
 
-2. the Javascript application in "app" providing the dashboard for
+1. the Javascript application in "app" providing the dashboard for
    OpenStack using angularjs and bootstrap.
-1. "fauxstack", which proxies API requests to an OpenStack installation
+2. "fauxstack", which proxies API requests to an OpenStack installation
    (this is "live" mode) and will eventually also provide fake responses
    to allow development without requiring an OpenStack installation.
+
+angboard (ANGular dashBOARD)
+----------------------------
+
+The angboard application has a structure created by the angularjs generator
+at <https://github.com/yeoman/generator-angular>. For some background on how
+yoeman works, this is a nice introduction though it uses a different
+generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>
+
+1. app.js which is the root application; this file should be as small as
+   possible. If you add functionality to the $rootScope, consider whether it
+   might be made a service instead.
+2. the "home" page, providing a default view in the absence of other views.
+3. the keystone service, providing login and logout. It is registered the
+   same way as other API services, but various parts of the application
+   assume to provide the "/keystone/login" URL.
+4. other services implemented as a "service_name.js" which extends the
+   appControllers module, the $routeProvider and the menuService. Such
+   services should also be added to the <link> list in index.html.
+5. all API-calling functionality is implemented in the apiService which also
+   handles storing the auth token.
+
+API Services are supported through a pair of a controller and a number of
+views.
+
+**angboard components**
+
+* AngularJS, Bootstrap are straight-forward.
+* Bootstrap-UI for Angular/Bootstrap integration.
+* angular-local-storage from https://github.com/grevory/angular-local-storage
+* underscore.js for many convenience functions (for a python programmer)
+* trNgGrid for tables
+
+
+fauxstack (fake OpenStack)
+--------------------------
 
 The fauxstack proxy is intentionally very thin and should have as little
 knowledge about APIs as possible built into it. The keystone service catalog
@@ -66,40 +102,6 @@ service catalog, and the call is made using:
 If there's more than one endpoint per region then we just choose the first
 at the moment; using multiple is outside the scope of this prototype.
 
-The angboard application has a structure created by the angularjs generator 
-at <https://github.com/yeoman/generator-angular>
-
-For some background on how yoeman works, this is a nice introduction though
-it uses a different generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>
-
-NOTE: some of the bits of the angular application were created outside of
-that generator and will need to be integrated (eg. the services).
-
-1. app.js which is the root application; this file should be as small as
-   possible. If you add functionality to the $rootScope, consider whether it
-   might be made a service instead.
-2. the "home" page, providing a default view in the absence of other views.
-3. the keystone service, providing login and logout. It is registered the
-   same way as other API services, but various parts of the application
-   assume to provide the "/keystone/login" URL.
-4. other services implemented as a "service_name.js" which extends the
-   appControllers module, the $routeProvider and the menuService. Such
-   services should also be added to the <link> list in index.html.
-5. all API-calling functionality is implemented in the apiService which also
-   handles storing the auth token.
-
-API Services are supported through a pair of a controller and a number of
-views.
-
-
-Components
-----------
-
-* AngularJS, Bootstrap are straight-forward.
-* Bootstrap-UI for Angular/Bootstrap integration.
-* angular-local-storage from https://github.com/grevory/angular-local-storage
-* underscore.js for many convenience functions (for a python programmer)
-* trNgGrid for tables
 
 
 Inteded Areas Of Development (aka TODO)
