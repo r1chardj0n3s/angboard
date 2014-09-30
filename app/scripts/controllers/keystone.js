@@ -34,7 +34,7 @@ appControllers.run([
       'show': function () {return !apiService.isAuthenticated; }});
     menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
       'show': function () {return apiService.isAuthenticated; }});
-    menuService.menus.push(menu);
+    menuService.push(menu);
   }
 ]);
 

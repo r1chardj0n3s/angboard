@@ -19,7 +19,7 @@ appControllers.run([
   'menuService',
   function (menuService) {
     var menu = {'title': 'Home', 'action': '#/home'};
-    menuService.menus.push(menu);
+    menuService.push(menu);
   }
 ]);
 

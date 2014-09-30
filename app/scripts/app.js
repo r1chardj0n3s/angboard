@@ -1,14 +1,7 @@
 'use strict';
 
-var modules = [
-  'ui.bootstrap',
-  'ngRoute',
-  'appControllers',
-  'appServices',
-  'trNgGrid'
-];
-
-var app = angular.module('app', modules);
+var app = angular.module('app', ['ui.bootstrap', 'ngRoute', 'appControllers',
+  'trNgGrid', 'LocalStorageModule']);
 
 app.config([
   '$routeProvider',
@@ -38,7 +31,7 @@ app.run([
       // in the few controllers that need to
       $rootScope.showNavBar = true;
       $rootScope.pageSubTitle = '';
-      if (!apiService.isAuthenticated) {
+      if (!apiService.isAuthenticated()) {
         $log.debug($location.path());
         if ($location.path() !== '/keystone/logout') {
           $location.path('/keystone/login');

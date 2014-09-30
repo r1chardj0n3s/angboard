@@ -26,7 +26,7 @@ appControllers.run([
     menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
     menu.menus.push({'title': 'Flavors', 'action': '#/nova/flavors'});
     menu.menus.push({'title': 'Servers', 'action': '#/nova/servers'});
-    menuService.menus.push(menu);
+    menuService.push(menu);
   }
 ]);
 

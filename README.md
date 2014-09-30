@@ -22,7 +22,7 @@ For example, given devstack on 10.0.0.1:
 And then set up the Javascript stuff with (note: I assume you have npm
 installed):
 
-    npm install -g grunt bower
+    sudo npm install -g grunt bower
     bower install
 
 Once that's running, use a separate shell to fire up the grunt server:
