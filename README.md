@@ -25,7 +25,6 @@ And then set up the Javascript stuff with (note: I assume you have npm
 installed):
 
   npm install -g grunt bower
-  grunt install
   bower install
 
 Once that's running, use a separate shell to fire up the grunt server:
@@ -126,6 +125,7 @@ and
 * revisit the table stuff; trNgGrid has yuck issues with some of our data;
   smart-table was much nicer but had the sort bug, but also has a huge
   rewrite in the works which looks way cool.
+* document deployment (grunt build, etc)
 
 
 Security
