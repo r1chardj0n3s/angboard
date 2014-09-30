@@ -18,6 +18,15 @@ For example, given devstack on 10.0.0.1:
   ./run http://10.0.0.1:5000/v2.0
 
 
+
+CURRENTLY SWITCHING TO YEOMAN / BOWER / GRUNT
+
+https://www.youtube.com/watch?v=gKiaLSJW5xI
+
+
+
+
+
 Application Structure
 =====================
 

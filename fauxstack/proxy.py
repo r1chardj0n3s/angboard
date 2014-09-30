@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 user_mappings = {}
 
 
-@proxy.route('/<service>/<region>/<path:file>',
+@proxy.route('/api/<service>/<region>/<path:file>',
              methods=["GET", "POST"])
 def proxy_request(service, region, file):
     # a few headers to pass on

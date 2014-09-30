@@ -7,25 +7,20 @@ import time
 from threading import Thread
 
 from flask import has_request_context, Flask, abort, Response, request
-from werkzeug import SharedDataMiddleware
 
 from .proxy import proxy
 
 ALL_HTTP_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-
-FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '../angboard/')
 
 
 def base_app():
     app = Flask('fauxstack')
     app.config.overrides = {}
 
-    app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {'/': FRONTEND_DIR})
-
-    @app.route('/', methods=['GET'])
-    def index():
-        with open(os.path.join(FRONTEND_DIR, 'index.html')) as f:
-            return Response(f.read(), mimetype="text/html")
+    # @app.route('/', methods=['GET'])
+    # def index():
+    #     with open(os.path.join(FRONTEND_DIR, 'index.html')) as f:
+    #         return Response(f.read(), mimetype="text/html")
 
     @app.route("/shutdown", methods=["POST"])   # pragma: no cover
     def shutdown():  # pragma: no cover

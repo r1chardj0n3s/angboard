@@ -1,0 +1,115 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+  <body ng-app="app">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+
+    <header>
+      <div class="panel panel-transparent">
+        <div class="panel-body">
+          <div class="container-liquid">
+            <div class="row">
+              <div class="col-sm-12">
+                <div id="alert-container">
+                  <alert class="alert-fixed" ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">
+                    {{alert.msg}}
+                  </alert>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <h1 style="margin: 0 20px;">
+                  <img src="images/openstack-logo.png" alt="OpenStack" title="OpenStack" />
+                  {{pageHeading}}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="panel col-sm-2" ng-if="menus.visible">
+          <ul>
+            <li ng-repeat="menu in menus.list()" ng-if="menus.shouldShow(menu)">
+              <a href="{{menu.action}}">{{menu.title}}</a>
+              <ul ng-if="menu.menus">
+                <li ng-repeat="submenu in menu.menus" ng-if="menus.shouldShow(submenu)">
+                  <a href="{{submenu.action}}">{{submenu.title}}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-10">
+          <div class="container-fluid">
+            <div ng-view></div>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-if="apiService.access">
+        <label for="show-credentials">Show Credentials</label>
+        <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
+        <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access() | json }}</pre>
+      </div>
+    </div>
+
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/trNgGrid/release/trNgGrid.min.js"></script>
+
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/services.js"></script>
+        <script src="scripts/controllers/home.js"></script>
+        <script src="scripts/controllers/nova.js"></script>
+        <script src="scripts/controllers/keystone.js"></script>
+        <script src="scripts/controllers/about.js"></script>
+        <!-- endbuild -->
+</body>
+</html>
