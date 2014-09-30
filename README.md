@@ -21,7 +21,8 @@ For example, given devstack on 10.0.0.1:
 
   ./run http://10.0.0.1:5000/v2.0
 
-And then set up the Javascript stuff with:
+And then set up the Javascript stuff with (note: I assume you have npm
+installed):
 
   npm install -g grunt bower
   grunt install
