@@ -70,7 +70,7 @@ Components
 * Bootstrap-UI for Angular/Bootstrap integration.
 * angular-local-storage from https://github.com/grevory/angular-local-storage
 * underscore.js for many convenience functions (for a python programmer)
-* ng-table from https://github.com/esvit/ng-table
+* trNgGrid for tables
 
 
 Inteded Areas Of Development (aka TODO)

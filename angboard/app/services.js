@@ -42,7 +42,7 @@ appServices.factory('alertService', ['$rootScope', function ($rootScope) {
 
   alertService.add = function (type, msg) {
     // type may be one of "error", "success", "warning", "info"
-    $rootScope.alerts[0] = {'type': type, 'msg': msg};
+    $rootScope.alerts.push({'type': type, 'msg': msg});
   };
 
   alertService.closeAlert = function (index) {
