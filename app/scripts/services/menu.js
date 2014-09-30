@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name app.menu
+ * @name app.menuService
  * @description
  * # menu
  * Service in the app.

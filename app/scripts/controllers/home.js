@@ -1,11 +1,9 @@
 'use strict';
 
-// this file has the canonical definition of the module by including
-// its dependencies
-var appControllers = angular.module('appControllers', []);
+var app = angular.module('app');
 
 
-appControllers.config([
+app.config([
   '$routeProvider',
   function ($routeProvider) {
     $routeProvider.when('/home', {
@@ -15,7 +13,7 @@ appControllers.config([
 ]);
 
 
-appControllers.run([
+app.run([
   'menuService',
   function (menuService) {
     var menu = {'title': 'Home', 'action': '#/home'};
@@ -25,7 +23,7 @@ appControllers.run([
 
 
 // Login Controller
-appControllers.controller('HomeCtrl', [
+app.controller('HomeCtrl', [
   '$scope', 'apiService', 'alertService',
   function ($scope, apiService, alertService) {
     $scope.$root.pageHeading = 'Home';

@@ -1,9 +1,9 @@
 'use strict';
 
-var appControllers = angular.module('appControllers');
+var app = angular.module('app');
 
 
-appControllers.config([
+app.config([
   '$routeProvider',
   function ($routeProvider) {
     $routeProvider.when('/keystone/login', {
@@ -26,7 +26,7 @@ appControllers.config([
 ]);
 
 
-appControllers.run([
+app.run([
   'menuService', 'apiService',
   function (menuService, apiService) {
     var menu = {'title': 'Identity', 'action': '#', 'menus': []};
@@ -39,7 +39,7 @@ appControllers.run([
 ]);
 
 
-appControllers.controller('LoginCtrl', [
+app.controller('LoginCtrl', [
   '$scope', '$location', 'apiService', 'alertService', 'menuService',
   function ($scope, $location, apiService, alertService, menuService) {
     $scope.$root.pageHeading = 'Login';

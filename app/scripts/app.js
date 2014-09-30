@@ -1,7 +1,7 @@
 'use strict';
 
-var app = angular.module('app', ['ui.bootstrap', 'ngRoute', 'appControllers',
-  'trNgGrid', 'LocalStorageModule']);
+var app = angular.module('app', ['ui.bootstrap', 'ngRoute', 'trNgGrid',
+  'LocalStorageModule']);
 
 app.config([
   '$routeProvider',

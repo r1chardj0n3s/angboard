@@ -1,9 +1,9 @@
 'use strict';
 
-var appControllers = angular.module('appControllers');
+var app = angular.module('app');
 
 
-appControllers.config([
+app.config([
   '$routeProvider',
   function ($routeProvider) {
     $routeProvider.when('/nova/images', {
@@ -19,7 +19,7 @@ appControllers.config([
 ]);
 
 
-appControllers.run([
+app.run([
   'menuService',
   function (menuService) {
     var menu = {'title': 'Compute', 'action': '#', 'menus': []};
@@ -48,7 +48,7 @@ function filterNames(array) {
 }
 
 
-appControllers.controller('ImagesCtrl', [
+app.controller('ImagesCtrl', [
   '$scope', 'apiService', 'alertService',
   function ($scope, apiService, alertService) {
     $scope.$root.pageHeading = 'Images';
@@ -61,7 +61,7 @@ appControllers.controller('ImagesCtrl', [
 ]);
 
 
-appControllers.controller('FlavorsCtrl', [
+app.controller('FlavorsCtrl', [
   '$scope', 'apiService', 'alertService',
   function ($scope, apiService, alertService) {
     $scope.$root.pageHeading = 'Flavors';
@@ -74,7 +74,7 @@ appControllers.controller('FlavorsCtrl', [
 ]);
 
 
-appControllers.controller('ServersCtrl', [
+app.controller('ServersCtrl', [
   '$scope', 'apiService', 'alertService', '$log',
   function ($scope, apiService, alertService, $log) {
     $scope.$root.pageHeading = 'Servers';
