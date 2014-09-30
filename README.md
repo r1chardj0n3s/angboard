@@ -6,25 +6,37 @@ hit *one* nova API call using those credentials.
 
 To set up:
 
+  git clone https://github.com/r1chardj0n3s/angboard
+  cd angboard
   mkvirtualenv angboard
+  source angboard/bin/activate
   pip install -r requirements.txt
 
 And then:
 
+  source angboard/bin/activate
   ./run <URL to keystone API>
 
 For example, given devstack on 10.0.0.1:
 
   ./run http://10.0.0.1:5000/v2.0
 
+And then set up the Javascript stuff with:
 
+  npm install -g grunt bower
+  grunt install
+  bower install
 
-CURRENTLY SWITCHING TO YEOMAN / BOWER / GRUNT
+Once that's running, use a separate shell to fire up the grunt server:
 
-https://www.youtube.com/watch?v=gKiaLSJW5xI
+  grunt serve
 
+This will open Chrome (or whatever) to view the site. Install the "live
+reload" browser extension / plugin and you'll see your changes LIVE when you
+make and save them to disk. Very premium.
 
-
+Keep an eye on the "grunt serve" window - it'll beep when you violate the
+Javascript style guide.
 
 
 Application Structure
@@ -32,11 +44,11 @@ Application Structure
 
 This repository contains two applications:
 
-1. fauxstack, which either proxies API requests to an OpenStack installation
-   (this is "live" mode) and will also provide fake responses to allow
-   development without requiring an OpenStack installation.
-2. angboard, which is the Javascript application providing the dashboard for
+2. the Javascript application in "app" providing the dashboard for
    OpenStack using angularjs and bootstrap.
+1. "fauxstack", which proxies API requests to an OpenStack installation
+   (this is "live" mode) and will eventually also provide fake responses
+   to allow development without requiring an OpenStack installation.
 
 The fauxstack proxy is intentionally very thin and should have as little
 knowledge about APIs as possible built into it. The keystone service catalog
@@ -46,7 +58,7 @@ API calls.
 The proxy maps using service endpoint names, allowing exposure of all of the
 compute APIs, for example. The URL structure exposed by the proxy is:
 
-    /service_name/region/api_path
+    /api/service_name/region/api_path
 
 The publicURL for the service_name / region is looked up in the
 service catalog, and the call is made using:
@@ -56,7 +68,14 @@ service catalog, and the call is made using:
 If there's more than one endpoint per region then we just choose the first
 at the moment; using multiple is outside the scope of this prototype.
 
-The angboard application has the following structure:
+The angboard application has a structure created by the angularjs generator 
+at <https://github.com/yeoman/generator-angular>
+
+For some background on how yoeman works, this is a nice introduction though
+it uses a different generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>
+
+NOTE: some of the bits of the angular application were created outside of
+that generator and will need to be integrated (eg. the services).
 
 1. app.js which is the root application; this file should be as small as
    possible. If you add functionality to the $rootScope, consider whether it
@@ -71,6 +90,9 @@ The angboard application has the following structure:
 5. all API-calling functionality is implemented in the apiService which also
    handles storing the auth token.
 
+API Services are supported through a pair of a controller and a number of
+views.
+
 
 Components
 ----------
@@ -84,6 +106,11 @@ Components
 
 Inteded Areas Of Development (aka TODO)
 =======================================
+
+* complete the yoeman-ification of the older code
+* implement a single test
+
+and
 
 * fix the menu
   * admin actions
