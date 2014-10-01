@@ -26,21 +26,17 @@ angular.module('app')
         return null;
       };
 
-      var _isAuthenticated = !!this.access();
-
-      this.isAuthenticated = function () {
-        return _isAuthenticated;
-      };
+      self.isAuthenticated = !!this.access();
 
       this.setAccess = function (access) {
         $log.info('setAccess:', access);
         localStorageService.set('access', angular.toJson(access));
-        _isAuthenticated = true;
+        self.isAuthenticated = true;
       };
       this.clearAccess = function (reason) {
         $log.info('clearAccess:', reason);
         localStorageService.remove('access');
-        _isAuthenticated = false;
+        self.isAuthenticated = false;
       };
 
       // helper which displays a generic error or more specific one if we got one
@@ -58,7 +54,7 @@ angular.module('app')
       }
 
       function apiCall(config, onSuccess, onError) {
-        if (_isAuthenticated) {
+        if (self.isAuthenticated) {
           config.headers['X-Auth-Token'] = self.access().token.id;
         }
         return $http(config).success(function (response, status) {

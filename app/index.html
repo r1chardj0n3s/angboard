@@ -65,7 +65,7 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-if="apiService.access()">
+      <div class="row" ng-if="apiService.isAuthenticated">
         <label for="show-credentials">Show Credentials</label>
         <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
         <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access() | json }}</pre>
