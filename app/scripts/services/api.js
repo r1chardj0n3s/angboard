@@ -7,7 +7,7 @@
  * # api
  * Service in the angboardApp.
  */
-angular.module('app')
+angular.module('angboardApp')
 
   .config(function (localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('angboard');

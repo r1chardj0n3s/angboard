@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc service
- * @name app.menuService
+ * @name angboardApp.menuService
  * @description
  * # menu
- * Service in the app.
+ * Service in the angboardApp.
  */
-angular.module('app')
+angular.module('angboardApp')
   .service('menuService', function menu() {
     var self = this;
     self.menus = [];

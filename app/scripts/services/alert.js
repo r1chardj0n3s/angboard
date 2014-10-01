@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc service
- * @name app.alertService
+ * @name angboardApp.alertService
  * @description
  * # alert
- * Service in the app.
+ * Service in the angboardApp.
  */
-angular.module('app')
+angular.module('angboardApp')
   .service('alertService', function ($rootScope) {
     // create an array of alerts available globally
     $rootScope.alerts = [];

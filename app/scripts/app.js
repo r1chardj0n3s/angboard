@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('app', ['ui.bootstrap', 'ngRoute', 'smart-table',
+var app = angular.module('angboardApp', ['ui.bootstrap', 'ngRoute', 'smart-table',
   'LocalStorageModule']);
 
 app.config(function ($routeProvider) {
