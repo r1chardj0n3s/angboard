@@ -72,13 +72,17 @@ generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>
 API Services are supported through a pair of a controller and a number of
 views.
 
-**angboard components**
+**angboard components and documentation**
 
-* AngularJS, Bootstrap are straight-forward.
-* Bootstrap-UI for Angular/Bootstrap integration.
-* angular-local-storage from https://github.com/grevory/angular-local-storage
-* underscore.js for many convenience functions (for a python programmer)
-* angular-smart-table for tables
+* AngularJS, https://docs.angularjs.org/guide
+* Bootstrap, http://getbootstrap.com/css/
+* Bootstrap-UI for Angular/Bootstrap integration
+* angular-local-storage for in-browser state
+  https://github.com/grevory/angular-local-storage
+* angular-smart-table for tables documented at
+  http://lorenzofox3.github.io/smart-table-website/
+* compass for compiled CSS
+  http://compass-style.org/help/
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
@@ -187,7 +191,7 @@ Specific areas of security that have been addressed:
 Tabular Data
 ============
 
-Three angularjs modules for table support have been tried:
+A bunch of angularjs modules for table support have been tried:
 
 1. ngTable, which is very cumbersome to use, requiring a bunch of manual
    boilerplate in the controller for each table.
