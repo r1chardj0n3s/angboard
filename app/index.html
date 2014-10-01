@@ -65,7 +65,7 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-if="apiService.access">
+      <div class="row" ng-if="apiService.access()">
         <label for="show-credentials">Show Credentials</label>
         <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
         <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access() | json }}</pre>
@@ -98,8 +98,7 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="bower_components/trNgGrid/release/trNgGrid.min.js"></script>
-
+    <script src="bower_components/angular-smart-table/dist/smart-table.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

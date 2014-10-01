@@ -9,16 +9,17 @@
  */
 angular.module('app')
   .service('menuService', function menu() {
-    var menus = [];
-    var visible = true;
+    var self = this;
+    self.menus = [];
+    self.visible = true;
 
     this.push = function (value) {
-      return menus.push(value);
+      return self.menus.push(value);
     };
 
     this.list = function () {
-      if (visible) {
-        return menus;
+      if (self.visible) {
+        return self.menus;
       }
       return [];
     };

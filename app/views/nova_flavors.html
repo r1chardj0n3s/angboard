@@ -1,15 +1,28 @@
 <div data-ng-controller="FlavorsCtrl">
-  <table class="table table-bordered table-hover table-striped" tr-ng-grid="" enable-filtering="false" items="flavors" order-by="'name'">
+  <table class="table table-bordered table-hover table-striped" st-table="flavors">
     <thead>
-        <th field-name="id" display-name="ID"></th>
-        <th field-name="name" display-name="Flavor"></th>
-        <th field-name="ram" display-name="Memory MB"></th>
-        <th field-name="swap" display-name="Swap"></th>
-        <th field-name="disk" display-name="Disk"></th>
-        <th field-name="vcpus" display-name="VCPUs"></th>
-        <th field-name="ephemeral" display-name="Ephemeral"></th>
-        <th field-name="rxtx_factor" display-name="RXTX Factor"></th>
-        <th field-name="is_public" display-name="Is Public"></th>
+        <th>ID</th>
+        <th>Flavor</th>
+        <th>Memory MB</th>
+        <th>Swap</th>
+        <th>Disk</th>
+        <th>VCPUs</th>
+        <th>Ephemeral</th>
+        <th>RXTX Factor</th>
+        <th>Is Public</th>
     </thead>
+    <tbody>
+        <tr ng-repeat="flavor in flavors">
+            <td>{{ flavor.id }}</td>
+            <td>{{ flavor.name }}</td>
+            <td>{{ flavor.ram }}</td>
+            <td>{{ flavor.swap }}</td>
+            <td>{{ flavor.disk }}</td>
+            <td>{{ flavor.vcpus }}</td>
+            <td>{{ flavor.ephemeral }}</td>
+            <td>{{ flavor.rxtx_factor }}</td>
+            <td>{{ flavor.is_public }}</td>
+        </tr>
+    </tbody>
   </table>
 </div>

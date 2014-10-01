@@ -49,8 +49,6 @@ app.controller('LoginCtrl',
 
     $scope.login = function () {
       alertService.clearAlerts();
-      alertService.add('info', 'Hello, World!');
-
       apiService.POST(
         'keystone',
         'tokens',

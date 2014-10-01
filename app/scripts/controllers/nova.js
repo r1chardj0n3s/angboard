@@ -25,29 +25,12 @@ app.run(function (menuService) {
 });
 
 
-// the name prefixes on some elements cause trNgGrid to have issues, so just
-// strip them off
-// maybe trNgGrid isn't a good choice (see the README for the other options I tried)
-function filterNames(array) {
-  var narray = [];
-  angular.forEach(array, function (object) {
-    var nobj = {};
-    angular.forEach(object, function (value, key) {
-      var nkey = key.replace(/(^.+?:)/, '');
-      nobj[nkey] = value;
-    });
-    narray.push(nobj);
-  });
-  return narray;
-}
-
-
 app.controller('ImagesCtrl', function ($scope, apiService, alertService) {
   $scope.$root.pageHeading = 'Images';
   alertService.clearAlerts();
 
   apiService.GET('nova', 'images/detail', function (data) {
-    $scope.images = filterNames(data.images);
+    $scope.images = data.images;
   });
 });
 
@@ -57,7 +40,7 @@ app.controller('FlavorsCtrl', function ($scope, apiService, alertService) {
   alertService.clearAlerts();
 
   apiService.GET('nova', 'flavors/detail', function (data) {
-    $scope.flavors = filterNames(data.flavors);
+    $scope.flavors = data.flavors;
   });
 });
 
@@ -67,7 +50,7 @@ app.controller('ServersCtrl', function ($scope, apiService, alertService, $log) 
   alertService.clearAlerts();
 
   apiService.GET('nova', 'servers/detail', function (data) {
-    $scope.servers = filterNames(data.servers);
+    $scope.servers = data.servers;
   });
   apiService.GET('nova', 'flavors/detail', function (data) {
     $scope.flavors = data.flavors;
@@ -92,7 +75,7 @@ app.controller('ServersCtrl', function ($scope, apiService, alertService, $log) 
           alertService.add('info', 'Server added! ' + data);
           // update the list
           apiService.GET('nova', 'servers/detail', function (data) {
-            $scope.servers = filterNames(data.servers);
+            $scope.servers = data.servers;
           });
         }
       },

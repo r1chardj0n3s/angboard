@@ -80,6 +80,10 @@ views.
 * underscore.js for many convenience functions (for a python programmer)
 * trNgGrid for tables
 
+Note that the minification used in our build tool includes `ngmin` support so
+you don't need to manually include the DI minification hacks usually needed
+in AngularJS applications.
+
 
 fauxstack (fake OpenStack)
 --------------------------
@@ -103,29 +107,67 @@ If there's more than one endpoint per region then we just choose the first
 at the moment; using multiple is outside the scope of this prototype.
 
 
+Tools
+=====
+
+Several tools are used in maintenance of this application:
+
+bower
+-----
+
+bower is used to install and update components. It is written in the node.js
+programming language, but we don't need to worry about that. Two operations
+that might be needed are:
+
+1. Installing a new component to use in the application. This is done using:
+
+    bower install <name of component> -S
+
+   The "-S" adds the component to the bower.json file so it's installed when
+   "bower install" is invoked with no arguments. Good for deployment to a new
+   environment.
+
+   When a new Javascript or CSS component is installed, you should check that
+   it is included in the appropriate index.html section. Usually this should
+   happen automatically.
+
+2. Updating a component. This is quite easy:
+
+    bower update <name of component>
+
+grunt
+-----
+
+grunt is used as a task management tool. It has a number of tasks defined,
+all invokable as `grunt serve` or `grunt build` and so on:
+
+* `watch` for changes in the codebase and take action like compile the sass
+  CSS source files using `compass`.
+* `serve` the application to a browser (also performs a `watch` and will
+  additionally play well with `liveReload` if you have that installed in your
+  browser)
+* `test` to run the test suite under `karma`
+* `build` the application for deployment, minifying (HTML, CSS and JS),
+  cdn'ing, uglifying and so on and putting everything in the "dist" directory
+
 
 Inteded Areas Of Development (aka TODO)
 =======================================
 
-* complete the yoeman-ification of the older code
 * implement a single test
 
 and
 
 * fix the menu
   * admin actions
-  * modify elements for context (login/logout, service catalog)
-  * stylings
+  * modify contents for service catalog
+  * styling
 * cover off the OWASP top 10 (at a minimum) where possible/appropriate
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * implement creation and management of nova instances
 * *perhaps* investigate angular strap vs ui-bootstrap
 * region selection
 * handle multiple endpoints per region
-* revisit the table stuff; trNgGrid has yuck issues with some of our data;
-  smart-table was much nicer but had the sort bug, but also has a huge
-  rewrite in the works which looks way cool.
-* document deployment (grunt build, etc)
 
 
 Security
@@ -145,8 +187,11 @@ Three angularjs modules for table support have been tried:
 
 1. ngTable, which is very cumbersome to use, requiring a bunch of manual
    boilerplate in the controller for each table.
-2. smart-table which was very promising except sorting just didn't work.
+2. smart-table which is very promising (except sorting doesn't work at the
+   moment)
 3. trNgGrid which is simple enough to use, though a little odd and can't
    handle some object attribute names (eg. "OS-FLV-EXT-DATA:ephemeral").
+4. ui-grid which is a bit crap in its own way (visually sucky, no real
+   integration with bootstrap).
 
-Currently using trNgGrid.
+Currently using smart-table.
