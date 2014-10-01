@@ -78,7 +78,7 @@ views.
 * Bootstrap-UI for Angular/Bootstrap integration.
 * angular-local-storage from https://github.com/grevory/angular-local-storage
 * underscore.js for many convenience functions (for a python programmer)
-* trNgGrid for tables
+* angular-smart-table for tables
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
