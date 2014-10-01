@@ -3,22 +3,18 @@
 var app = angular.module('app', ['ui.bootstrap', 'ngRoute', 'trNgGrid',
   'LocalStorageModule']);
 
-app.config([
-  '$routeProvider',
-  function ($routeProvider) {
-    // set up the default route
-    $routeProvider.when('/home', {
-      templateUrl: 'views/home.html'
-    });
-    $routeProvider.otherwise({
-      redirectTo: '/home'
-    });
-  }
-]);
+app.config(function ($routeProvider) {
+  // set up the default route
+  $routeProvider.when('/home', {
+    templateUrl: 'views/home.html'
+  });
+  $routeProvider.otherwise({
+    redirectTo: '/home'
+  });
+});
 
 
-app.run([
-  '$rootScope', '$location', '$log', 'apiService', 'alertService', 'menuService',
+app.run(
   function ($rootScope, $location, $log, apiService, alertService, menuService) {
     // somewhere to put the menu, yes!
     $rootScope.menus = menuService;
@@ -45,4 +41,4 @@ app.run([
     // XXX debugging, remove me
     $rootScope.apiService = apiService;
   }
-]);
+);

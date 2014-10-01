@@ -8,7 +8,7 @@
  * Service in the app.
  */
 angular.module('app')
-  .service('alertService', ['$rootScope', function ($rootScope) {
+  .service('alertService', function ($rootScope) {
     // create an array of alerts available globally
     $rootScope.alerts = [];
 
@@ -24,4 +24,4 @@ angular.module('app')
     this.clearAlerts = function () {
       $rootScope.alerts.length = 0;
     };
-  }]);
+  });

@@ -9,15 +9,11 @@
  */
 angular.module('app')
 
-  .config([
-    'localStorageServiceProvider',
-    function (localStorageServiceProvider) {
-      localStorageServiceProvider.setPrefix('angboard');
-    }
-  ])
+  .config(function (localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('angboard');
+  })
 
-  .service('apiService', [
-    'alertService', '$http', '$log', '$location', 'localStorageService',
+  .service('apiService',
     function (alertService, $http, $log, $location, localStorageService) {
       var self = this;
       var httpTimeoutMs = 60000;
@@ -128,5 +124,4 @@ angular.module('app')
       this.POST = function (svcName, url, data, onSuccess, onError) {
         dataCall(svcName, 'POST', url, data, onSuccess, onError);
       };
-    }
-  ]);
+    });

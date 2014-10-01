@@ -3,44 +3,37 @@
 var app = angular.module('app');
 
 
-app.config([
-  '$routeProvider',
-  function ($routeProvider) {
-    $routeProvider.when('/keystone/login', {
-      templateUrl: 'views/keystone_login.html'
-    });
+app.config(function ($routeProvider) {
+  $routeProvider.when('/keystone/login', {
+    templateUrl: 'views/keystone_login.html'
+  });
 
-    $routeProvider.when('/keystone/logout', {
-      resolve: {
-        redirect: [
-          '$location', '$log', 'apiService',
-          function ($location, $log, apiService) {
-            $log.info('log out');
-            apiService.clearAccess('logout');
-            $location.path('/keystone/login');
-          }
-        ]
-      }
-    });
-  }
-]);
+  $routeProvider.when('/keystone/logout', {
+    resolve: {
+      redirect: [
+        '$location', '$log', 'apiService',
+        function ($location, $log, apiService) {
+          $log.info('log out');
+          apiService.clearAccess('logout');
+          $location.path('/keystone/login');
+        }
+      ]
+    }
+  });
+});
 
 
-app.run([
-  'menuService', 'apiService',
-  function (menuService, apiService) {
-    var menu = {'title': 'Identity', 'action': '#', 'menus': []};
-    menu.menus.push({'title': 'Login', 'action': '#/keystone/login',
-      'show': function () {return !apiService.isAuthenticated; }});
-    menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
-      'show': function () {return apiService.isAuthenticated; }});
-    menuService.push(menu);
-  }
-]);
+app.run(function (menuService, apiService) {
+  var menu = {'title': 'Identity', 'action': '#', 'menus': []};
+  menu.menus.push({'title': 'Login', 'action': '#/keystone/login',
+    'show': function () {return !apiService.isAuthenticated; }});
+  menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
+    'show': function () {return apiService.isAuthenticated; }});
+  menuService.push(menu);
+});
 
 
-app.controller('LoginCtrl', [
-  '$scope', '$location', 'apiService', 'alertService', 'menuService',
+app.controller('LoginCtrl',
   function ($scope, $location, apiService, alertService, menuService) {
     $scope.$root.pageHeading = 'Login';
     alertService.clearAlerts();
@@ -74,5 +67,4 @@ app.controller('LoginCtrl', [
         }
       );
     };
-  }
-]);
+  });
