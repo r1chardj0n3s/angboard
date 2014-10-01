@@ -3,7 +3,7 @@
 // Generated on 2014-09-30 using
 // generator-karma 0.8.3
 
-module.exports = function(config) {
+module.exports = function (config) {
   'use strict';
 
   config.set({
@@ -50,8 +50,12 @@ module.exports = function(config) {
     // Which plugins to enable
     plugins: [
       'karma-phantomjs-launcher',
-      'karma-jasmine'
+      'karma-jasmine',
+      'karma-story-reporter'
     ],
+
+    // Use karma-story-reporter for slightly more informative progress
+    reporters: ['story'],
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit

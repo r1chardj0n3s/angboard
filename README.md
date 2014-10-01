@@ -83,6 +83,9 @@ views.
   http://lorenzofox3.github.io/smart-table-website/
 * compass for compiled CSS
   http://compass-style.org/help/
+* karma and jasmine for testing documented at
+  http://karma-runner.github.io/ and
+  http://jasmine.github.io/1.3/introduction.html
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
@@ -154,7 +157,7 @@ all invokable as `grunt serve` or `grunt build` and so on:
 * `serve` the application to a browser (also performs a `watch` and will
   additionally play well with `liveReload` if you have that installed in your
   browser)
-* `test` to run the test suite under `karma`
+* `test` to run the test suite under `karma` and `jasmine`
 * `build` the application for deployment, minifying (HTML, CSS and JS),
   cdn'ing, uglifying and so on and putting everything in the "dist" directory
 

@@ -1,17 +1,18 @@
+/*global describe, beforeEach, inject, it, expect */
 'use strict';
 
-describe('Controller: AboutCtrl', function () {
+describe('Controller: HomeCtrl', function () {
 
   // load the controller's module
   beforeEach(module('angboardApp'));
 
-  var AboutCtrl,
+  var HomeCtrl,
     scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    AboutCtrl = $controller('AboutCtrl', {
+    HomeCtrl = $controller('HomeCtrl', {
       $scope: scope
     });
   }));

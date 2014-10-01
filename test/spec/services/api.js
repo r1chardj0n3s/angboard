@@ -1,3 +1,4 @@
+/*global describe, beforeEach, inject, it, expect */
 'use strict';
 
 describe('Service: api', function () {

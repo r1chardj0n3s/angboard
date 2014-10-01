@@ -30,7 +30,8 @@
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma": "^0.12.23",
-    "grunt-karma": "^0.9.0"
+    "grunt-karma": "^0.9.0",
+    "karma-story-reporter": "^0.2.2"
   },
   "engines": {
     "node": ">=0.10.0"
