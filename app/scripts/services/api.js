@@ -66,13 +66,15 @@ angular.module('angboardApp')
             displayError(alertService, response);
           }
         }).error(function (response, status) {
-          $log.error('apiCall error', status, response);
           if (status === 401) {
+            $log.warn('apiCall authentication rejected', status, response);
             // backend has indicated authentication required which means our
             // access token is no longer valid
             alertService.add('error', 'Authentication required');
-            this.clearAccess('got an API/proxy 401');
+            self.clearAccess('got an API/proxy 401');
             $location.path('/keystone/login');
+          } else {
+            $log.error('apiCall error', status, response);
           }
           if (onError) {
             try {

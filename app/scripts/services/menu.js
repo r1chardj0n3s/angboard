@@ -10,16 +10,16 @@
 angular.module('angboardApp')
   .service('menuService', function menu() {
     var self = this;
-    self.menus = [];
     self.visible = true;
+    var menus = [];
 
     this.push = function (value) {
-      return self.menus.push(value);
+      return menus.push(value);
     };
 
     this.list = function () {
       if (self.visible) {
-        return self.menus;
+        return menus;
       }
       return [];
     };
