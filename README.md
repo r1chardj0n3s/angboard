@@ -131,6 +131,10 @@ that might be needed are:
    it is included in the appropriate index.html section. Usually this should
    happen automatically.
 
+   You will almost certainly also need to manually add the new JS files to
+   the karma test configuration in test/karma.con.js or it will fall about
+   laughing.
+
 2. Updating a component. This is quite easy:
 
     bower update <name of component>
