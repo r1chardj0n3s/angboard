@@ -8,12 +8,12 @@ describe('Service: alert', function () {
 
   // instantiate service
   var alert;
-  beforeEach(inject(function (_alert_) {
-    alert = _alert_;
+  beforeEach(inject(function (alertService) {
+    alert = alertService;
   }));
 
   it('should do something', function () {
-    expect(!!alert).toBe(true);
+    expect(!!alert).toBe(false);
   });
 
 });

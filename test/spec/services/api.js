@@ -1,19 +1,41 @@
-/*global describe, beforeEach, inject, it, expect */
+/*global describe, beforeEach, inject, module, it, expect */
 'use strict';
 
 describe('Service: api', function () {
-
   // load the service's module
   beforeEach(module('angboardApp'));
 
-  // instantiate service
   var api;
-  beforeEach(inject(function (_api_) {
-    api = _api_;
-  }));
+  var storage = {access: null};
 
-  it('should do something', function () {
-    expect(!!api).toBe(true);
+  beforeEach(function () {
+    // mask the local storage service with something of our own fakery
+    module(function ($provide) {
+      $provide.value('localStorageService', {
+        get: function (key) {return storage[key]; },
+        set: function (key, value) {storage[key] = value; }
+      });
+    });
+
+    // and grab a handle to the api service
+    inject(function (apiService) {
+      api = apiService;
+    });
   });
 
+  describe('in the default state', function () {
+    it('should not be authenticated', function () {
+      expect(api.isAuthenticated).toBe(false);
+    });
+  });
+
+  describe('when logged in', function () {
+    beforeEach(function () {
+      api.setAccess({access: true});
+    });
+
+    it('should be authenticated', function () {
+      expect(api.isAuthenticated).toBe(true);
+    });
+  });
 });

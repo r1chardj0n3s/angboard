@@ -2,7 +2,6 @@
 'use strict';
 
 describe('Service: menu', function () {
-
   // load the service's module
   beforeEach(module('angboardApp'));
 
