@@ -1,9 +1,9 @@
 <div data-ng-controller="HomeCtrl">
-  <p>Token is {{ apiService.token }}</p>
+  <p>Token is {{ apiService.access().token.id }}</p>
 
   <button ng-click="fetchLimits()">
     CLICK ME
   </button>
 
-  <pre>{{ nova_limits | json }}</pre>
+  <pre>{{ novaLimits | json }}</pre>
 </div>
