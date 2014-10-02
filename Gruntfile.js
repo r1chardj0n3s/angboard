@@ -152,7 +152,7 @@
         all: {
           directives: {
             browser: true,
-            predef: ['angular', 'document', '\\$'],
+            predef: ['angular'],
             indent: 2,
             vars: true
           },
@@ -164,7 +164,7 @@
         test: {
           directives: {
             browser: true,
-            predef: ['angular', 'document', '\\$'],
+            predef: ['angular', 'document'],
             indent: 2,
             vars: true
           },

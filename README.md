@@ -162,6 +162,23 @@ all invokable as `grunt serve` or `grunt build` and so on:
   cdn'ing, uglifying and so on and putting everything in the "dist" directory
 
 
+jslint
+------
+
+In addition to jshint (which picks up on some potential code errors) we also
+use jslint to enforce a more strict coding style. It is fired automatically
+by "grunt watch" (checking application code as it changes) and "grunt test"
+(only checking the tests when they're run).
+
+There are some configuration settings baked into grunt's run:
+
+    browser: true,  // assume the code is running in a browser
+    predef: ['angular'],
+    indent: 2,      // 2-space indentation
+    vars: true      // allow multiple var statements in a function
+
+
+
 Inteded Areas Of Development (aka TODO)
 =======================================
 
