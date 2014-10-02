@@ -14,9 +14,8 @@
 
   app.run(function (menuService) {
     var menu = {'title': 'Swift', 'action': '#', 'menus': []};
-
     menu.menus.push({'title': 'Swift', 'action': '#/swift'});
-    menuService.menus.push(menu);
+    menuService.push(menu);
   });
 
 
