@@ -122,7 +122,7 @@ at the moment; using multiple is outside the scope of this prototype.
 Tools
 =====
 
-Several tools are used in maintenance of this application:
+Tools used in maintenance of this application:
 
 bower
 -----
@@ -147,7 +147,7 @@ that might be needed are:
    the karma test configuration in test/karma.con.js or it will fall about
    laughing.
 
-2. Updating a component. This is quite easy:
+2. Updating a component:
 
     bower update <name of component>
 
@@ -167,13 +167,27 @@ all invokable as `grunt serve` or `grunt build` and so on:
   cdn'ing, uglifying and so on and putting everything in the "dist" directory
 
 
+jslint
+------
+
+In addition to jshint (which picks up on some potential code errors) we also
+use jslint to enforce a more strict coding style. It is fired automatically
+by "grunt watch" (checking application code as it changes) and "grunt test"
+(only checking the tests when they're run).
+
+There are some configuration settings baked into grunt's run:
+
+    browser: true,  // assume the code is running in a browser
+    predef: ['angular'],
+    indent: 2,      // 2-space indentation
+    vars: true      // allow multiple var statements in a function
+
+
+
 Inteded Areas Of Development (aka TODO)
 =======================================
 
-* implement a single test
-
-and
-
+* investigate fully external packages extending functionality
 * fix the menu
   * admin actions
   * modify contents for service catalog
@@ -184,6 +198,7 @@ and
 * *perhaps* investigate angular strap vs ui-bootstrap
 * region selection
 * handle multiple endpoints per region
+* investigate https://github.com/davemo/jasmine-only
 
 
 Security
