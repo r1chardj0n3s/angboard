@@ -1,10 +1,11 @@
 New dashboard for OpenStack using angularjs talking directly to the APIs.
 
-This is currently *very* raw, proof-of-concept. You can authenticate and
-hit *one* nova API call using those credentials.
+This is currently *very* raw, proof-of-concept.
 
-Note: requires python3.4 or higher
-=======
+Installation
+============
+
+**Note: requires python3.4 or higher**
 
 To set up:
 

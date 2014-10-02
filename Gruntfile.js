@@ -17,13 +17,13 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
-  var proxyPort = 8000,
-  // Configurable paths for the application
-    appConfig = {
-      app: require('./bower.json').appPath || 'app',
-      dist: 'dist'
-    };
+  var proxyPort = 8000;
 
+  // Configurable paths for the application
+  var appConfig = {
+    app: require('./bower.json').appPath || 'app',
+    dist: 'dist'
+  };
 
   if (grunt.option('proxy-port')) {
     proxyPort = grunt.option('proxy-port');
