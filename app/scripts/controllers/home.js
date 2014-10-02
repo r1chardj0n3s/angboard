@@ -1,36 +1,38 @@
-'use strict';
+(function () {
+  'use strict';
 
-var app = angular.module('angboardApp');
+  var app = angular.module('angboardApp');
 
 
-app.config(function ($routeProvider) {
-  $routeProvider.when('/home', {
-    templateUrl: 'views/home.html'
+  app.config(function ($routeProvider) {
+    $routeProvider.when('/home', {
+      templateUrl: 'views/home.html'
+    });
   });
-});
 
 
-app.run(function (menuService) {
-  var menu = {'title': 'Home', 'action': '#/home'};
-  menuService.push(menu);
-});
+  app.run(function (menuService) {
+    var menu = {'title': 'Home', 'action': '#/home'};
+    menuService.push(menu);
+  });
 
 
-// Login Controller
-app.controller('HomeCtrl', function ($scope, apiService, alertService) {
-  $scope.$root.pageHeading = 'Home';
-  alertService.clearAlerts();
-
-  $scope.apiService = apiService;
-
-  $scope.fetchLimits = function () {
+  // Login Controller
+  app.controller('HomeCtrl', function ($scope, apiService, alertService) {
+    $scope.$root.pageHeading = 'Home';
     alertService.clearAlerts();
-    apiService.GET(
-      'nova',
-      'limits',
-      function (data) {
-        $scope.novaLimits = data;
-      }
-    );
-  };
-});
+
+    $scope.apiService = apiService;
+
+    $scope.fetchLimits = function () {
+      alertService.clearAlerts();
+      apiService.GET(
+        'nova',
+        'limits',
+        function (data) {
+          $scope.novaLimits = data;
+        }
+      );
+    };
+  });
+}());

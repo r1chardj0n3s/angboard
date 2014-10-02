@@ -117,7 +117,7 @@ at the moment; using multiple is outside the scope of this prototype.
 Tools
 =====
 
-Several tools are used in maintenance of this application:
+Tools used in maintenance of this application:
 
 bower
 -----
@@ -142,7 +142,7 @@ that might be needed are:
    the karma test configuration in test/karma.con.js or it will fall about
    laughing.
 
-2. Updating a component. This is quite easy:
+2. Updating a component:
 
     bower update <name of component>
 
@@ -165,10 +165,7 @@ all invokable as `grunt serve` or `grunt build` and so on:
 Inteded Areas Of Development (aka TODO)
 =======================================
 
-* implement a single test
-
-and
-
+* investigate fully external packages extending functionality
 * fix the menu
   * admin actions
   * modify contents for service catalog
@@ -179,6 +176,7 @@ and
 * *perhaps* investigate angular strap vs ui-bootstrap
 * region selection
 * handle multiple endpoints per region
+* investigate https://github.com/davemo/jasmine-only
 
 
 Security
