@@ -36,8 +36,8 @@
           <td>{{ container.name }}</td>
           <td>
             <div>
-              Object Count: {{container.count}}<br/>	
-              Size: {{container.size}}<br/>
+              Object Count: {{container.count}}<br/>
+              Size: {{container.bytes | humanFileSize }}<br/>
               Access: {{container.access}}
             </div>
           </td>
