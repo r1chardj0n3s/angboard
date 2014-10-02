@@ -15,6 +15,9 @@ log = logging.getLogger(__name__)
 user_mappings = {}
 
 
+@proxy.route('/api/<service>/<region>/',
+             methods=["GET", "POST", "HEAD"],
+             defaults={'file':None})
 @proxy.route('/api/<service>/<region>/<path:file>',
              methods=["GET", "POST"])
 def proxy_request(service, region, file):
@@ -48,7 +51,12 @@ def proxy_request(service, region, file):
 
         log.debug(user_mappings[access_token][service])
         mapped = user_mappings[access_token][service][region][0]['publicURL']
-        url = posixpath.join(mapped, path)
+        
+        if path:
+            # swift account operations do not specify a path
+            url = posixpath.join(mapped, path)
+        else:
+            url = mapped
 
     log.info('ATTEMPTING to %s\n\tURL %s\n\tWITH headers=%s and data=%s',
              request.method, url, request_headers, request_data)
@@ -67,7 +75,7 @@ def proxy_request(service, region, file):
         response_headers[key] = upstream.headers[key]
 
     log.info('RESPONSE: %s %s\n%s', upstream.status_code, response_headers,
-        upstream.text)
+             upstream.text)
 
     # return the response plus the JSONP protection
     # (https://docs.angularjs.org/api/ng/service/$http)
@@ -78,7 +86,7 @@ def proxy_request(service, region, file):
 
     # spy on serviceCatalog responses
     if service == 'keystone' and file == 'tokens' and \
-            upstream.status_code == 200:
+       upstream.status_code == 200:
         log.info('got a service catalog response; mapping')
         data = upstream.json()
 
