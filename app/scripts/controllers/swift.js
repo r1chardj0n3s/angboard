@@ -21,7 +21,7 @@
         return apiService.access().serviceCatalog.filter(
           function (service){
             return service.name === 'swift';
-          });
+          }).length > 0;
       }};
 
     menu.menus.push({'title': 'Swift', 'action': '#/swift'});
