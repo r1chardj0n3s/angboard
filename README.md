@@ -82,6 +82,8 @@ views.
 * AngularJS, https://docs.angularjs.org/guide
 * Bootstrap, http://getbootstrap.com/css/
 * Bootstrap-UI for Angular/Bootstrap integration
+* Font Awesome for iconography (class="fa fa-thumbs-up")
+  http://fortawesome.github.io/Font-Awesome/cheatsheet/
 * angular-local-storage for in-browser state
   https://github.com/grevory/angular-local-storage
 * angular-smart-table for tables documented at
