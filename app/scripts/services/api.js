@@ -18,13 +18,14 @@
       function (alertService, $http, $log, $location, localStorageService) {
         var self = this;
         var httpTimeoutMs = 60000;
+        self.busy = 0;
 
         // store the entire "tokens" response from keystone
         this.access = localStorageService.get('access');
 
         // store just the serviceCatalog, re-jiggered to be a mapping of
         // service name to service info (TODO: deal with dupes?)
-        this.services = {};
+        self.services = {};
 
         this.setAccess = function (access) {
           $log.info('setAccess:', access);
@@ -32,7 +33,7 @@
           self.access = access;
           self.services = {};
           angular.forEach(access.serviceCatalog, function (service) {
-            this.services[service.name] = service;
+            self.services[service.name] = service;
           });
         };
         this.clearAccess = function (reason) {
@@ -60,7 +61,9 @@
           if (self.access) {
             config.headers['X-Auth-Token'] = self.access.token.id;
           }
+          self.busy += 1;
           return $http(config).success(function (response, status) {
+            self.busy -= 1;
             $log.debug('apiCall success', status, response);
             try {
               onSuccess(response, status);
@@ -69,6 +72,7 @@
               displayError(alertService, response);
             }
           }).error(function (response, status) {
+            self.busy -= 1;
             if (status === 401) {
               $log.warn('apiCall authentication rejected', status, response);
               // backend has indicated authentication required which means our

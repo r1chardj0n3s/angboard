@@ -8,6 +8,7 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -44,6 +45,13 @@
         </div>
       </div>
     </header>
+
+    <div id="spinner" ng-show="apiService.busy">
+      <div id="matte"></div>
+      <div id="icon-sprite">
+        <i class="fa fa-spinner fa-spin"></i>
+      </div>
+    </div>
 
     <div class="container-fluid">
       <div class="row">
