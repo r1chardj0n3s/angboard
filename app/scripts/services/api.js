@@ -132,9 +132,9 @@
           });
         }
 
-        this.GET = function (svcName, url, onSuccess, onError) {
+        function simpleCall(svcName, method, url, onSuccess, onError) {
           return apiCall({
-            method: 'GET',
+            method: method,
             url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
             headers : {
               'Accept': 'application/json'
@@ -142,6 +142,14 @@
             timeout: httpTimeoutMs,
             cache: false
           }, onSuccess, onError);
+        }
+
+        this.GET = function (svcName, url, onSuccess, onError) {
+          return simpleCall(svcName, 'GET', url, onSuccess, onError);
+        };
+
+        this.DELETE = function (svcName, url, onSuccess, onError) {
+          return simpleCall(svcName, 'DELETE', url, onSuccess, onError);
         };
 
         function dataCall(svcName, method, url, data, onSuccess, onError) {

@@ -19,7 +19,7 @@ user_mappings = {}
              methods=["GET", "POST", "HEAD"],
              defaults={'file':None})
 @proxy.route('/api/<service>/<region>/<path:file>',
-             methods=["GET", "POST"])
+             methods=["GET", "POST", "DELETE"])
 def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
@@ -51,7 +51,7 @@ def proxy_request(service, region, file):
 
         log.debug(user_mappings[access_token][service])
         mapped = user_mappings[access_token][service][region][0]['publicURL']
-        
+
         if path:
             # swift account operations do not specify a path
             url = posixpath.join(mapped, path)
@@ -63,6 +63,8 @@ def proxy_request(service, region, file):
 
     if request.method == 'GET':
         upstream = requests.get(url, headers=request_headers)
+    elif request.method == 'DELETE':
+        upstream = requests.delete(url, headers=request_headers)
     else:
         upstream = requests.post(url, data=request_data,
                                  headers=request_headers)

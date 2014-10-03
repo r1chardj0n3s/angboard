@@ -80,12 +80,14 @@
         {'server': $scope.newServer},
         function (data, status) {
           $scope.newServer = {};
-          if (status === 200) {
+          if (status === 202) {
             alertService.add('info', 'Server added! ' + data);
             // update the list
             apiService.GET('nova', 'servers/detail', function (data) {
               $scope.servers = data.servers;
             });
+          } else {
+            alertService.add('error', 'Server add failed! ');
           }
         },
         function (data) {
@@ -94,6 +96,32 @@
                            data.computeFault.message);
         }
       );
+    };
+
+    $scope.deleteServer = function (server) {
+      $log.debug('deleting server', server);
+      alertService.clearAlerts();
+
+      /*jslint unparam: true*/
+      apiService.DELETE(
+        'nova',
+        'servers/' + server.id,
+        function (data, status) {
+          if (status === 204) {
+            alertService.add('info', 'Server deleted! ');
+            // update the list
+            apiService.GET('nova', 'servers/detail', function (data) {
+              $scope.servers = data.servers;
+            });
+          } else {
+            alertService.add('error', 'Server delete failed! ');
+          }
+        },
+        function (data) {
+          alertService.add('error', 'Server delete failed ' + data);
+        }
+      );
+      /*jslint unparam: false*/
     };
   });
 }());

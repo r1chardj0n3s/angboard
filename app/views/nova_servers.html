@@ -15,9 +15,21 @@
         <td>{{ server.id }}</td>
         <td>{{ flavorMap[server.flavor.id].name }}</td>
         <td>{{ imageMap[server.image.id].name }}</td>
-        <td>{{ server.status }}</td>
         <td>{{ server.created | date : mediumDate }}</td>
         <td>{{ server.updated | date : mediumDate }}</td>
+        <td>
+          <div class="btn-group pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu.{{server.id}}" data-toggle="dropdown">
+              {{ server.status }}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu.{{server.id}}">
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="stopServer(server)">Stop</a></li>
+              <li role="presentation" class="divider"></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="deleteServer(server)">Delete</a></li>
+            </ul>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
