@@ -39,7 +39,7 @@
       // root binding for alertService
       $rootScope.closeAlert = alertService.closeAlert;
 
-      // XXX debugging, remove me
+      // root binding to access apiService status from template
       $rootScope.apiService = apiService;
     }
   );
