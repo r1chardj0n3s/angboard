@@ -28,7 +28,7 @@
         // in the few controllers that need to
         $rootScope.showNavBar = true;
         $rootScope.pageSubTitle = '';
-        if (!apiService.isAuthenticated) {
+        if (!apiService.access) {
           $log.debug($location.path());
           if ($location.path() !== '/keystone/logout') {
             $location.path('/keystone/login');
@@ -39,7 +39,7 @@
       // root binding for alertService
       $rootScope.closeAlert = alertService.closeAlert;
 
-      // XXX debugging, remove me
+      // root binding to access apiService status from template
       $rootScope.apiService = apiService;
     }
   );

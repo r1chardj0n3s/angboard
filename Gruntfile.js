@@ -160,7 +160,8 @@
             browser: true,
             predef: ['angular'],
             indent: 2,
-            vars: true
+            vars: true,
+            'continue': true
           },
           src: [
             'Gruntfile.js',
@@ -172,7 +173,8 @@
             browser: true,
             predef: ['angular', 'document'],
             indent: 2,
-            vars: true
+            vars: true,
+            'continue': true
           },
           src: ['test/spec/{,*/}*.js']
         }

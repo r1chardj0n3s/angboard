@@ -55,9 +55,17 @@
     });
     apiService.GET('nova', 'flavors/detail', function (data) {
       $scope.flavors = data.flavors;
+      $scope.flavorMap = {};
+      angular.forEach(data.flavors, function (flavor) {
+        $scope.flavorMap[flavor.id] = flavor;
+      });
     });
     apiService.GET('nova', 'images/detail', function (data) {
       $scope.images = data.images;
+      $scope.imageMap = {};
+      angular.forEach(data.images, function (image) {
+        $scope.imageMap[image.id] = image;
+      });
     });
 
     // somewhere to store the new server stuffs
