@@ -1,6 +1,38 @@
 (function () {
   'use strict';
 
+  // automatically convert dates received from API calls into date objects
+  var regexIso8601 = /^(\d{4}|\+\d{6})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2}):(\d{2}):(\d{2})\.(\d{1,})(Z|([\-+])(\d{2}):(\d{2}))?)?)?)?$/;
+
+  function convertDateStringsToDates(input) {
+    // Ignore things that aren't objects.
+    if (typeof input !== 'object') {
+      return input;
+    }
+
+    var key, value, match, milliseconds;
+
+    for (key in input) {
+      if (input.hasOwnProperty(key)) {
+        value = input[key];
+        // Check for string properties which look like dates.
+        if (typeof value !== 'string') {
+          continue;
+        }
+        match = value.match(regexIso8601);
+        if (match) {
+          milliseconds = Date.parse(match[0]);
+          if (!isNaN(milliseconds)) {
+            input[key] = new Date(milliseconds);
+          }
+        } else if (typeof value === 'object') {
+          // Recurse into object
+          convertDateStringsToDates(value);
+        }
+      }
+    }
+  }
+
   /**
    * @ngdoc service
    * @name angboardApp.apiService
@@ -10,8 +42,12 @@
    */
   angular.module('angboardApp')
 
-    .config(function (localStorageServiceProvider) {
+    .config(function (localStorageServiceProvider, $httpProvider) {
       localStorageServiceProvider.setPrefix('angboard');
+      $httpProvider.defaults.transformResponse.push(function (responseData) {
+        convertDateStringsToDates(responseData);
+        return responseData;
+      });
     })
 
     .service('apiService',

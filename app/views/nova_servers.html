@@ -2,6 +2,7 @@
   <table class="table table-bordered table-hover table-striped" st-table="servers">
     <thead>
         <th>Name</th>
+        <th>ID</th>
         <th>Flavor</th>
         <th>Image</th>
         <th>Status</th>
@@ -11,11 +12,12 @@
     <tbody>
       <tr ng-repeat="server in servers">
         <td>{{ server.name }}</td>
-        <td>{{ server.flavor.id }}</td>
-        <td>{{ server.image.id }}</td>
+        <td>{{ server.id }}</td>
+        <td>{{ flavorMap[server.flavor.id].name }}</td>
+        <td>{{ imageMap[server.image.id].name }}</td>
         <td>{{ server.status }}</td>
-        <td>{{ server.created }}</td>
-        <td>{{ server.updated }}</td>
+        <td>{{ server.created | date : mediumDate }}</td>
+        <td>{{ server.updated | date : mediumDate }}</td>
       </tr>
     </tbody>
   </table>
