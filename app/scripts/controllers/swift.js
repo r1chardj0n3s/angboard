@@ -12,30 +12,21 @@
   });
 
 
-  app.run(function (menuService) {
-    var menu = {'title': 'Swift', 'action': '#', 'menus': []};
+  app.run(function (menuService, apiService) {
+    var menu = {
+      'title': 'Swift',
+      'action': '#',
+      'menus': [],
+      'show':function () {
+        return apiService.access().serviceCatalog.filter(
+          function (service){
+            return service.name === 'swift';
+          });
+      }};
+
     menu.menus.push({'title': 'Swift', 'action': '#/swift'});
     menuService.push(menu);
   });
-
-
-  // Stolen from
-  function humanFileSize(bytes, si) {
-    // Note does not cope with -ve bytes
-    var thresh = si ? 1000 : 1024,
-      units = si ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'],
-      u = -1;
-
-    if (bytes < thresh) {
-      return bytes + ' B';
-    }
-
-    do {
-      bytes /= thresh;
-      u = u + 1;
-    } while (bytes >= thresh);
-    return bytes.toFixed(1)  +  ' '  +  units[u];
-  }
 
   var ViewDetailsCtrl = function ($scope, $modalInstance, $log, containerDetails) {
 
@@ -103,7 +94,6 @@
             );
 
             container = data[i];
-            size = humanFileSize(container.bytes);
 
             container.size = size;
             container.access = access;
