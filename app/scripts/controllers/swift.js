@@ -17,12 +17,13 @@
       'title': 'Swift',
       'action': '#',
       'menus': [],
-      'show':function () {
-        return apiService.access().serviceCatalog.filter(
-          function (service){
-            return service.name === 'swift';
-          });
-      }};
+      'show': function () {
+        if (!apiService.access) {
+          return false;
+        }
+        return apiService.access.serviceCatalog.swift;
+      }
+    };
 
     menu.menus.push({'title': 'Swift', 'action': '#/swift'});
     menuService.push(menu);
@@ -66,8 +67,7 @@
         function (data, status, headers) {
           var access = 'Private',  // FIXME
             i,
-            container,
-            size;
+            container;
 
           if (data) {
             $log.info(data);
@@ -92,10 +92,7 @@
               null,
               logContainerHeaders
             );
-
             container = data[i];
-
-            container.size = size;
             container.access = access;
           }
 

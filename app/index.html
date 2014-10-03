@@ -65,10 +65,10 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-if="apiService.isAuthenticated">
+      <div class="row" ng-if="apiService.access">
         <label for="show-credentials">Show Credentials</label>
         <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
-        <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access() | json }}</pre>
+        <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access | json }}</pre>
       </div>
     </div>
 

@@ -19,25 +19,27 @@
         var self = this;
         var httpTimeoutMs = 60000;
 
-        this.access = function () {
-          var access = localStorageService.get('access');
-          if (access) {
-            return angular.fromJson(access);
-          }
-          return null;
-        };
+        // store the entire "tokens" response from keystone
+        this.access = localStorageService.get('access');
 
-        self.isAuthenticated = !!this.access();
+        // store just the serviceCatalog, re-jiggered to be a mapping of
+        // service name to service info (TODO: deal with dupes?)
+        this.services = {};
 
         this.setAccess = function (access) {
           $log.info('setAccess:', access);
-          localStorageService.set('access', angular.toJson(access));
-          self.isAuthenticated = true;
+          localStorageService.set('access', access);
+          self.access = access;
+          self.services = {};
+          angular.forEach(access.serviceCatalog, function (service) {
+            this.services[service.name] = service;
+          });
         };
         this.clearAccess = function (reason) {
           $log.info('clearAccess:', reason);
           localStorageService.remove('access');
-          self.isAuthenticated = false;
+          self.access = null;
+          self.services = {};
         };
 
         // helper which displays a generic error or more specific one if we got one
@@ -55,8 +57,8 @@
         }
 
         function apiCall(config, onSuccess, onError) {
-          if (self.isAuthenticated) {
-            config.headers['X-Auth-Token'] = self.access().token.id;
+          if (self.access) {
+            config.headers['X-Auth-Token'] = self.access.token.id;
           }
           return $http(config).success(function (response, status) {
             $log.debug('apiCall success', status, response);

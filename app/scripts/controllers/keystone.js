@@ -27,9 +27,9 @@
   app.run(function (menuService, apiService) {
     var menu = {'title': 'Identity', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Login', 'action': '#/keystone/login',
-      'show': function () {return !apiService.isAuthenticated; }});
+      'show': function () {return !apiService.access; }});
     menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
-      'show': function () {return apiService.isAuthenticated; }});
+      'show': function () {return apiService.access; }});
     menuService.push(menu);
   });
 
