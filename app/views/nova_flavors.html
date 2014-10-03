@@ -19,9 +19,9 @@
             <td>{{ flavor.swap }}</td>
             <td>{{ flavor.disk }}</td>
             <td>{{ flavor.vcpus }}</td>
-            <td>{{ flavor.ephemeral }}</td>
+            <td><span ng-class="{'fa fa-check': flavor['OS-FLV-EXT-DATA:ephemeral']}" /></td>
             <td>{{ flavor.rxtx_factor }}</td>
-            <td>{{ flavor.is_public }}</td>
+            <td><span ng-class="{'fa fa-check': flavor['os-flavor-access:is_public']}" /></td>
         </tr>
     </tbody>
   </table>
