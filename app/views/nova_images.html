@@ -10,7 +10,7 @@
     <tbody>
       <tr ng-repeat="image in images">
         <td>{{ image.name }}</td>
-        <td>{{ image.size | number }}</td>
+        <td>{{ image['OS-EXT-IMG-SIZE:size'] | humanFileSize }}</td>
         <td>{{ image.id }}</td>
       </tr>
     </tbody>
