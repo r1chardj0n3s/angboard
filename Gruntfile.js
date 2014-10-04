@@ -19,7 +19,7 @@
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
-    var proxyPort = 8000,
+    var proxyPort = 8531,
     // Configurable paths for the application
       appConfig = {
         app: require('./bower.json').appPath || 'app',

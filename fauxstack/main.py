@@ -133,7 +133,7 @@ def main():  # pragma: no cover
         '--delay', metavar='n', type=int, default=0,
         help='Seconds to wait before processing each request')
     parser.add_argument(
-        '--port', '-P', type=int, default=8000,
+        '--port', '-P', type=int, default=8531,
         help='Port to serve the backend on')
     parser.add_argument(
         '--host', '-H', default="0.0.0.0",
