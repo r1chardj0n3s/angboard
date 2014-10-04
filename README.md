@@ -11,11 +11,17 @@ To set up:
 
     git clone https://github.com/r1chardj0n3s/angboard
     cd angboard
-    mkvirtualenv angboard
-    source angboard/bin/activate
+    mkvirtualenv angboard-env
+    source angboard-env/bin/activate
     pip install -r requirements.txt
+    <install ruby / gem per your operating system>
+    <install node / npm per your operating system>
+    sudo npm install -g grunt-cli bower
+    npm install
+    bower install
+    gem install compass
 
-And then:
+And then in one shell:
 
     source angboard/bin/activate
     ./run <URL to keystone API>
@@ -24,13 +30,7 @@ For example, given devstack on 10.0.0.1:
 
     ./run http://10.0.0.1:5000/v2.0
 
-And then set up the Javascript stuff with (note: I assume you have npm
-installed):
-
-    sudo npm install -g grunt-cli bower
-    bower install
-
-Once that's running, use a separate shell to fire up the grunt server:
+And use a separate shell to fire up the grunt server:
 
     grunt serve
 
@@ -188,6 +188,10 @@ There are some configuration settings baked into grunt's run:
 
 Inteded Areas Of Development (aka TODO)
 =======================================
+
+* investigate nodeenv https://pypi.python.org/pypi/nodeenv/
+
+THEN
 
 * investigate fully external packages extending functionality
 * fix the menu
