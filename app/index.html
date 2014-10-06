@@ -28,7 +28,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <div id="alert-container">
-                  <alert class="alert-fixed" ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">
+                  <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">
                     {{alert.msg}}
                   </alert>
                 </div>
@@ -107,6 +107,7 @@
     <script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angular-smart-table/dist/smart-table.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
