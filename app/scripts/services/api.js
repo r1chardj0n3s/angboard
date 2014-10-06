@@ -57,20 +57,26 @@
         self.busy = 0;
 
         // store the entire "tokens" response from keystone
-        this.access = localStorageService.get('access');
+        self.access = localStorageService.get('access');
 
         // store just the serviceCatalog, re-jiggered to be a mapping of
         // service name to service info (TODO: deal with dupes?)
-        self.services = {};
+        function populateServices() {
+          self.services = {};
+          if (!self.access) {
+            return;
+          }
+          angular.forEach(self.access.serviceCatalog, function (service) {
+            self.services[service.name] = service;
+          });
+        }
+        populateServices();
 
         this.setAccess = function (access) {
           $log.info('setAccess:', access);
           localStorageService.set('access', access);
           self.access = access;
-          self.services = {};
-          angular.forEach(access.serviceCatalog, function (service) {
-            self.services[service.name] = service;
-          });
+          populateServices();
         };
         this.clearAccess = function (reason) {
           $log.info('clearAccess:', reason);
@@ -85,21 +91,32 @@
           var message = 'An error has occurred (no message). Please try again.';
           try {
             if (data.hasOwnProperty('reason')) {
+              $log.debug('displayError using data.reason');
               message = data.reason;
+            } else if (data.hasOwnProperty('error')) {
+              $log.debug('displayError using data.error.message');
+              message = data.error.message;
             }
           } catch (e) {
             message = 'An error has occurred (bad response). Please try again.';
           }
-          alertService.add('error', message);
+          alertService.add('warning', message);
         }
 
-        function apiCall(config, onSuccess, onError) {
+        function apiCall(config, onSuccess, onError, showSpinner) {
+          if (!angular.isDefined(showSpinner)) {
+            showSpinner = true;
+          }
           if (self.access) {
             config.headers['X-Auth-Token'] = self.access.token.id;
           }
-          self.busy += 1;
+          if (showSpinner) {
+            self.busy += 1;
+          }
           return $http(config).success(function (response, status) {
-            self.busy -= 1;
+            if (showSpinner) {
+              self.busy -= 1;
+            }
             $log.debug('apiCall success', status, response);
             try {
               onSuccess(response, status);
@@ -108,17 +125,20 @@
               displayError(alertService, response);
             }
           }).error(function (response, status) {
-            self.busy -= 1;
+            if (showSpinner) {
+              self.busy -= 1;
+            }
             if (status === 401) {
-              $log.warn('apiCall authentication rejected', status, response);
-              // backend has indicated authentication required which means our
-              // access token is no longer valid
-              alertService.add('error', 'Authentication required');
+              $log.warn('apiCall 401 response handler', response);
+              // Authentication credentials (either username/password or
+              // token) rejected by backend
+              displayError(alertService, response);
               self.clearAccess('got an API/proxy 401');
               $location.path('/keystone/login');
-            } else {
-              $log.error('apiCall error', status, response);
+              return;
             }
+
+            $log.error('apiCall error', status, response);
             if (onError) {
               try {
                 onError(response, status);
@@ -132,19 +152,27 @@
           });
         }
 
-        this.GET = function (svcName, url, onSuccess, onError) {
+        function simpleCall(svcName, method, url, onSuccess, onError, showSpinner) {
           return apiCall({
-            method: 'GET',
+            method: method,
             url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
             headers : {
               'Accept': 'application/json'
             },
             timeout: httpTimeoutMs,
             cache: false
-          }, onSuccess, onError);
+          }, onSuccess, onError, showSpinner);
+        }
+
+        this.GET = function (svcName, url, onSuccess, onError, showSpinner) {
+          return simpleCall(svcName, 'GET', url, onSuccess, onError, showSpinner);
         };
 
-        function dataCall(svcName, method, url, data, onSuccess, onError) {
+        this.DELETE = function (svcName, url, onSuccess, onError, showSpinner) {
+          return simpleCall(svcName, 'DELETE', url, onSuccess, onError, showSpinner);
+        };
+
+        function dataCall(svcName, method, url, data, onSuccess, onError, showSpinner) {
           $log.info('data call', data);
           return apiCall({
             method: method,
@@ -155,19 +183,19 @@
               'Content-Type': 'application/json'
             },
             timeout: httpTimeoutMs
-          }, onSuccess, onError);
+          }, onSuccess, onError, showSpinner);
         }
 
-        this.PUT = function (svcName, url, data, onSuccess, onError) {
-          dataCall(svcName, 'PUT', url, data, onSuccess, onError);
+        this.PUT = function (svcName, url, data, onSuccess, onError, showSpinner) {
+          dataCall(svcName, 'PUT', url, data, onSuccess, onError, showSpinner);
         };
 
-        this.POST = function (svcName, url, data, onSuccess, onError) {
-          dataCall(svcName, 'POST', url, data, onSuccess, onError);
+        this.POST = function (svcName, url, data, onSuccess, onError, showSpinner) {
+          dataCall(svcName, 'POST', url, data, onSuccess, onError, showSpinner);
         };
 
         /*jslint unparam: true*/
-        this.HEAD = function (svcName, url, data, onSuccess, onError) {
+        this.HEAD = function (svcName, url, data, onSuccess, onError, showSpinner) {
           return apiCall({
             method: 'HEAD',
             url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
@@ -176,7 +204,7 @@
             },
             timeout: httpTimeoutMs,
             cache: false
-          }, onSuccess, onError);
+          }, onSuccess, onError, showSpinner);
         };
         /*jslint unparam: false*/
       });

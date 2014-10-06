@@ -11,6 +11,7 @@
 
   var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
+
   module.exports = function (grunt) {
 
     // Load grunt tasks automatically
@@ -19,16 +20,30 @@
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
-    var proxyPort = 8000,
-    // Configurable paths for the application
-      appConfig = {
-        app: require('./bower.json').appPath || 'app',
-        dist: 'dist'
-      };
+    var jslintConfig = {
+      browser: true,
+      predef: ['angular', 'document'],
+      indent: 2,
+      vars: true,
+      'continue': true,
+      plusplus: true
+    };
 
+    var keystoneURL = 'http://119.9.27.d:5000/v2.0';
+    if (grunt.option('keystone-url')) {
+      keystoneURL = grunt.option('keystone-url');
+    }
+
+    var proxyPort = 8531;
     if (grunt.option('proxy-port')) {
       proxyPort = grunt.option('proxy-port');
     }
+
+    // Configurable paths for the application
+    var appConfig = {
+        app: require('./bower.json').appPath || 'app',
+        dist: 'dist'
+      };
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -89,7 +104,6 @@
           hostname: 'localhost',
           livereload: 35729
         },
-
         livereload: {
           options: {
             open: true,
@@ -156,26 +170,14 @@
       // Be more strict about coding style
       jslint: {
         all: {
-          directives: {
-            browser: true,
-            predef: ['angular'],
-            indent: 2,
-            vars: true,
-            'continue': true
-          },
+          directives: jslintConfig,
           src: [
             'Gruntfile.js',
             '<%= yeoman.app %>/scripts/{,*/}*.js'
           ]
         },
         test: {
-          directives: {
-            browser: true,
-            predef: ['angular', 'document'],
-            indent: 2,
-            vars: true,
-            'continue': true
-          },
+          directives: jslintConfig,
           src: ['test/spec/{,*/}*.js']
         }
       },
@@ -437,6 +439,16 @@
       }
     });
 
+    grunt.registerTask('flask', 'Run flask server.', function () {
+      grunt.log.writeln('Starting Flask proxy server.');
+      var virtualenv = require('virtualenv');
+      var packagePath = require.resolve('./package.json');
+      var env = virtualenv(packagePath);
+      // stdio: 'inherit' let us see flask output in grunt
+      var PIPE = {stdio: 'inherit'};
+      env.spawnPython(['-m', 'fauxstack', '-P', proxyPort, '-l', 'flask.log',
+        keystoneURL], PIPE);
+    });
 
     grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
       if (target === 'dist') {
@@ -450,6 +462,7 @@
         'concurrent:server',
         'autoprefixer',
         'connect:livereload',
+        'flask',
         'watch'
       ]);
     });

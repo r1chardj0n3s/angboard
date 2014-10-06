@@ -46,13 +46,38 @@
   });
 
 
-  app.controller('ServersCtrl', function ($scope, apiService, alertService, $log) {
+  function updateArray(current, updates) {
+    var i, updateMap = {}, currentId, updateId;
+    angular.forEach(updates, function (update) {
+      updateMap[update.id] = update;
+    });
+    for (i = 0; i < current.length; i++) {
+      currentId = current[i].id;
+      if (updateMap.hasOwnProperty(currentId) && updateMap[currentId].status !== 'DELETED') {
+        current[i] = updateMap[currentId];
+        delete updateMap[currentId];
+      }
+    }
+    for (updateId in updateMap) {
+      if (updateMap.hasOwnProperty(updateId)) {
+        if (updateMap[updateId].status === 'DELETED') {
+          for (i = 0; i < current.length; i++) {
+            if (current[i].id === updateId) {
+              current.splice(i, 1);
+            }
+          }
+        } else {
+          current.push(updateMap[updateId]);
+        }
+      }
+    }
+  }
+
+  app.controller('ServersCtrl', function ($scope, apiService, alertService, $log, $interval, $modal) {
+    var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
 
-    apiService.GET('nova', 'servers/detail', function (data) {
-      $scope.servers = data.servers;
-    });
     apiService.GET('nova', 'flavors/detail', function (data) {
       $scope.flavors = data.flavors;
       $scope.flavorMap = {};
@@ -68,6 +93,50 @@
       });
     });
 
+    var refreshServers = function () {
+      var url;
+      if (angular.isDefined(self.lastFetch)) {
+        url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
+      } else {
+        url = 'servers/detail';
+      }
+      apiService.GET('nova', url, function (data) {
+        if (angular.isDefined(self.lastFetch)) {
+          updateArray($scope.servers, data.servers);
+        } else {
+          // first fetch
+          $scope.servers = data.servers;
+        }
+        self.lastFetch = new Date();
+      }, null, false);
+    };
+
+    var refreshPromise = $interval(refreshServers, 1000);
+
+    // Cancel interval on page changes
+    $scope.$on('$destroy', function () {
+      if (angular.isDefined(refreshPromise)) {
+        $interval.cancel(refreshPromise);
+        refreshPromise = undefined;
+      }
+    });
+
+    var ModalCtrl = function ($scope, $modalInstance, data) {
+      $scope.data = data;
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+    };
+
+    $scope.showFault = function (server) {
+      $modal.open({
+        templateUrl: 'showFault.html',
+        controller: ModalCtrl,
+        size: 'lg',
+        resolve: {data: function () {return server; }}
+      });
+    };
+
     // somewhere to store the new server stuffs
     $scope.newServer = {};
     $scope.createServer = function () {
@@ -80,12 +149,14 @@
         {'server': $scope.newServer},
         function (data, status) {
           $scope.newServer = {};
-          if (status === 200) {
-            alertService.add('info', 'Server added! ' + data);
-            // update the list
-            apiService.GET('nova', 'servers/detail', function (data) {
-              $scope.servers = data.servers;
+          if (status === 202) {
+            $modal.open({
+              templateUrl: 'createResponse.html',
+              controller: ModalCtrl,
+              resolve: {data: function () {return data; }}
             });
+          } else {
+            alertService.add('error', 'Server add failed!');
           }
         },
         function (data) {
@@ -94,6 +165,32 @@
                            data.computeFault.message);
         }
       );
+    };
+
+    $scope.deleteServer = function (server) {
+      $log.debug('deleting server', server);
+      alertService.clearAlerts();
+
+      /*jslint unparam: true*/
+      apiService.DELETE(
+        'nova',
+        'servers/' + server.id,
+        function (data, status) {
+          if (status === 204) {
+            alertService.add('info', 'Server deleted! ');
+            // update the list
+            apiService.GET('nova', 'servers/detail', function (data) {
+              $scope.servers = data.servers;
+            });
+          } else {
+            alertService.add('error', 'Server delete failed! ');
+          }
+        },
+        function (data) {
+          alertService.add('error', 'Server delete failed ' + data);
+        }
+      );
+      /*jslint unparam: false*/
     };
   });
 }());

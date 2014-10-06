@@ -18,10 +18,7 @@
       'action': '#',
       'menus': [],
       'show': function () {
-        if (!apiService.access) {
-          return false;
-        }
-        return apiService.access.serviceCatalog.swift;
+        return apiService.services.hasOwnProperty('swift');
       }
     };
 
@@ -29,15 +26,16 @@
     menuService.push(menu);
   });
 
-  var ViewDetailsCtrl = function ($scope, $modalInstance, $log, containerDetails) {
 
-    $log.info(containerDetails);
+  var ViewDetailsCtrl = function ($scope, $modalInstance, $log, containerDetails) {
+    $log.debug('container view details', containerDetails);
     $scope.containerDetails = containerDetails;
 
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
   };
+
 
   app.controller('SwiftContainersCtrl', [
     '$scope', 'apiService', 'alertService', '$modal', '$log',

@@ -11,32 +11,34 @@ To set up:
 
     git clone https://github.com/r1chardj0n3s/angboard
     cd angboard
-    mkvirtualenv angboard
-    source angboard/bin/activate
-    pip install -r requirements.txt
-
-And then:
-
-    source angboard/bin/activate
-    ./run <URL to keystone API>
-
-For example, given devstack on 10.0.0.1:
-
-    ./run http://10.0.0.1:5000/v2.0
-
-And then set up the Javascript stuff with (note: I assume you have npm
-installed):
-
+    (install ruby / gem per your operating system)
+    gem install compass
+    (install node / npm per your operating system)
     sudo npm install -g grunt-cli bower
+    npm install
     bower install
 
-Once that's running, use a separate shell to fire up the grunt server:
+`npm install` installs stuff in the `packages.json` file and `bower install`
+installs things from the `bower.json` file.
 
-    grunt serve
+Note: Python from `requirements.txt` for Flask are installed in
+`.node-virtualenv` by the above.
+
+And use a separate shell to fire up the grunt server:
+
+    grunt serve --keystone-url=<URL to keystone>
+
+For example:
+
+    grunt serve --keystone-url=http://10.0.0.1:5000/v2.0
 
 This will open Chrome (or whatever) to view the site. Install the "live
 reload" browser extension / plugin and you'll see your changes LIVE when you
 make and save them to disk. Very premium.
+
+If you have an issue with the Flask proxy attempting to run on an already-
+used port, you may also specify `--proxy-port` to `grunt serve` to change to
+a different port.
 
 Keep an eye on the "grunt serve" window - it'll beep when you violate the
 Javascript style guide.
@@ -93,6 +95,8 @@ views.
 * karma and jasmine for testing documented at
   http://karma-runner.github.io/ and
   http://jasmine.github.io/1.3/introduction.html
+* virtualenv - the npm version
+  https://www.npmjs.org/package/virtualenv
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
@@ -192,7 +196,6 @@ Inteded Areas Of Development (aka TODO)
 * investigate fully external packages extending functionality
 * fix the menu
   * admin actions
-  * modify contents for service catalog
   * styling
 * cover off the OWASP top 10 (at a minimum) where possible/appropriate
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
@@ -201,6 +204,7 @@ Inteded Areas Of Development (aka TODO)
 * region selection
 * handle multiple endpoints per region
 * investigate https://github.com/davemo/jasmine-only
+* investigate https://github.com/chjj/term.js
 
 
 Security

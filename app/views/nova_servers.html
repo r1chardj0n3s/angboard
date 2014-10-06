@@ -11,13 +11,28 @@
     </thead>
     <tbody>
       <tr ng-repeat="server in servers">
-        <td>{{ server.name }}</td>
+        <td>
+          {{ server.name }}
+          <span ng-if="server.fault" class="fa fa-exclamation-triangle text-danger" ng-click="showFault(server)"></span>
+        </td>
         <td>{{ server.id }}</td>
         <td>{{ flavorMap[server.flavor.id].name }}</td>
         <td>{{ imageMap[server.image.id].name }}</td>
-        <td>{{ server.status }}</td>
         <td>{{ server.created | date : mediumDate }}</td>
         <td>{{ server.updated | date : mediumDate }}</td>
+        <td>
+          <div class="btn-group pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu.{{server.id}}" data-toggle="dropdown">
+              {{ server.status }} <span ng-if="server['OS-EXT-STS:task_state']">({{ server['OS-EXT-STS:task_state'] }})</span>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu.{{server.id}}">
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="stopServer(server)">Stop</a></li>
+              <li role="presentation" class="divider"></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="deleteServer(server)">Delete</a></li>
+            </ul>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -60,6 +75,33 @@
     </div>
 
   </form>
+
+  <script type="text/ng-template" id="createResponse.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Server Created</h3>
+    </div>
+    <div class="modal-body">
+      <p>Your server has been created. The root password is:</p>
+      <p><code>{{data.server.adminPass}}</code></p>
+      <p>Write this down, you won't see it again.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="showFault.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Server Fault</h3>
+    </div>
+    <div class="modal-body">
+      <b>{{data.fault.message}}</p>
+      <pre class="code">{{data.fault.details}}</pre>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    </div>
+  </script>
 
 
 </div>
