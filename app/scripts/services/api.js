@@ -57,20 +57,23 @@
         self.busy = 0;
 
         // store the entire "tokens" response from keystone
-        this.access = localStorageService.get('access');
+        self.access = localStorageService.get('access');
 
         // store just the serviceCatalog, re-jiggered to be a mapping of
         // service name to service info (TODO: deal with dupes?)
-        self.services = {};
+        function populateServices() {
+          self.services = {};
+          angular.forEach(self.access.serviceCatalog, function (service) {
+            self.services[service.name] = service;
+          });
+        }
+        populateServices();
 
         this.setAccess = function (access) {
           $log.info('setAccess:', access);
           localStorageService.set('access', access);
           self.access = access;
-          self.services = {};
-          angular.forEach(access.serviceCatalog, function (service) {
-            self.services[service.name] = service;
-          });
+          populateServices();
         };
         this.clearAccess = function (reason) {
           $log.info('clearAccess:', reason);
