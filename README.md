@@ -21,8 +21,8 @@ To set up:
 `npm install` installs stuff in the `packages.json` file and `bower install`
 installs things from the `bower.json` file.
 
-Note: Python from requirements.txt for Flask are installed in .node-
-virtualenv by the above.
+Note: Python from `requirements.txt` for Flask are installed in
+`.node-virtualenv` by the above.
 
 And use a separate shell to fire up the grunt server:
 
