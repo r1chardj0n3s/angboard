@@ -14,7 +14,7 @@
       $rootScope.alerts = [];
 
       this.add = function (type, msg) {
-        // type may be one of 'error', 'success', 'warning', 'info'
+        // type may be one of 'danger', 'success', 'warning', 'info'
         $rootScope.alerts.push({'type': type, 'msg': msg});
       };
 

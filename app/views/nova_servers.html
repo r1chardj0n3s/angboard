@@ -20,7 +20,7 @@
         <td>
           <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu.{{server.id}}" data-toggle="dropdown">
-              {{ server.status }}
+              {{ server.status }} <span ng-if="server['OS-EXT-STS:task_state']">({{ server['OS-EXT-STS:task_state'] }})</span>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu.{{server.id}}">
