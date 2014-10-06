@@ -95,6 +95,8 @@ views.
 * karma and jasmine for testing documented at
   http://karma-runner.github.io/ and
   http://jasmine.github.io/1.3/introduction.html
+* virtualenv - the npm version
+  https://www.npmjs.org/package/virtualenv
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
@@ -191,14 +193,9 @@ There are some configuration settings baked into grunt's run:
 Inteded Areas Of Development (aka TODO)
 =======================================
 
-* investigate nodeenv https://pypi.python.org/pypi/nodeenv/
-
-THEN
-
 * investigate fully external packages extending functionality
 * fix the menu
   * admin actions
-  * modify contents for service catalog
   * styling
 * cover off the OWASP top 10 (at a minimum) where possible/appropriate
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
