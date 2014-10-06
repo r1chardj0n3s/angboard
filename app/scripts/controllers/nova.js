@@ -73,7 +73,7 @@
     }
   }
 
-  app.controller('ServersCtrl', function ($scope, apiService, alertService, $log, $interval) {
+  app.controller('ServersCtrl', function ($scope, apiService, alertService, $log, $interval, $modal) {
     var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
@@ -121,6 +121,21 @@
       }
     });
 
+    var ModalCtrl = function ($scope, $modalInstance, data) {
+      $scope.data = data;
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+    };
+
+    $scope.showFault = function (server) {
+      $modal.open({
+        templateUrl: 'showFault.html',
+        controller: ModalCtrl,
+        resolve: {data: function () {return server; }}
+      });
+    };
+
     // somewhere to store the new server stuffs
     $scope.newServer = {};
     $scope.createServer = function () {
@@ -134,13 +149,13 @@
         function (data, status) {
           $scope.newServer = {};
           if (status === 202) {
-            alertService.add('info', 'Server added! ' + data);
-            // update the list
-            apiService.GET('nova', 'servers/detail', function (data) {
-              $scope.servers = data.servers;
+            $modal.open({
+              templateUrl: 'createResponse.html',
+              controller: ModalCtrl,
+              resolve: {data: function () {return data; }}
             });
           } else {
-            alertService.add('error', 'Server add failed! ');
+            alertService.add('error', 'Server add failed!');
           }
         },
         function (data) {
