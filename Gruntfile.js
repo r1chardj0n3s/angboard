@@ -11,6 +11,15 @@
 
   var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
+  var jslintConfig = {
+    browser: true,
+    predef: ['angular', 'document'],
+    indent: 2,
+    vars: true,
+    'continue': true,
+    plusplus: true
+  };
+
   module.exports = function (grunt) {
 
     // Load grunt tasks automatically
@@ -156,26 +165,14 @@
       // Be more strict about coding style
       jslint: {
         all: {
-          directives: {
-            browser: true,
-            predef: ['angular'],
-            indent: 2,
-            vars: true,
-            'continue': true
-          },
+          directives: jslintConfig,
           src: [
             'Gruntfile.js',
             '<%= yeoman.app %>/scripts/{,*/}*.js'
           ]
         },
         test: {
-          directives: {
-            browser: true,
-            predef: ['angular', 'document'],
-            indent: 2,
-            vars: true,
-            'continue': true
-          },
+          directives: jslintConfig,
           src: ['test/spec/{,*/}*.js']
         }
       },
