@@ -63,6 +63,9 @@
         // service name to service info (TODO: deal with dupes?)
         function populateServices() {
           self.services = {};
+          if (!self.access) {
+            return;
+          }
           angular.forEach(self.access.serviceCatalog, function (service) {
             self.services[service.name] = service;
           });

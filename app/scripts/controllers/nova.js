@@ -132,6 +132,7 @@
       $modal.open({
         templateUrl: 'showFault.html',
         controller: ModalCtrl,
+        size: 'lg',
         resolve: {data: function () {return server; }}
       });
     };

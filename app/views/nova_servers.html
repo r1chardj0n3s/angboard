@@ -13,7 +13,7 @@
       <tr ng-repeat="server in servers">
         <td>
           {{ server.name }}
-          <span ng-if="server.fault" class="fa fa-exclamation-triangle" ng-click="showFault(server)"></span>
+          <span ng-if="server.fault" class="fa fa-exclamation-triangle text-danger" ng-click="showFault(server)"></span>
         </td>
         <td>{{ server.id }}</td>
         <td>{{ flavorMap[server.flavor.id].name }}</td>
@@ -81,9 +81,9 @@
       <h3 class="modal-title">Server Created</h3>
     </div>
     <div class="modal-body">
-      Your server has been created. The root password is:
-      <pre class="code">{{response.server.adminPass}}</pre>
-      Write this down, you won't see it again.
+      <p>Your server has been created. The root password is:</p>
+      <p><code>{{data.server.adminPass}}</code></p>
+      <p>Write this down, you won't see it again.</p>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" ng-click="cancel()">Close</button>
