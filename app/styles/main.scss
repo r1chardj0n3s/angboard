@@ -45,3 +45,9 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
     font-size: 48px;
   }
 }
+
+.modal-body pre {
+  overflow: auto;
+  white-space: pre;
+  word-wrap: normal;
+}
