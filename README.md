@@ -11,32 +11,34 @@ To set up:
 
     git clone https://github.com/r1chardj0n3s/angboard
     cd angboard
-    mkvirtualenv angboard-env
-    source angboard-env/bin/activate
-    pip install -r requirements.txt
-    <install ruby / gem per your operating system>
-    <install node / npm per your operating system>
+    (install ruby / gem per your operating system)
+    gem install compass
+    (install node / npm per your operating system)
     sudo npm install -g grunt-cli bower
     npm install
     bower install
-    gem install compass
 
-And then in one shell:
+`npm install` installs stuff in the `packages.json` file and `bower install`
+installs things from the `bower.json` file.
 
-    source angboard/bin/activate
-    ./run <URL to keystone API>
-
-For example, given devstack on 10.0.0.1:
-
-    ./run http://10.0.0.1:5000/v2.0
+Note: Python from requirements.txt for Flask are installed in .node-
+virtualenv by the above.
 
 And use a separate shell to fire up the grunt server:
 
-    grunt serve
+    grunt serve --keystone-url=<URL to keystone>
+
+For example:
+
+    grunt serve --keystone-url=http://10.0.0.1:5000/v2.0
 
 This will open Chrome (or whatever) to view the site. Install the "live
 reload" browser extension / plugin and you'll see your changes LIVE when you
 make and save them to disk. Very premium.
+
+If you have an issue with the Flask proxy attempting to run on an already-
+used port, you may also specify `--proxy-port` to `grunt serve` to change to
+a different port.
 
 Keep an eye on the "grunt serve" window - it'll beep when you violate the
 Javascript style guide.
@@ -205,6 +207,7 @@ THEN
 * region selection
 * handle multiple endpoints per region
 * investigate https://github.com/davemo/jasmine-only
+* investigate https://github.com/chjj/term.js
 
 
 Security

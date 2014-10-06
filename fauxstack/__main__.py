@@ -8,7 +8,7 @@ from threading import Thread
 
 from flask import has_request_context, Flask, abort, Response, request
 
-from .proxy import proxy
+from proxy import proxy
 
 ALL_HTTP_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
@@ -71,11 +71,13 @@ def shutdown_server():   # pragma: no cover
     func()
 
 
-def setup_logging():    # pragma: no cover
+def setup_logging(filename):    # pragma: no cover
     log_format = '%(asctime)s:%(levelname)s:%(filename)s(%(lineno)d) ' \
         '%(message)s'
     log_level = logging.DEBUG
-    logging.basicConfig(format=log_format, level=log_level)
+    logging.basicConfig(format=log_format, level=log_level, filename=filename)
+    if filename:
+        print('Logging to %s' % filename)
 
 
 def foreground_runner(app, *args, **kwargs):    # pragma: no cover
@@ -112,7 +114,6 @@ def delay_response(delay):
 
 
 def main():  # pragma: no cover
-    setup_logging()
     parser = argparse.ArgumentParser(description='OpenStack Dashboard webapp')
     backend_target_group = parser.add_mutually_exclusive_group()
     parser.add_argument('proxy', metavar='HOST', type=str, nargs=1,
@@ -138,6 +139,9 @@ def main():  # pragma: no cover
     parser.add_argument(
         '--host', '-H', default="0.0.0.0",
         help='IP or hostname to serve on')
+    parser.add_argument(
+        '--log', '-l', default=None,
+        help='File to log messages to')
     parser.set_defaults(simulator=True)
     args = parser.parse_args()
 
@@ -156,6 +160,8 @@ def main():  # pragma: no cover
         from os import environ
         if 'WINGDB_ACTIVE' in environ:
             runner_kw["debug"] = False    
+
+    setup_logging(args.log)
 
     if args.proxy:
         logging.info("Using real backend")
