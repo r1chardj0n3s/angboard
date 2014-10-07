@@ -2,7 +2,6 @@
 import argparse
 import functools
 import logging
-import os
 import time
 from threading import Thread
 
@@ -91,12 +90,12 @@ def foreground_runner(app, *args, **kwargs):    # pragma: no cover
 
 def background_runner(app, *args, **kwargs):    # pragma: no cover
     kwargs["use_reloader"] = False
-    
+
     # snippet for debugging w/ wingIDE:
     if __debug__:
         from os import environ
         if 'WINGDB_ACTIVE' in environ:
-            kwargs["debug"] = False    
+            kwargs["debug"] = False
     else:
         kwargs["debug"] = True
     process = Thread(target=app.run, args=args, kwargs=kwargs,
@@ -159,7 +158,7 @@ def main():  # pragma: no cover
     if __debug__:
         from os import environ
         if 'WINGDB_ACTIVE' in environ:
-            runner_kw["debug"] = False    
+            runner_kw["debug"] = False
 
     setup_logging(args.log)
 
