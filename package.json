@@ -43,5 +43,8 @@
   "scripts": {
     "postinstall": "virtualenv-postinstall",
     "test": "grunt test"
+  },
+  "virtualenv": {
+    "flags": ["--python=python3.4"]
   }
 }
