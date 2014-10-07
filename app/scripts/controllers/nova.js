@@ -179,10 +179,6 @@
         function (data, status) {
           if (status === 204) {
             alertService.add('info', 'Server deleted! ');
-            // update the list
-            apiService.GET('nova', 'servers/detail', function (data) {
-              $scope.servers = data.servers;
-            });
           } else {
             alertService.add('error', 'Server delete failed! ');
           }
