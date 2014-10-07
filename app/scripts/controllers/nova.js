@@ -94,20 +94,21 @@
     });
 
     var refreshServers = function () {
-      var url;
-      if (angular.isDefined(self.lastFetch)) {
+      var url, update = angular.isDefined(self.lastFetch);
+      if (update) {
         url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
       } else {
         url = 'servers/detail';
       }
+      self.lastFetch = new Date();
+      $log.debug('refresh servers ', url);
       apiService.GET('nova', url, function (data) {
-        if (angular.isDefined(self.lastFetch)) {
+        if (update) {
           updateArray($scope.servers, data.servers);
         } else {
           // first fetch
           $scope.servers = data.servers;
         }
-        self.lastFetch = new Date();
       }, null, false);
     };
 

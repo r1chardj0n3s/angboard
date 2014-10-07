@@ -9,6 +9,10 @@
       templateUrl: 'views/keystone_login.html'
     });
 
+    $routeProvider.when('/keystone/details', {
+      templateUrl: 'views/keystone_details.html'
+    });
+
     $routeProvider.when('/keystone/logout', {
       resolve: {
         redirect: [
@@ -28,11 +32,17 @@
     var menu = {'title': 'Identity', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Login', 'action': '#/keystone/login',
       'show': function () {return !apiService.access; }});
+    menu.menus.push({'title': 'Details', 'action': '#/keystone/details',
+      'show': function () {return apiService.access; }});
     menu.menus.push({'title': 'Logout', 'action': '#/keystone/logout',
       'show': function () {return apiService.access; }});
     menuService.push(menu);
   });
 
+  app.controller('DetailsCtrl',
+    function ($scope, apiService) {
+      $scope.apiService = apiService;
+    });
 
   app.controller('LoginCtrl',
     function ($scope, $location, apiService, alertService, menuService) {

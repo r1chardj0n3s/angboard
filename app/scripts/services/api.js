@@ -86,9 +86,8 @@
         };
 
         // helper which displays a generic error or more specific one if we got one
-        function displayError(alertService, data) {
+        function displayError(alertService, data, message) {
           $log.error('Error Data:', data);
-          var message = 'An error has occurred (no message). Please try again.';
           try {
             if (data.hasOwnProperty('reason')) {
               $log.debug('displayError using data.reason');
@@ -98,6 +97,9 @@
               message = data.error.message;
             }
           } catch (e) {
+            message = undefined;
+          }
+          if (!angular.isDefined(message)) {
             message = 'An error has occurred (bad response). Please try again.';
           }
           alertService.add('warning', message);
@@ -132,7 +134,7 @@
               $log.warn('apiCall 401 response handler', response);
               // Authentication credentials (either username/password or
               // token) rejected by backend
-              displayError(alertService, response);
+              displayError(alertService, response, 'Authentication required.');
               self.clearAccess('got an API/proxy 401');
               $location.path('/keystone/login');
               return;
