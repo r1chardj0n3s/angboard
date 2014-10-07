@@ -9,7 +9,7 @@
             <dt>Container Name</dt>
             <dd>{{containerDetails.name}}</dd>
             <dt>Container Access</dt>
-            <dd>{{containerDetails.access}}</dd>
+            <dd ng-bind-html="containerDetails.access"></dd>
             <dt>Object Count</dt>
             <dd>{{containerDetails.count}}</dd>
             <dt>Size</dt>
@@ -21,7 +21,7 @@
         </div>
     </script>
 
-  <div class="navigation_wrapper">
+  <div class="content_wrapper pull-left">
     <div class="table_header">
       <h3>Containers</h3>
     </div>
@@ -33,13 +33,9 @@
       </thead>
       <tbody>
         <tr ng-repeat="container in containers">
-          <td>{{ container.name }}</td>
+          <td><a href="" ng-click="selectContainer(container.name)">{{ container.name }}</a></td>
           <td>
-            <div>
-              Object Count: {{container.count}}<br/>
-              Size: {{container.bytes | humanFileSize }}<br/>
-              Access: {{container.access}}
-            </div>
+            <div ng-bind-html="container.details"></div>
           </td>
           <td>
             <div>
@@ -58,38 +54,19 @@
         </tr>
       </tbody>
     </table>
-    <table class="table table-bordered table-hover table-striped" tr-ng-grid="" enable-filtering="false" items="containers" order-by="'name'">
-      <thead>
-          <th field-name="name" display-name="Name"></th>
-          <th>
-            <div class="tr-ng-title">
-              Details
-            </div>
-          </th>
-          <th>
-            <div class="tr-ng-title">
-              Actions
-            </div>
-          </th>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <div>
-              Object Count: {{gridItem.count}}<br/>	
-              Size: {{gridItem.size}}<br/>
-              Access: {{gridItem.access}}
-            </div>
-          </td>
-          <td>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-  <div class="content_wrapper">
+  <div class="content_wrapper pull-left">
     <div class="table_header">
       <h3>Objects</h3>
+      <table class="table table-bordered table-hover table-striped" st-table="objects">
+        <tbody>
+          <tr ng-repeat="object in objects">
+            <td>{{object.name}}</td>
+            <td>{{object.bytes | humanFileSize }}</td>
+            <td><button>Download</button><button>More</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
