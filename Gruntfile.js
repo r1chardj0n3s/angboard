@@ -446,7 +446,7 @@
       var env = virtualenv(packagePath);
       // stdio: 'inherit' let us see flask output in grunt
       var PIPE = {stdio: 'inherit'};
-      env.spawnPython(['-m', 'fauxstack', '-P', proxyPort, '-l', 'flask.log',
+      env.spawnPython(['run_fauxstack.py', '-P', proxyPort, '-l', 'flask.log',
         keystoneURL], PIPE);
     });
 
