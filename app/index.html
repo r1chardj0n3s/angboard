@@ -46,12 +46,11 @@
       </div>
     </header>
 
-    <div id="spinner" ng-show="apiService.busy">
+    <!-- show some busy stuff when the apiService is busy -->
+    <busy>
       <div id="matte"></div>
-      <div id="icon-sprite">
-        <i class="fa fa-spinner fa-spin"></i>
-      </div>
-    </div>
+      <div id="icon-sprite"><i class="fa fa-spinner fa-spin"></i></div>
+    </busy>
 
     <div class="container-fluid">
       <div class="row">
@@ -72,12 +71,6 @@
             <div ng-view></div>
           </div>
         </div>
-      </div>
-
-      <div class="row" ng-if="apiService.access">
-        <label for="show-credentials">Show Credentials</label>
-        <input id="show-credentials" type="checkbox" ng-model="showCredentials"><br/>
-        <pre ng-show="showCredentials" class="ng-hide">{{ apiService.access | json }}</pre>
       </div>
     </div>
 
@@ -122,6 +115,7 @@
         <script src="scripts/services/alert.js"></script>
         <script src="scripts/services/api.js"></script>
         <script src="scripts/filters/humanfilesize.js"></script>
+        <script src="scripts/directives/busy.js"></script>
         <!-- endbuild -->
 </body>
 </html>
