@@ -38,12 +38,13 @@
 
 
   app.controller('SwiftContainersCtrl', [
-    '$scope', 'apiService', 'alertService', '$modal', '$log',
-    function ($scope, apiService, alertService, $modal, $log) {
+    '$scope', 'apiService', 'alertService', '$modal', '$log', 'humanFileSizeFilter',
+    function ($scope, apiService, alertService, $modal, $log, humanFileSizeFilter) {
       $scope.$root.pageHeading = 'Containers';
       alertService.clearAlerts();
 
       $scope.apiService = apiService;
+      $scope.currentContainer = null;
 
       $scope.open = function (containerDetails) {
 
@@ -58,6 +59,35 @@
         });
       };
 
+      $scope.selectContainer = function(name) {
+        $scope.currentContainer = name;
+        apiService.GET(
+          'swift',
+          name,
+          function(data) {
+            $scope.objects = data;
+          }
+        );
+      };
+
+      $scope.setContainerDetails = function(container, url) {
+        var details;
+
+        if (container.isPublic) {
+          container.access = '<a href="' + url + '">Public</a>';
+        }
+        else {
+          container.access = 'Private';
+        }
+
+        details = 'Object Count: ' + container.count + '<br/>' +
+          'Size: ' + humanFileSizeFilter(container.bytes) + '<br/>' +
+          'Access: ' + container.access;
+
+        container.details = details;
+
+      }
+
       /*jslint unparam: true*/
       apiService.GET(
         'swift',
@@ -67,31 +97,33 @@
             i,
             container;
 
-          if (data) {
-            $log.info(data);
-          }
+          function setAccess(data, status, headers, config) {
+            // FIXME: This is a bit of a hack. Discuss with Richard
+            // to see if he has a better idea as to how pass the container
+            // into this function (i.e. not via the config object)
+            var i = config.data,
+              container,
+              details;
 
-          if (headers) {
-            $log.info(headers());
-          }
+            container = $scope.containers[i];
 
-          function logContainerHeaders(containerData, containerStatus, containerHeaders) {
-            if (containerHeaders) {
-              $log.debug(containerStatus);
-              $log.debug(containerHeaders());
-              $log.debug(containerData);
-            }
+            if (headers('x-container-read') === '.r:*,.rlistings') {
+              container.isPublic = true;
+              }
+
+            $scope.setContainerDetails(container, config.url);
           }
 
           for (i = 0; i < data.length; i++) {
             apiService.HEAD(
               'swift',
               data[i].name,
-              null,
-              logContainerHeaders
+              i,
+              setAccess
             );
             container = data[i];
-            container.access = access;
+            container.isPublic = false;
+            $scope.setContainerDetails(container, '');
           }
 
           $scope.containers = data;

@@ -115,13 +115,13 @@
           if (showSpinner) {
             self.busy += 1;
           }
-          return $http(config).success(function (response, status) {
+          return $http(config).success(function (response, status, headers) {
             if (showSpinner) {
               self.busy -= 1;
             }
             $log.debug('apiCall success', status, response);
             try {
-              onSuccess(response, status);
+              onSuccess(response, status, headers, config);
             } catch (e) {
               $log.error('Error handling response', e);
               displayError(alertService, response);
@@ -205,7 +205,8 @@
               'Accept': 'application/json'
             },
             timeout: httpTimeoutMs,
-            cache: false
+            cache: false,
+            data: data,
           }, onSuccess, onError, showSpinner);
         };
         /*jslint unparam: false*/
