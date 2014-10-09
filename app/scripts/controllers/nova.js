@@ -104,9 +104,9 @@
       }
       /*jslint unparam: true*/
       apiService.GET('nova', url, function (data, status, headers) {
-        $scope.lastFetch = new Date(headers('date'));
+        self.lastFetch = new Date(headers('date'));
         $log.debug('response date', headers('date'),
-          $scope.lastFetch.toISOString());
+          self.lastFetch.toISOString());
         if (update) {
           updateArray($scope.servers, data.servers);
         } else {
