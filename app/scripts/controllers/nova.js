@@ -97,12 +97,16 @@
       var url, update = angular.isDefined(self.lastFetch);
       if (update) {
         url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
+        $log.debug('refresh servers', url);
       } else {
         url = 'servers/detail';
+        $log.debug('fetch servers', url);
       }
-      self.lastFetch = new Date();
-      $log.debug('refresh servers ', url);
-      apiService.GET('nova', url, function (data) {
+      /*jslint unparam: true*/
+      apiService.GET('nova', url, function (data, status, headers) {
+        $scope.lastFetch = new Date(headers('date'));
+        $log.debug('response date', headers('date'),
+          $scope.lastFetch.toISOString());
         if (update) {
           updateArray($scope.servers, data.servers);
         } else {
@@ -110,6 +114,7 @@
           $scope.servers = data.servers;
         }
       }, null, false);
+      /*jslint unparam: false*/
     };
 
     var refreshPromise = $interval(refreshServers, 1000);

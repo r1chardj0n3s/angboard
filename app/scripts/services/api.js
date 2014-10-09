@@ -115,18 +115,18 @@
           if (showSpinner) {
             self.busy += 1;
           }
-          return $http(config).success(function (response, status) {
+          return $http(config).success(function (response, status, headers) {
             if (showSpinner) {
               self.busy -= 1;
             }
             $log.debug('apiCall success', status, response);
             try {
-              onSuccess(response, status);
+              onSuccess(response, status, headers);
             } catch (e) {
               $log.error('Error handling response', e);
               displayError(alertService, response);
             }
-          }).error(function (response, status) {
+          }).error(function (response, status, headers) {
             if (showSpinner) {
               self.busy -= 1;
             }
@@ -143,7 +143,7 @@
             $log.error('apiCall error', status, response);
             if (onError) {
               try {
-                onError(response, status);
+                onError(response, status, headers);
               } catch (e) {
                 $log.error('Error handling error', e);
                 displayError(alertService, response);
