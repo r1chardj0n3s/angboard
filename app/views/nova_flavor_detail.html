@@ -1,9 +1,18 @@
 <div class="modal-header">
-  <h3 class="modal-title">Flavor Details</h3>
+  <h3 class="modal-title">Flavor "{{data.name}}" Details</h3>
 </div>
 <div class="modal-body">
 
-<pre>{{data | json}}</pre>
+<dl class="dl-horizontal">
+  <dt>ID</dt><dd>{{data.id}}</dd>
+  <dt>RAM</dt><dd>{{data.ram}}</dd>
+  <dt>vCPUS</dt><dd>{{data.vcpus}}</dd>
+  <dt>Swap</dt><dd>{{data.swap}}</dd>
+  <dt>Disk</dt><dd>{{data.disk}}</dd>
+  <dt>Is Public?</dt><dd x-checkmark="data['os-flavor-access:is_public']"></dd>
+  <dt>Disabled?</dt><dd x-checkmark="data['OS-FLV-DISABLED:disabled']"></dd>
+  <dt>RXTX Factor</dt><dd>{{data.rxtx_factor}}</dd>
+</dl>
 
 </div>
 <div class="modal-footer">

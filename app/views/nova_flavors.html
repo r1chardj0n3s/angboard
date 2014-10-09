@@ -8,8 +8,9 @@
         <th>Disk</th>
         <th>VCPUs</th>
         <th>Ephemeral</th>
+        <th>Disabled?</th>
         <th>RXTX Factor</th>
-        <th>Is Public</th>
+        <th>Public?</th>
     </thead>
     <tbody>
         <tr ng-repeat="flavor in flavors">
@@ -24,9 +25,10 @@
             <td>{{ flavor.swap }}</td>
             <td>{{ flavor.disk }}</td>
             <td>{{ flavor.vcpus }}</td>
-            <td><span ng-class="{'fa fa-check': flavor['OS-FLV-EXT-DATA:ephemeral']}" /></td>
+            <td>{{ flavor['OS-FLV-EXT-DATA:ephemeral'] }}</td>
+            <td x-checkmark="flavor['OS-FLV-DISABLED:disabled']"></td>
             <td>{{ flavor.rxtx_factor }}</td>
-            <td><span ng-class="{'fa fa-check': flavor['os-flavor-access:is_public']}" /></td>
+            <td x-checkmark="flavor['os-flavor-access:is_public']"></td>
         </tr>
     </tbody>
   </table>
