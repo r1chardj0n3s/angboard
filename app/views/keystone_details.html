@@ -1,3 +1,4 @@
 <div data-ng-controller="DetailsCtrl">
+  <p><button ng-click="invalidateToken()" class="btn btn-danger">Invalidate Access Token</button></p>
   <pre class="code">{{ apiService.access | json }}</pre>
 </div>

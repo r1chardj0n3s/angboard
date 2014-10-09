@@ -70,24 +70,6 @@
         );
       };
 
-      $scope.setContainerDetails = function(container, url) {
-        var details;
-
-        if (container.isPublic) {
-          container.access = '<a href="' + url + '">Public</a>';
-        }
-        else {
-          container.access = 'Private';
-        }
-
-        details = 'Object Count: ' + container.count + '<br/>' +
-          'Size: ' + humanFileSizeFilter(container.bytes) + '<br/>' +
-          'Access: ' + container.access;
-
-        container.details = details;
-
-      }
-
       /*jslint unparam: true*/
       apiService.GET(
         'swift',
@@ -98,32 +80,24 @@
             container;
 
           function setAccess(data, status, headers, config) {
-            // FIXME: This is a bit of a hack. Discuss with Richard
-            // to see if he has a better idea as to how pass the container
-            // into this function (i.e. not via the config object)
-            var i = config.data,
-              container,
-              details;
-
-            container = $scope.containers[i];
+            // FIXME: This is a bit of a hack. It seems the only way to pass the container to this function
+            // is via the config object.
+            var container = config.data;
 
             if (headers('x-container-read') === '.r:*,.rlistings') {
               container.isPublic = true;
               }
-
-            $scope.setContainerDetails(container, config.url);
           }
 
           for (i = 0; i < data.length; i++) {
             apiService.HEAD(
               'swift',
               data[i].name,
-              i,
+              data[i],
               setAccess
             );
             container = data[i];
             container.isPublic = false;
-            $scope.setContainerDetails(container, '');
           }
 
           $scope.containers = data;

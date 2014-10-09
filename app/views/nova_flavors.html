@@ -14,7 +14,12 @@
     <tbody>
         <tr ng-repeat="flavor in flavors">
             <td>{{ flavor.id }}</td>
-            <td>{{ flavor.name }}</td>
+            <td>
+              <button class="btn btn-link" ng-click="flavorInfo(flavor)">
+                {{ flavor.name }}
+                <span class="fa fa-info-circle"></span>
+              </button>
+            </td>
             <td>{{ flavor.ram }}</td>
             <td>{{ flavor.swap }}</td>
             <td>{{ flavor.disk }}</td>

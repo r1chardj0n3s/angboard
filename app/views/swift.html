@@ -13,7 +13,7 @@
             <dt>Object Count</dt>
             <dd>{{containerDetails.count}}</dd>
             <dt>Size</dt>
-            <dd>{{containerDetails.size}}</dd>
+            <dd>{{containerDetails.bytes}}</dd>
           </dl>
         </div>
         <div class="modal-footer">
@@ -35,6 +35,11 @@
         <tr ng-repeat="container in containers">
           <td><a href="" ng-click="selectContainer(container.name)">{{ container.name }}</a></td>
           <td>
+            Object Count: {{container.count}}<br/>
+            Size: {{container.bytes | humanFileSize}}<br/>
+            <span ng-if="container.isPublic"><a href="/api/swift/{{container.name}}">Public</a></span>
+            <span ng-if="!container.isPublic">Private</span>
+
             <div ng-bind-html="container.details"></div>
           </td>
           <td>

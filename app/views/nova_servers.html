@@ -2,22 +2,32 @@
   <table class="table table-bordered table-hover table-striped" st-table="servers">
     <thead>
         <th>Name</th>
-        <th>ID</th>
         <th>Flavor</th>
         <th>Image</th>
         <th>Status</th>
         <th>Created</th>
-        <th>Updated</th>
+        <th>Status / Actions</th>
     </thead>
     <tbody>
       <tr ng-repeat="server in servers">
         <td>
-          {{ server.name }}
+          <button class="btn btn-link" ng-click="serverInfo(server)">{{ server.name }}
+            <span class="fa fa-info-circle"></span>
+          </button>
           <span ng-if="server.fault" class="fa fa-exclamation-triangle text-danger" ng-click="showFault(server)"></span>
         </td>
-        <td>{{ server.id }}</td>
-        <td>{{ flavorMap[server.flavor.id].name }}</td>
-        <td>{{ imageMap[server.image.id].name }}</td>
+        <td>
+          <button class="btn btn-link" ng-click="flavorInfo(server.flavor)">
+            {{ flavorMap[server.flavor.id].name }}
+            <span class="fa fa-info-circle"></span>
+          </button>
+        </td>
+        <td>
+          <button class="btn btn-link" ng-click="imageInfo(server.image)">
+            {{ imageMap[server.image.id].name }}
+            <span class="fa fa-info-circle"></span>
+          </button>
+        </td>
         <td>{{ server.created | date : mediumDate }}</td>
         <td>{{ server.updated | date : mediumDate }}</td>
         <td>

@@ -1,6 +1,14 @@
 (function () {
   'use strict';
 
+  var ModalCtrl = function ($scope, $modalInstance, data) {
+    $scope.data = data;
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+
   var app = angular.module('angboardApp');
 
 
@@ -26,23 +34,33 @@
   });
 
 
-  app.controller('ImagesCtrl', function ($scope, apiService, alertService) {
+  app.controller('ImagesCtrl', function ($scope, apiService, alertService, imageModal) {
     $scope.$root.pageHeading = 'Images';
     alertService.clearAlerts();
 
     apiService.GET('nova', 'images/detail', function (data) {
       $scope.images = data.images;
     });
+
+    $scope.imageInfo = function (image) {
+      alertService.clearAlerts();
+      imageModal.open(image.id);
+    };
   });
 
 
-  app.controller('FlavorsCtrl', function ($scope, apiService, alertService) {
+  app.controller('FlavorsCtrl', function ($scope, apiService, alertService, flavorModal) {
     $scope.$root.pageHeading = 'Flavors';
     alertService.clearAlerts();
 
     apiService.GET('nova', 'flavors/detail', function (data) {
       $scope.flavors = data.flavors;
     });
+
+    $scope.flavorInfo = function (flavor) {
+      alertService.clearAlerts();
+      flavorModal.open(flavor.id);
+    };
   });
 
 
@@ -73,7 +91,8 @@
     }
   }
 
-  app.controller('ServersCtrl', function ($scope, apiService, alertService, $log, $interval, $modal) {
+  app.controller('ServersCtrl', function ($scope, apiService, alertService,
+      $log, $interval, $modal, serverModal, imageModal, flavorModal) {
     var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
@@ -97,12 +116,16 @@
       var url, update = angular.isDefined(self.lastFetch);
       if (update) {
         url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
+        $log.debug('refresh servers', url);
       } else {
         url = 'servers/detail';
+        $log.debug('fetch servers', url);
       }
-      self.lastFetch = new Date();
-      $log.debug('refresh servers ', url);
-      apiService.GET('nova', url, function (data) {
+      /*jslint unparam: true*/
+      apiService.GET('nova', url, function (data, status, headers) {
+        self.lastFetch = new Date(headers('date'));
+        $log.debug('response date', headers('date'),
+          self.lastFetch.toISOString());
         if (update) {
           updateArray($scope.servers, data.servers);
         } else {
@@ -110,6 +133,7 @@
           $scope.servers = data.servers;
         }
       }, null, false);
+      /*jslint unparam: false*/
     };
 
     var refreshPromise = $interval(refreshServers, 1000);
@@ -122,12 +146,6 @@
       }
     });
 
-    var ModalCtrl = function ($scope, $modalInstance, data) {
-      $scope.data = data;
-      $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-      };
-    };
 
     $scope.showFault = function (server) {
       $modal.open({
@@ -188,6 +206,72 @@
         }
       );
       /*jslint unparam: false*/
+    };
+
+    $scope.serverInfo = function (server) {
+      $log.debug('fetch server info for', server);
+      alertService.clearAlerts();
+      serverModal.open(server.id);
+    };
+
+    $scope.imageInfo = function (image) {
+      $log.debug('fetch image info for', image);
+      alertService.clearAlerts();
+      imageModal.open(image.id);
+    };
+
+    $scope.flavorInfo = function (flavor) {
+      $log.debug('fetch flavor info for', flavor);
+      alertService.clearAlerts();
+      flavorModal.open(flavor.id);
+    };
+  });
+
+
+  app.service('serverModal', function (apiService, $modal) {
+    this.open = function (serverId) {
+      /*jslint unparam: true*/
+      apiService.GET('nova', 'servers/' + serverId,
+        function (data) {
+          $modal.open({
+            templateUrl: 'views/nova_server_detail.html',
+            controller: ModalCtrl,
+            size: 'lg',
+            resolve: {data: function () {return data.server; }}
+          });
+        });
+    };
+  });
+
+
+  app.service('imageModal', function (apiService, $modal) {
+    this.open = function (imageId) {
+      /*jslint unparam: true*/
+      apiService.GET('nova', 'images/' + imageId,
+        function (data) {
+          $modal.open({
+            templateUrl: 'views/nova_image_detail.html',
+            controller: ModalCtrl,
+            size: 'lg',
+            resolve: {data: function () {return data.image; }}
+          });
+        });
+    };
+  });
+
+
+  app.service('flavorModal', function (apiService, $modal) {
+    this.open = function (flavorId) {
+      /*jslint unparam: true*/
+      apiService.GET('nova', 'flavors/' + flavorId,
+        function (data) {
+          $modal.open({
+            templateUrl: 'views/nova_flavor_detail.html',
+            controller: ModalCtrl,
+            size: 'lg',
+            resolve: {data: function () {return data.flavor; }}
+          });
+        });
     };
   });
 }());
