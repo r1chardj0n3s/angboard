@@ -4,14 +4,17 @@
       <tr>
         <th>Image</th>
         <th>Size</th>
-        <th>ID</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="image in images">
-        <td>{{ image.name }}</td>
+        <td>
+          <button class="btn btn-link" ng-click="imageInfo(image)">
+            {{ image.name }}
+            <span class="fa fa-info-circle"></span>
+          </button>
+        </td>
         <td>{{ image['OS-EXT-IMG-SIZE:size'] | humanFileSize }}</td>
-        <td>{{ image.id }}</td>
       </tr>
     </tbody>
   </table>
