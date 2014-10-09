@@ -42,12 +42,14 @@
   app.controller('DetailsCtrl',
     function ($scope, apiService) {
       $scope.apiService = apiService;
+      $scope.invalidateToken = function () {
+        apiService.access.token.id = 'invalid';
+      };
     });
 
   app.controller('LoginCtrl',
     function ($scope, $location, apiService, alertService, menuService) {
       $scope.$root.pageHeading = 'Login';
-      alertService.clearAlerts();
       menuService.visible = false;
 
       $scope.auth = {
