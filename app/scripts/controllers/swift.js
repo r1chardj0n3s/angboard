@@ -37,8 +37,7 @@
   };
 
 
-  app.controller('SwiftContainersCtrl', [
-    '$scope', 'apiService', 'alertService', '$modal', '$log', 'humanFileSizeFilter',
+  app.controller('SwiftContainersCtrl',
     function ($scope, apiService, alertService, $modal, $log, humanFileSizeFilter) {
       $scope.$root.pageHeading = 'Containers';
       alertService.clearAlerts();
@@ -105,5 +104,5 @@
       );
       /*jslint unparam: false*/
     }
-  ]);
+  );
 }());
