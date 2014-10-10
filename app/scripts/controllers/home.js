@@ -18,21 +18,14 @@
 
 
   // Login Controller
-  app.controller('HomeCtrl', function ($scope, apiService, alertService) {
+  app.controller('HomeCtrl', function ($scope, apiService) {
     $scope.$root.pageHeading = 'Home';
-    alertService.clearAlerts();
-
-    $scope.apiService = apiService;
-
-    $scope.fetchLimits = function () {
-      alertService.clearAlerts();
-      apiService.GET(
-        'nova',
-        'limits',
-        function (data) {
-          $scope.novaLimits = data;
-        }
-      );
-    };
+    apiService.GET(
+      'nova',
+      'limits',
+      function (data) {
+        $scope.limits = data.limits.absolute;
+      }
+    );
   });
 }());
