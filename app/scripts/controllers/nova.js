@@ -230,7 +230,6 @@
 
   app.service('serverModal', function (apiService, $modal) {
     this.open = function (serverId) {
-      /*jslint unparam: true*/
       apiService.GET('nova', 'servers/' + serverId,
         function (data) {
           $modal.open({
@@ -246,7 +245,6 @@
 
   app.service('imageModal', function (apiService, $modal) {
     this.open = function (imageId) {
-      /*jslint unparam: true*/
       apiService.GET('nova', 'images/' + imageId,
         function (data) {
           $modal.open({
@@ -262,7 +260,6 @@
 
   app.service('flavorModal', function (apiService, $modal) {
     this.open = function (flavorId) {
-      /*jslint unparam: true*/
       apiService.GET('nova', 'flavors/' + flavorId,
         function (data) {
           $modal.open({
