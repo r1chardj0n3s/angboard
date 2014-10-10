@@ -37,13 +37,13 @@
   };
 
 
-  app.controller('SwiftContainersCtrl', [
-    '$scope', 'apiService', 'alertService', '$modal', '$log',
-    function ($scope, apiService, alertService, $modal, $log) {
+  app.controller('SwiftContainersCtrl',
+    function ($scope, apiService, alertService, $modal, $log, humanFileSizeFilter) {
       $scope.$root.pageHeading = 'Containers';
       alertService.clearAlerts();
 
       $scope.apiService = apiService;
+      $scope.currentContainer = null;
 
       $scope.open = function (containerDetails) {
 
@@ -58,6 +58,17 @@
         });
       };
 
+      $scope.selectContainer = function(name) {
+        $scope.currentContainer = name;
+        apiService.GET(
+          'swift',
+          name,
+          function(data) {
+            $scope.objects = data;
+          }
+        );
+      };
+
       /*jslint unparam: true*/
       apiService.GET(
         'swift',
@@ -67,31 +78,25 @@
             i,
             container;
 
-          if (data) {
-            $log.info(data);
-          }
+          function setAccess(data, status, headers, config) {
+            // FIXME: This is a bit of a hack. It seems the only way to pass the container to this function
+            // is via the config object.
+            var container = config.data;
 
-          if (headers) {
-            $log.info(headers());
-          }
-
-          function logContainerHeaders(containerData, containerStatus, containerHeaders) {
-            if (containerHeaders) {
-              $log.debug(containerStatus);
-              $log.debug(containerHeaders());
-              $log.debug(containerData);
-            }
+            if (headers('x-container-read') === '.r:*,.rlistings') {
+              container.isPublic = true;
+              }
           }
 
           for (i = 0; i < data.length; i++) {
             apiService.HEAD(
               'swift',
               data[i].name,
-              null,
-              logContainerHeaders
+              data[i],
+              setAccess
             );
             container = data[i];
-            container.access = access;
+            container.isPublic = false;
           }
 
           $scope.containers = data;
@@ -99,5 +104,5 @@
       );
       /*jslint unparam: false*/
     }
-  ]);
+  );
 }());

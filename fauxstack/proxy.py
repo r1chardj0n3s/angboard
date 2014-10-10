@@ -65,9 +65,12 @@ def proxy_request(service, region, file):
         upstream = requests.get(url, headers=request_headers)
     elif request.method == 'DELETE':
         upstream = requests.delete(url, headers=request_headers)
+    elif request.method == 'HEAD':
+        upstream = requests.head(url, headers=request_headers)
+    elif request.method == 'POST':
+        upstream = requests.post(url, data=request_data, headers=request_headers)
     else:
-        upstream = requests.post(url, data=request_data,
-                                 headers=request_headers)
+        raise ValueError('Unhandled request.method (%s)' % request.method)
 
     # Clean up response headers for forwarding
     response_headers = Headers()

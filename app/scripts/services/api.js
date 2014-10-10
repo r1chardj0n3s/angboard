@@ -121,7 +121,7 @@
             }
             $log.debug('apiCall success', status, response);
             try {
-              onSuccess(response, status, headers);
+              onSuccess(response, status, headers, config);
             } catch (e) {
               $log.error('Error handling response', e);
               displayError(alertService, response);
@@ -205,7 +205,8 @@
               'Accept': 'application/json'
             },
             timeout: httpTimeoutMs,
-            cache: false
+            cache: false,
+            data: data,
           }, onSuccess, onError, showSpinner);
         };
         /*jslint unparam: false*/
