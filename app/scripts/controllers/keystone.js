@@ -67,7 +67,6 @@
           'tokens',
           {'auth': $scope.auth},
           function (data, status) {
-            alertService.add('info', 'Hello:' + angular.toJson(data));
             if (status === 200) {
               apiService.setAccess(data.access);
               $location.path('/home');
