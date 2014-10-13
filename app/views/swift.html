@@ -67,8 +67,10 @@
         <tbody>
           <tr ng-repeat="object in objects">
             <td>{{object.name}}</td>
-            <td>{{object.bytes | humanFileSize }}</td>
-            <td><button>Download</button><button>More</button></td>
+            <td ng-if="object.type==='object'">{{object.bytes | humanFileSize }}</td>
+            <td ng-if="object.type==='pseudo folder'">{{object.type }}</td>
+            <td ng-if="object.type==='object'"><button>Download</button><button>More</button></td>
+            <td ng-if="object.type==='pseudo folder'"><button>Delete Object</button></td>
           </tr>
         </tbody>
       </table>

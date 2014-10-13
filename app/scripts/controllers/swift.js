@@ -38,7 +38,7 @@
 
 
   app.controller('SwiftContainersCtrl',
-    function ($scope, apiService, alertService, $modal, $log, humanFileSizeFilter) {
+    function ($scope, apiService, alertService, $modal, $log) {
       $scope.$root.pageHeading = 'Containers';
       alertService.clearAlerts();
 
@@ -58,13 +58,43 @@
         });
       };
 
-      $scope.selectContainer = function(name) {
+      $scope.selectContainer = function (name) {
         $scope.currentContainer = name;
         apiService.GET(
           'swift',
-          name,
-          function(data) {
-            $scope.objects = data;
+          name + '?delimiter=/',
+          function (data) {
+            var i = 0,
+              objects = [];
+
+            $log.info(data);
+
+            // Loop through listing looking for subfolders
+            for (i = 0; i < data.length; i++) {
+              if (data[i].hasOwnProperty('subdir')) {
+                objects.push(
+                  {
+                    'name': data[i].subdir,
+                    'type':'pseudo folder'
+                  }
+                );
+              }
+            }
+
+            // Add the objects after the subfolders
+            for (i = 0; i < data.length; i++) {
+              if (!data[i].hasOwnProperty('subdir')) {
+                objects.push(
+                  {
+                    'name': data[i].name,
+                    'bytes':data[i].bytes,
+                    'type':'object'
+                  }
+                );
+              }
+            }
+
+            $scope.objects = objects;
           }
         );
       };
@@ -73,19 +103,18 @@
       apiService.GET(
         'swift',
         '',
-        function (data, status, headers) {
-          var access = 'Private',  // FIXME
-            i,
+        function (data) {
+          var i,
             container;
 
           function setAccess(data, status, headers, config) {
             // FIXME: This is a bit of a hack. It seems the only way to pass the container to this function
             // is via the config object.
-            var container = config.data;
+            var object = config.data;
 
             if (headers('x-container-read') === '.r:*,.rlistings') {
-              container.isPublic = true;
-              }
+              object.isPublic = true;
+            }
           }
 
           for (i = 0; i < data.length; i++) {
@@ -104,5 +133,5 @@
       );
       /*jslint unparam: false*/
     }
-  );
+    );
 }());
