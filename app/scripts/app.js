@@ -2,7 +2,7 @@
   'use strict';
 
   var app = angular.module('angboardApp', ['ui.bootstrap', 'ngRoute', 'smart-table',
-    'LocalStorageModule', 'ngSanitize']);
+    'LocalStorageModule']);
 
   app.config(function ($routeProvider) {
     // set up the default route
