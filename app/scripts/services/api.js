@@ -206,7 +206,7 @@
             },
             timeout: httpTimeoutMs,
             cache: false,
-            data: data,
+            data: data
           }, onSuccess, onError, showSpinner);
         };
         /*jslint unparam: false*/
