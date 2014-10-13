@@ -69,7 +69,7 @@
       $scope.images = data.images;
     });
 
-    $scope.imageInfo = function (image) {
+    $scope.imageDetail = function (image) {
       alertService.clearAlerts();
       imageModal.open(image.id);
     };
@@ -84,7 +84,7 @@
       $scope.flavors = data.flavors;
     });
 
-    $scope.flavorInfo = function (flavor) {
+    $scope.flavorDetail = function (flavor) {
       alertService.clearAlerts();
       flavorModal.open(flavor.id);
     };
@@ -235,24 +235,47 @@
       /*jslint unparam: false*/
     };
 
-    $scope.serverInfo = function (server) {
+    $scope.serverDetail = function (server) {
       $log.debug('fetch server info for', server);
       alertService.clearAlerts();
       serverModal.open(server.id);
     };
 
-    $scope.imageInfo = function (image) {
+    $scope.imageDetail = function (image) {
       $log.debug('fetch image info for', image);
       alertService.clearAlerts();
       imageModal.open(image.id);
     };
 
-    $scope.flavorInfo = function (flavor) {
+    $scope.flavorDetail = function (flavor) {
       $log.debug('fetch flavor info for', flavor);
       alertService.clearAlerts();
       flavorModal.open(flavor.id);
     };
+
   });
+
+
+  var ServerModalCtrl = function ($scope, $modalInstance, data, networkModal, apiService, $log) {
+    $scope.data = data;
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.networkDetail = function (label) {
+      $modalInstance.dismiss('cancel');
+      $log.debug('FIND network detail for', label);
+      apiService.GET('nova', 'os-networks',
+        function (data) {
+          var i;
+          for (i = 0; i < data.networks.length; i++) {
+            if (data.networks[i].label === label) {
+              networkModal.open(data.networks[i]);
+            }
+          }
+        });
+    };
+  };
 
 
   app.service('serverModal', function (apiService, $modal) {
@@ -261,7 +284,7 @@
         function (data) {
           $modal.open({
             templateUrl: 'views/nova_server_detail.html',
-            controller: ModalCtrl,
+            controller: ServerModalCtrl,
             size: 'lg',
             resolve: {data: function () {return data.server; }}
           });
@@ -281,7 +304,7 @@
     $scope.networkDetail = function (network) {
       $log.debug('fetch network info for', network);
       alertService.clearAlerts();
-      networkModal.open(network.id);
+      networkModal.open(network);
     };
   });
 
@@ -316,17 +339,14 @@
   });
 
 
-  app.service('networkModal', function (apiService, $modal) {
-    this.open = function (networkId) {
-      apiService.GET('nova', 'os-networks/' + networkId,
-        function (data) {
-          $modal.open({
-            templateUrl: 'views/nova_network_detail.html',
-            controller: ModalCtrl,
-            size: 'lg',
-            resolve: {data: function () {return data.network; }}
-          });
-        });
+  app.service('networkModal', function ($modal) {
+    this.open = function (network) {
+      $modal.open({
+        templateUrl: 'views/nova_network_detail.html',
+        controller: ModalCtrl,
+        size: 'lg',
+        resolve: {data: function () {return network; }}
+      });
     };
   });
 }());

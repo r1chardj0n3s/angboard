@@ -10,6 +10,18 @@
   <dt>IPv6</dt><dd>{{data.accessIPv6}}</dd>
   <dt>Created</dt><dd>{{data.created}}</dd>
   <dt>Updated</dt><dd>{{data.updated}}</dd>
+  <dt>Network</dt>
+  <dd>
+    <ol>
+      <li ng-repeat="(label, addrs) in data.addresses">
+        <button class="btn btn-link" ng-click="networkDetail(label)">
+          {{ label }}
+          <span class="fa fa-info-circle"></span>
+        </button>
+        <span ng-repeat="addr in addrs">{{addr.addr}}</span>
+      </li>
+    </ol>
+  </dd>
   <dt>TODO</dt><dd>COMPLETE ME</dd>
 </dl>
 

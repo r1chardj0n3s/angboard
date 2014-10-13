@@ -11,19 +11,19 @@
     <tbody>
       <tr ng-repeat="server in servers">
         <td>
-          <button class="btn btn-link" ng-click="serverInfo(server)">{{ server.name }}
+          <button class="btn btn-link" ng-click="serverDetail(server)">{{ server.name }}
             <span class="fa fa-info-circle"></span>
           </button>
           <span ng-if="server.fault" class="fa fa-exclamation-triangle text-danger" ng-click="showFault(server)"></span>
         </td>
         <td>
-          <button class="btn btn-link" ng-click="flavorInfo(server.flavor)">
+          <button class="btn btn-link" ng-click="flavorDetail(server.flavor)">
             {{ flavorMap[server.flavor.id].name }}
             <span class="fa fa-info-circle"></span>
           </button>
         </td>
         <td>
-          <button class="btn btn-link" ng-click="imageInfo(server.image)">
+          <button class="btn btn-link" ng-click="imageDetail(server.image)">
             {{ imageMap[server.image.id].name }}
             <span class="fa fa-info-circle"></span>
           </button>
