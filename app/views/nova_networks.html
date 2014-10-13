@@ -1,0 +1,30 @@
+<div data-ng-controller="NetworksCtrl">
+  <table class="table table-bordered table-hover table-striped" st-table="networks">
+    <thead>
+      <tr>
+        <th>Label</th>
+        <th>Gateway</th>
+        <th>Broadcast</th>
+        <th>Host</th>
+        <th>Bridge</th>
+        <th>DHCP?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="network in networks">
+        <td>
+          <button class="btn btn-link" ng-click="networkDetail(network)">
+            {{ network.label }}
+            <span class="fa fa-info-circle"></span>
+          </button>
+        </td>
+        <td>{{ network.gateway }}</td>
+        <td>{{ network.broadcast }}</td>
+        <td>{{ network.host }}</td>
+        <td>{{ network.bridge }} ({{network.bridge_interface}})</td>
+        <td x-checkmark="network.enable_dhcp">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

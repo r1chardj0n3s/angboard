@@ -22,14 +22,41 @@
     $routeProvider.when('/nova/servers', {
       templateUrl: 'views/nova_servers.html'
     });
+    $routeProvider.when('/nova/networks', {
+      templateUrl: 'views/nova_networks.html'
+    });
   });
 
 
-  app.run(function (menuService) {
+  app.value('novaExtensions', {});
+
+
+  app.run(function (menuService, apiService, novaExtensions) {
+    // fetch the extensions
+    apiService.GET('nova', 'extensions', function (data) {
+      var i, extension, prop;
+      for (prop in novaExtensions) {
+        if (novaExtensions.hasOwnProperty(prop)) {
+          delete novaExtensions[prop];
+        }
+      }
+      for (i = 0; i < data.extensions.length; i++) {
+        extension = data.extensions[i];
+        novaExtensions[extension.alias] = extension;
+      }
+    });
+
     var menu = {'title': 'Compute', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
     menu.menus.push({'title': 'Flavors', 'action': '#/nova/flavors'});
     menu.menus.push({'title': 'Servers', 'action': '#/nova/servers'});
+    menu.menus.push({
+      'title': 'Networks',
+      'action': '#/nova/networks',
+      'show': function () {
+        return novaExtensions.hasOwnProperty('os-networks');
+      }
+    });
     menuService.push(menu);
   });
 
@@ -243,6 +270,22 @@
   });
 
 
+  app.controller('NetworksCtrl', function ($log, $scope, apiService, alertService, networkModal, $modal) {
+    $scope.$root.pageHeading = 'Networks';
+    alertService.clearAlerts();
+
+    apiService.GET('nova', 'os-networks', function (data) {
+      $scope.networks = data.networks;
+    });
+
+    $scope.networkDetail = function (network) {
+      $log.debug('fetch network info for', network);
+      alertService.clearAlerts();
+      networkModal.open(network.id);
+    };
+  });
+
+
   app.service('imageModal', function (apiService, $modal) {
     this.open = function (imageId) {
       apiService.GET('nova', 'images/' + imageId,
@@ -267,6 +310,21 @@
             controller: ModalCtrl,
             size: 'lg',
             resolve: {data: function () {return data.flavor; }}
+          });
+        });
+    };
+  });
+
+
+  app.service('networkModal', function (apiService, $modal) {
+    this.open = function (networkId) {
+      apiService.GET('nova', 'os-networks/' + networkId,
+        function (data) {
+          $modal.open({
+            templateUrl: 'views/nova_network_detail.html',
+            controller: ModalCtrl,
+            size: 'lg',
+            resolve: {data: function () {return data.network; }}
           });
         });
     };

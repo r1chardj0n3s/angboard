@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h3 class="modal-title">Network "{{data.label}}" Detail</h3>
+</div>
+<div class="modal-body">
+  <dl class="dl-horizontal">
+    <dt>label</dt><dd>{{data.label}}</dd>
+    <dt>bridge</dt><dd>{{data.bridge}}</dd>
+    <dt>bridge_interface</dt><dd>{{data.bridge_interface}}</dd>
+    <dt>gateway</dt><dd>{{data.gateway}}</dd>
+    <dt>gateway_v6</dt><dd>{{data.gateway_v6}}</dd>
+    <dt>broadcast</dt><dd>{{data.broadcast}}</dd>
+    <!--
+    TODO figure out what to do with this
+    <dt>cidr</dt><dd>{{data.cidr}}</dd>
+    <dt>cidr_v6</dt><dd>{{data.cidr_v6}}</dd>
+    -->
+    <dt>DHCP Enabled?</dt><dd x-checkmark="data.enable_dhcp"></dd>
+    <dt>DHCP Server</dt><dd>{{data.dhcp_server}}</dd>
+    <dt>DHCP Start</dt><dd>{{data.dhcp_start}}</dd>
+    <dt>dns1</dt><dd>{{data.dns1}}</dd>
+    <dt>dns2</dt><dd>{{data.dns2}}</dd>
+    <dt>host</dt><dd>{{data.host}}</dd>
+    <dt>injected</dt><dd x-checkmark="data.injected"></dd>
+    <dt>mtu</dt><dd>{{data.mtu}}</dd>
+    <dt>multi_host</dt><dd x-checkmark="data.multi_host"></dd>
+    <dt>netmask</dt><dd>{{data.netmask}}</dd>
+    <dt>netmask_v6</dt><dd>{{data.netmask_v6}}</dd>
+    <dt>priority</dt><dd>{{data.priority}}</dd>
+    <dt>project_id</dt><dd>{{data.project_id}}</dd>
+    <dt>rxtx_base</dt><dd>{{data.rxtx_base}}</dd>
+    <dt>share_address</dt><dd x-checkmark="data.share_address"></dd>
+    <dt>vlan</dt><dd>{{data.vlan}}</dd>
+    <dt>vpn_private_address</dt><dd>{{data.vpn_private_address}}</dd>
+    <dt>vpn_public_address</dt><dd>{{data.vpn_public_address}}</dd>
+    <dt>vpn_public_port</dt><dd>{{data.vpn_public_port}}</dd>
+    <dt>id</dt><dd>{{data.id}}</dd>
+    <dt>created_at</dt><dd>{{data.created_at}}</dd>
+    <dt>updated_at</dt><dd>{{data.updated_at}}</dd>
+    <dt>deleted</dt><dd x-checkmark="data.deleted"></dd>
+    <dt>deleted_at</dt><dd>{{data.deleted_at}}</dd>
+  </dl>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-warning" ng-click="cancel()">Close</button>
+</div>
