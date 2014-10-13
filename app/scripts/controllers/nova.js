@@ -270,7 +270,7 @@
   });
 
 
-  app.controller('NetworksCtrl', function ($log, $scope, apiService, alertService, networkModal, $modal) {
+  app.controller('NetworksCtrl', function ($log, $scope, apiService, alertService, networkModal) {
     $scope.$root.pageHeading = 'Networks';
     alertService.clearAlerts();
 
