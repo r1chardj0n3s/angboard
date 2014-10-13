@@ -38,7 +38,7 @@
 
 
   app.controller('SwiftContainersCtrl',
-    function ($scope, apiService, alertService, $modal, $log) {
+    function ($scope, apiService, alertService, $modal) {
       $scope.$root.pageHeading = 'Containers';
       alertService.clearAlerts();
 
@@ -60,41 +60,45 @@
 
       $scope.selectContainer = function (name) {
         $scope.currentContainer = name;
+
+        function SwiftObject(object) {
+          var isFolder = object.hasOwnProperty('subdir');
+
+          if (isFolder) {
+            this.name = object.subdir;
+          } else {
+            this.name = object.name;
+            this.bytes = object.bytes;
+          }
+
+          this.isFolder = isFolder;
+
+        }
         apiService.GET(
           'swift',
           name + '?delimiter=/',
           function (data) {
             var i = 0,
-              objects = [];
+              object,
+              folders = [],
+              files = [];
 
-            $log.info(data);
-
-            // Loop through listing looking for subfolders
+            // To mimic horizon we want to return a list of object with the pseudo-folders
+            // first followed by the files.
+            // First we need to classify the objects returned by swift as either folders or
+            // files.
             for (i = 0; i < data.length; i++) {
-              if (data[i].hasOwnProperty('subdir')) {
-                objects.push(
-                  {
-                    'name': data[i].subdir,
-                    'type':'pseudo folder'
-                  }
-                );
+              object = new SwiftObject(data[i]);
+
+              if (object.isFolder) {
+                folders.push(object);
+              } else {
+                files.push(object);
               }
             }
 
-            // Add the objects after the subfolders
-            for (i = 0; i < data.length; i++) {
-              if (!data[i].hasOwnProperty('subdir')) {
-                objects.push(
-                  {
-                    'name': data[i].name,
-                    'bytes':data[i].bytes,
-                    'type':'object'
-                  }
-                );
-              }
-            }
-
-            $scope.objects = objects;
+            // Add the files after the subfolders
+            $scope.objects = folders.concat(files);
           }
         );
       };

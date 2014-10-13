@@ -66,11 +66,12 @@
       <table class="table table-bordered table-hover table-striped" st-table="objects">
         <tbody>
           <tr ng-repeat="object in objects">
-            <td>{{object.name}}</td>
-            <td ng-if="object.type==='object'">{{object.bytes | humanFileSize }}</td>
-            <td ng-if="object.type==='pseudo folder'">{{object.type }}</td>
-            <td ng-if="object.type==='object'"><button>Download</button><button>More</button></td>
-            <td ng-if="object.type==='pseudo folder'"><button>Delete Object</button></td>
+            <td ng-if="object.isFolder"><a href="#">{{object.name}}</a></td>
+            <td ng-if="!object.isFolder">{{object.name}}</td>
+            <td ng-if="!object.isFolder">{{object.bytes | humanFileSize }}</td>
+            <td ng-if="object.isFolder">{{object.type }}</td>
+            <td ng-if="!object.isFolder"><button>Download</button><button>More</button></td>
+            <td ng-if="object.isFolder"><button>Delete Object</button></td>
           </tr>
         </tbody>
       </table>
