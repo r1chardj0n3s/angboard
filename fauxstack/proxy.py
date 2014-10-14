@@ -16,10 +16,10 @@ user_mappings = {}
 
 
 @proxy.route('/api/<service>/<region>/',
-             methods=["GET", "POST", "HEAD"],
-             defaults={'file':None})
+             methods=["GET", "POST", "HEAD", "PUT"],
+             defaults={'file': None})
 @proxy.route('/api/<service>/<region>/<path:file>',
-             methods=["GET", "POST", "DELETE"])
+             methods=["GET", "POST", "DELETE", "PUT"])
 def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
@@ -35,7 +35,7 @@ def proxy_request(service, region, file):
     else:
         path = file
 
-    if request.method == "POST":
+    if request.method in ("POST", "PUT"):
         request_data = request.data
         request_headers["Content-Type"] = 'application/json'
     else:
@@ -58,7 +58,7 @@ def proxy_request(service, region, file):
         else:
             url = mapped
 
-    log.info('ATTEMPTING to %s\n\tURL %s\n\tWITH headers=%s and data=%s',
+    log.info('ATTEMPTING to %s\n\tURL %s\n\tWITH headers=%s\n\tDATA=%s',
              request.method, url, request_headers, request_data)
 
     if request.method == 'GET':
@@ -68,7 +68,11 @@ def proxy_request(service, region, file):
     elif request.method == 'HEAD':
         upstream = requests.head(url, headers=request_headers)
     elif request.method == 'POST':
-        upstream = requests.post(url, data=request_data, headers=request_headers)
+        upstream = requests.post(url, data=request_data,
+            headers=request_headers)
+    elif request.method == 'PUT':
+        upstream = requests.put(url, data=request_data,
+            headers=request_headers)
     else:
         raise ValueError('Unhandled request.method (%s)' % request.method)
 

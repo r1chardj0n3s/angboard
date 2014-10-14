@@ -163,7 +163,8 @@
       /*jslint unparam: false*/
     };
 
-    var refreshPromise = $interval(refreshServers, 1000);
+    var refreshPromise = $interval(refreshServers, 2000);
+    refreshServers();
 
     // Cancel interval on page changes
     $scope.$on('$destroy', function () {
@@ -186,75 +187,99 @@
     // somewhere to store the new server stuffs
     $scope.newServer = {};
     $scope.createServer = function () {
-      $log.debug('creating a server with', $scope.newServer);
       alertService.clearAlerts();
-
       apiService.POST(
         'nova',
         'servers',
         {'server': $scope.newServer},
-        function (data, status) {
-          $scope.newServer = {};
-          if (status === 202) {
-            $modal.open({
-              templateUrl: 'createResponse.html',
-              controller: ModalCtrl,
-              resolve: {data: function () {return data; }}
-            });
-          } else {
-            alertService.add('error', 'Server add failed!');
-          }
-        },
         function (data) {
           $scope.newServer = {};
-          alertService.add('error', 'Server add failed: ' +
-                           data.computeFault.message);
+          $modal.open({
+            templateUrl: 'createResponse.html',
+            controller: ModalCtrl,
+            resolve: {data: function () {return data; }}
+          });
         }
       );
     };
 
     $scope.deleteServer = function (server) {
-      $log.debug('deleting server', server);
       alertService.clearAlerts();
-
-      /*jslint unparam: true*/
       apiService.DELETE(
         'nova',
         'servers/' + server.id,
-        function (data, status) {
-          if (status === 204) {
-            alertService.add('info', 'Server deleted! ');
-          } else {
-            alertService.add('error', 'Server delete failed! ');
-          }
-        },
-        function (data) {
-          alertService.add('error', 'Server delete failed ' + data);
+        function () {
+          alertService.add('info', 'Server deleted!');
         }
       );
-      /*jslint unparam: false*/
     };
 
+
+    var ServerEditCtrl = function ($scope, $modalInstance, server, apiService, alertService) {
+      $scope.server = server;
+
+      // "Whenever you have ng-model there’s gotta be a dot in there somewhere.
+      // If you don’t have a dot, you’re doing it wrong."
+      $scope.formData = {
+        name: server.name,
+        accessIPv4: server.accessIPv4,
+        accessIPv6: server.accessIPv6
+      };
+
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+
+      var putUpdate = function (update) {
+        alertService.clearAlerts();
+        apiService.PUT(
+          'nova',
+          'servers/' + $scope.server.id,
+          {server: update},
+          function () {
+            alertService.add('info', 'Server updated.');
+            $modalInstance.dismiss('cancel');
+          }
+        );
+      };
+
+      $scope.editName = function () {
+        putUpdate({name: $scope.formData.name});
+      };
+
+      $scope.edutAccess = function () {
+        putUpdate({
+          accessIPv4: $scope.formData.accessIPv4,
+          accessIPv6: $scope.formData.accessIPv6
+        });
+      };
+    };
+
+    $scope.showEdit = function (server) {
+      $modal.open({
+        templateUrl: 'views/nova_server_edit.html',
+        controller: ServerEditCtrl,
+        size: 'lg',
+        resolve: {server: function () {return server; }}
+      });
+    };
+
+
     $scope.serverDetail = function (server) {
-      $log.debug('fetch server info for', server);
       alertService.clearAlerts();
       serverModal.open(server.id);
     };
 
     $scope.imageDetail = function (image) {
-      $log.debug('fetch image info for', image);
       alertService.clearAlerts();
       imageModal.open(image.id);
     };
 
     $scope.flavorDetail = function (flavor) {
-      $log.debug('fetch flavor info for', flavor);
       alertService.clearAlerts();
       flavorModal.open(flavor.id);
     };
-
   });
-
 
   var ServerModalCtrl = function ($scope, $modalInstance, data, networkModal, apiService, $log) {
     $scope.data = data;

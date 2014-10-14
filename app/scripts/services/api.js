@@ -87,7 +87,7 @@
 
         // helper which displays a generic error or more specific one if we got one
         function displayError(alertService, data, message) {
-          $log.error('Error Data:', data);
+          $log.debug('Error Data:', data);
           try {
             if (data.hasOwnProperty('reason')) {
               $log.debug('displayError using data.reason');
@@ -95,6 +95,12 @@
             } else if (data.hasOwnProperty('error')) {
               $log.debug('displayError using data.error.message');
               message = data.error.message;
+            } else if (data.hasOwnProperty('computeFault')) {
+              $log.debug('displayError using data.computeFault.message');
+              message = data.computeFault.message;
+            } else if (data.hasOwnProperty('badRequest')) {
+              $log.debug('displayError using data.badRequest.message');
+              message = data.badRequest.message;
             }
           } catch (e) {
             message = undefined;
@@ -115,6 +121,8 @@
           if (showSpinner) {
             self.busy += 1;
           }
+
+          $log.debug('API call', config.method, config.url);
           return $http(config).success(function (response, status, headers) {
             if (showSpinner) {
               self.busy -= 1;
@@ -146,10 +154,10 @@
                 onError(response, status, headers);
               } catch (e) {
                 $log.error('Error handling error', e);
-                displayError(alertService, response);
+                displayError(alertService, response, 'An error occurred.');
               }
             } else {
-              alertService.add('error', 'An error occurred.');
+              displayError(alertService, response, 'An error occurred.');
             }
           });
         }
@@ -175,7 +183,7 @@
         };
 
         function dataCall(svcName, method, url, data, onSuccess, onError, showSpinner) {
-          $log.info('data call', data);
+          $log.debug(method, 'call', data);
           return apiCall({
             method: method,
             url: '/api/' + svcName + '/RegionOne/' + url,   // XXX REGION

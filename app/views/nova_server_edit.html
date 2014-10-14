@@ -1,0 +1,61 @@
+<div class="modal-header">
+  <h3 class="modal-title">Edit Server "{{server.name}}"</h3>
+</div>
+<div class="modal-body">
+
+  <tabset>
+    <tab heading="Name">
+      <form name="form_name" role="form">
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <label for="name">Server Name</label>
+            <input type="text" class="form-control" name="name" ng-model="formData.name" id="name" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <button type="submit" ng-click="editName(name)"
+                    class="btn btn-primary btn-right btn-md btn-md-block"
+                    ng-disabled="form_name.$invalid" id="btn-login">
+              Rename Server <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </tab>
+
+    <tab heading="Access">
+      <form name="form_access" role="form">
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <label for="accessIPv4">Access IPv4</label>
+            <input type="text" class="form-control" name="accessIPv4" ng-model="formData.accessIPv4" id="accessIPv4" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <label for="accessIPv6">Access IPv6</label>
+            <input type="text" class="form-control" name="accessIPv6" ng-model="formData.accessIPv6" id="accessIPv6" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <button type="submit" ng-click="editAccess()"
+                    class="btn btn-primary btn-right btn-md btn-md-block"
+                    ng-disabled="form_access.$invalid" id="btn-login">
+              Alter Access Addresses <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </tab>
+
+  </tabset>
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-warning" ng-click="cancel()">Close</button>
+</div>
