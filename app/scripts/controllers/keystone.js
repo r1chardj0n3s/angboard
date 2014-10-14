@@ -41,6 +41,7 @@
 
   app.controller('DetailsCtrl',
     function ($scope, apiService) {
+      $scope.$root.pageHeading = 'Access Details';
       $scope.apiService = apiService;
       $scope.invalidateToken = function () {
         apiService.access.token.id = 'invalid';

@@ -82,6 +82,9 @@ views.
 **angboard components and documentation**
 
 * AngularJS, https://docs.angularjs.org/guide
+  and because it's confusing, here's why ng-model always needs a dotted
+  name in its expression:
+  http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html
 * Bootstrap, http://getbootstrap.com/css/
 * Bootstrap-UI for Angular/Bootstrap integration
 * Font Awesome for iconography (class="fa fa-thumbs-up")

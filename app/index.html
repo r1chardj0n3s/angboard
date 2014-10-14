@@ -26,19 +26,17 @@
         <div class="panel-body">
           <div class="container-liquid">
             <div class="row">
-              <div class="col-sm-12">
+              <div class="col-sm-4">
+                <h1 style="margin: 0 20px;">
+                  <img src="images/openstack-logo.png" alt="OpenStack" title="OpenStack" />
+                  {{pageHeading}}</h1>
+              </div>
+              <div class="col-sm-8">
                 <div id="alert-container">
                   <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">
                     {{alert.msg}}
                   </alert>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                <h1 style="margin: 0 20px;">
-                  <img src="images/openstack-logo.png" alt="OpenStack" title="OpenStack" />
-                  {{pageHeading}}</h1>
               </div>
             </div>
           </div>
