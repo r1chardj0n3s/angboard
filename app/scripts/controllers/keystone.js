@@ -52,6 +52,8 @@
     function ($scope, $location, apiService, alertService, menuService) {
       $scope.$root.pageHeading = 'Login';
       menuService.visible = false;
+      // we might have been forced here so forcibly reset busy to sane state
+      apiService.busy = 0;
 
       $scope.auth = {
         'tenantName': 'demo',

@@ -11,7 +11,7 @@
     .directive('busy', function (apiService) {
       return {
         template: '<div id="spinner" ng-show="apiService.busy">' +
-          '<div ng-transclude></div>hihi</div>',
+          '<div ng-transclude></div></div>',
         apiService: apiService,
         restrict: 'E',
         replace: true,

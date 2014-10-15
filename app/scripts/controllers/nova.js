@@ -45,7 +45,7 @@
         extension = data.extensions[i];
         novaExtensions[extension.alias] = extension;
       }
-    });
+    }, {showSpinner: false, onError: function () {return; }});
 
     var menu = {'title': 'Compute', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
@@ -156,7 +156,7 @@
           // first fetch
           $scope.servers = data.servers;
         }
-      }, {showSpinner: false});
+      }, {showSpinner: false, onError: function () {return; }});
       /*jslint unparam: false*/
     };
 
@@ -256,7 +256,7 @@
         putUpdate({name: $scope.formData.name});
       };
 
-      $scope.edutAccess = function () {
+      $scope.editAccess = function () {
         putUpdate({
           accessIPv4: $scope.formData.accessIPv4,
           accessIPv6: $scope.formData.accessIPv6

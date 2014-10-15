@@ -26,17 +26,17 @@
 
     describe('in the default state', function () {
       it('should not be authenticated', function () {
-        expect(api.isAuthenticated).toBe(false);
+        expect(api.access).toBe(null);
       });
     });
 
     describe('when logged in', function () {
       beforeEach(function () {
-        api.setAccess({access: true});
+        api.setAccess('yes');
       });
 
       it('should be authenticated', function () {
-        expect(api.isAuthenticated).toBe(true);
+        expect(api.access).toBe('yes');
       });
     });
   });
