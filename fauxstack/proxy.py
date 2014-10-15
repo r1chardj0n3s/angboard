@@ -24,9 +24,15 @@ def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
 
-    for h in ['X-Requested-With', 'Authorization', 'Accept', 'X-Auth-Token']:
+    for h in ['X-Requested-With', 'Authorization', 'Accept', 'X-Auth-Token', 'X-Container-Read']:
         if h in request.headers:
             request_headers[h] = request.headers[h]
+
+    # as well as the above, swift allows setting meta data on objects.
+    # any key starting with X-Object-Meta- should be allowed.
+    for h in request.headers:
+        if h[0].startswith('X-Object-Meta-'):
+            request_headers[h[0]]= request.headers[h]
 
     access_token = request.headers.get('X-Auth-Token')
 

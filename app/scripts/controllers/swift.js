@@ -36,9 +36,46 @@
     };
   };
 
+  var UploadObjectCtrl = function ($scope, $modalInstance) {
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+
+  };
+
+  var CreateContainerCtrl = function ($scope, $modalInstance, $log, apiService, getContainers) {
+    $log.debug('create container');
+    $scope.name = '';
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.create = function () {
+      $log.info($scope.name);
+      $log.info($scope.access);
+
+      apiService.PUT(
+        'swift',
+        $scope.name,
+        null,
+        function (data) {
+          $log.info('container created - update table?');
+          $log.info(data);
+        }
+      );
+
+      getContainers();
+      $modalInstance.close();
+    };
+  };
+
+
+
 
   app.controller('SwiftContainersCtrl',
-    function ($scope, apiService, alertService, $modal) {
+    function ($scope, apiService, alertService, $modal, $log) {
       $scope.$root.pageHeading = 'Containers';
       alertService.clearAlerts();
 
@@ -58,6 +95,80 @@
         });
       };
 
+      $scope.createContainer = function () {
+
+        $modal.open({
+          templateUrl: 'createContainer.html',
+          controller: CreateContainerCtrl,
+          resolve: {
+            getContainers: function () {
+              return $scope.getContainers;
+            }
+          }
+        });
+      };
+
+      $scope.deleteContainer = function (container) {
+        $log.info('Delete container called on');
+        $log.info(container);
+
+        apiService.DELETE(
+          'swift',
+          container.name,
+          function () {
+            $log.info('Container successfully deleted');
+            $scope.getContainers();
+          },
+          function () {
+            var message = 'Could not delete container ' + container.name + ' - is it empty?';
+            $log.info(message);
+            alertService.add('warning', message);
+          }
+        );
+      };
+
+      $scope.makePrivate = function (container) {
+        $log.info('makePrivate called on');
+        $log.info(container);
+        apiService.POST(
+          'swift',
+          container.name,
+          null,
+          function () {
+            $log.info('container now private');
+            $scope.getContainers();
+          },
+          null,
+          null,
+          {'X-Container-Read': ''}
+        );
+      };
+
+      $scope.makePublic = function (container) {
+        $log.info('makePublic called on');
+        $log.info(container);
+        apiService.POST(
+          'swift',
+          container.name,
+          null,
+          function () {
+            $log.info('container now public');
+            $scope.getContainers();
+          },
+          null,
+          null,
+          {'X-Container-Read': '.r:*,.rlistings'}
+        );
+      };
+
+      $scope.uploadObject = function () {
+
+        $modal.open({
+          templateUrl: 'uploadObject.html',
+          controller: UploadObjectCtrl
+        });
+      };
+
       $scope.selectContainer = function (name) {
         $scope.currentContainer = name;
 
@@ -74,6 +185,7 @@
           this.isFolder = isFolder;
 
         }
+
         apiService.GET(
           'swift',
           name + '?delimiter=/',
@@ -104,37 +216,44 @@
       };
 
       /*jslint unparam: true*/
-      apiService.GET(
-        'swift',
-        '',
-        function (data) {
-          var i,
-            container;
+      $scope.getContainers = function () {
+        apiService.GET(
+          'swift',
+          '',
+          function (data) {
+            var i,
+              container;
 
-          function setAccess(data, status, headers, config) {
-            // FIXME: This is a bit of a hack. It seems the only way to pass the container to this function
-            // is via the config object.
-            var object = config.data;
+            function setAccess(data, status, headers, config) {
+              // FIXME: This is a bit of a hack. It seems the only way to pass the container to this function
+              // is via the config object.
+              var object = config.data;
 
-            if (headers('x-container-read') === '.r:*,.rlistings') {
-              object.isPublic = true;
+              if (headers('X-Container-Read') === '.r:*,.rlistings') {
+
+                object.isPublic = true;
+              }
             }
-          }
 
-          for (i = 0; i < data.length; i++) {
-            apiService.HEAD(
-              'swift',
-              data[i].name,
-              data[i],
-              setAccess
-            );
-            container = data[i];
-            container.isPublic = false;
-          }
+            for (i = 0; i < data.length; i++) {
+              apiService.HEAD(
+                'swift',
+                data[i].name,
+                data[i],
+                setAccess
+              );
+              container = data[i];
+              container.isPublic = false;
+            }
 
-          $scope.containers = data;
-        }
-      );
+            $scope.containers = data;
+          }
+        );
+
+      };
+      $scope.getContainers();
+
+
       /*jslint unparam: false*/
     }
     );
