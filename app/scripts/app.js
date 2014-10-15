@@ -38,6 +38,10 @@
 
       // root binding for alertService
       $rootScope.closeAlert = alertService.closeAlert;
+
+      // this shouldn't need to be here, but does to make the busy directive
+      // successfully show the busy matte, wtf.
+      $rootScope.apiService = apiService;
     }
   );
 }());

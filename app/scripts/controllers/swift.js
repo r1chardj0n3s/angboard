@@ -37,11 +37,9 @@
   };
 
   var UploadObjectCtrl = function ($scope, $modalInstance) {
-
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
-
   };
 
   var CreateContainerCtrl = function ($scope, $modalInstance, $log, apiService, getContainers) {
@@ -72,8 +70,6 @@
   };
 
 
-
-
   app.controller('SwiftContainersCtrl',
     function ($scope, apiService, alertService, $modal, $log) {
       $scope.$root.pageHeading = 'Containers';
@@ -83,7 +79,6 @@
       $scope.currentContainer = null;
 
       $scope.open = function (containerDetails) {
-
         $modal.open({
           templateUrl: 'viewDetails.html',
           controller: ViewDetailsCtrl,
@@ -96,7 +91,6 @@
       };
 
       $scope.createContainer = function () {
-
         $modal.open({
           templateUrl: 'createContainer.html',
           controller: CreateContainerCtrl,
@@ -109,8 +103,7 @@
       };
 
       $scope.deleteContainer = function (container) {
-        $log.info('Delete container called on');
-        $log.info(container);
+        $log.info('Delete container called on', container);
 
         apiService.DELETE(
           'swift',
@@ -119,11 +112,11 @@
             $log.info('Container successfully deleted');
             $scope.getContainers();
           },
-          function () {
+          {onError: function () {
             var message = 'Could not delete container ' + container.name + ' - is it empty?';
             $log.info(message);
             alertService.add('warning', message);
-          }
+          }}
         );
       };
 
@@ -138,9 +131,7 @@
             $log.info('container now private');
             $scope.getContainers();
           },
-          null,
-          null,
-          {'X-Container-Read': ''}
+          {headers: {'X-Container-Read': ''}}
         );
       };
 
@@ -155,14 +146,11 @@
             $log.info('container now public');
             $scope.getContainers();
           },
-          null,
-          null,
-          {'X-Container-Read': '.r:*,.rlistings'}
+          {headers: {'X-Container-Read': '.r:*,.rlistings'}}
         );
       };
 
       $scope.uploadObject = function () {
-
         $modal.open({
           templateUrl: 'uploadObject.html',
           controller: UploadObjectCtrl
@@ -183,7 +171,6 @@
           }
 
           this.isFolder = isFolder;
-
         }
 
         apiService.GET(
@@ -236,12 +223,7 @@
             }
 
             for (i = 0; i < data.length; i++) {
-              apiService.HEAD(
-                'swift',
-                data[i].name,
-                data[i],
-                setAccess
-              );
+              apiService.HEAD('swift', data[i].name, setAccess);
               container = data[i];
               container.isPublic = false;
             }
@@ -252,7 +234,6 @@
 
       };
       $scope.getContainers();
-
 
       /*jslint unparam: false*/
     }

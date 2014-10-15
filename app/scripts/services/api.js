@@ -111,9 +111,10 @@
           alertService.add('warning', message);
         }
 
-        function apiCall(config, onSuccess, onError, showSpinner) {
-          if (!angular.isDefined(showSpinner)) {
-            showSpinner = true;
+        function apiCall(config, onSuccess, options) {
+          var showSpinner = true;
+          if (angular.hasOwnProperty(options, 'showSpinner')) {
+            showSpinner = options.showSpinner;
           }
           if (self.access) {
             config.headers['X-Auth-Token'] = self.access.token.id;
@@ -149,9 +150,9 @@
             }
 
             $log.error('apiCall error', status, response);
-            if (onError) {
+            if (options.onError) {
               try {
-                onError(response, status, headers);
+                options.onError(response, status, headers);
               } catch (e) {
                 $log.error('Error handling error', e);
                 displayError(alertService, response, 'An error occurred.');
@@ -162,83 +163,57 @@
           });
         }
 
-        function simpleCall(svcName, method, url, onSuccess, onError, showSpinner) {
+        function simpleCall(svcName, method, url, onSuccess, options) {
+          var headers = {};
+          if (angular.hasOwnProperty(options, 'headers')) {
+            headers = angular.copy(options.headers);
+          }
+          headers.Accept = 'application/json';
           return apiCall({
             method: method,
             url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
-            headers : {
-              'Accept': 'application/json'
-            },
+            headers : headers,
             timeout: httpTimeoutMs,
             cache: false
-          }, onSuccess, onError, showSpinner);
+          }, onSuccess, options);
         }
 
-        this.GET = function (svcName, url, onSuccess, onError, showSpinner) {
-          return simpleCall(svcName, 'GET', url, onSuccess, onError, showSpinner);
+        this.GET = function (svcName, url, onSuccess, options) {
+          return simpleCall(svcName, 'GET', url, onSuccess, options);
         };
 
-        this.DELETE = function (svcName, url, onSuccess, onError, showSpinner) {
-          return simpleCall(svcName, 'DELETE', url, onSuccess, onError, showSpinner);
+        this.DELETE = function (svcName, url, onSuccess, options) {
+          return simpleCall(svcName, 'DELETE', url, onSuccess, options);
         };
 
-        function dataCall(svcName, method, url, data, onSuccess, onError, showSpinner, headers) {
-          $log.info('data call', data);
-          if (headers) {
-            angular.extend(
-              headers,
-              {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              }
-            );
-          } else {
-            headers = {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            };
+        this.HEAD = function (svcName, url, onSuccess, options) {
+          return simpleCall(svcName, 'HEAD', url, onSuccess, options);
+        };
+
+        function dataCall(svcName, method, url, data, onSuccess, options) {
+          var headers = {};
+          if (angular.hasOwnProperty(options, 'headers')) {
+            headers = angular.copy(options.headers);
           }
+          headers.Accept = 'application/json';
+          headers['Content-Type'] = 'application/json';
+
+          $log.info('data call', data);
           return apiCall({
             method: method,
             url: '/api/' + svcName + '/RegionOne/' + url,   // XXX REGION
             data: data,
             headers : headers,
             timeout: httpTimeoutMs
-          }, onSuccess, onError, showSpinner);
+          }, onSuccess, options);
         }
 
-        this.PUT = function (svcName, url, data, onSuccess, onError, showSpinner, headers) {
-          dataCall(svcName, 'PUT', url, data, onSuccess, onError, showSpinner, headers);
+        this.PUT = function (svcName, url, data, onSuccess, options) {
+          dataCall(svcName, 'PUT', url, data, onSuccess, options);
         };
 
-        this.POST = function (svcName, url, data, onSuccess, onError, showSpinner, headers) {
-          dataCall(svcName, 'POST', url, data, onSuccess, onError, showSpinner, headers);
+        this.POST = function (svcName, url, data, onSuccess, options) {
+          dataCall(svcName, 'POST', url, data, onSuccess, options);
         };
-
-        this.HEAD = function (svcName, url, data, onSuccess, onError, showSpinner) {
-          return apiCall({
-            method: 'HEAD',
-            url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
-            headers : {
-              'Accept': 'application/json'
-            },
-            timeout: httpTimeoutMs,
-            cache: false,
-            data: data
-          }, onSuccess, onError, showSpinner);
-        };
-
-        this.DELETE = function (svcName, url, onSuccess, onError, showSpinner) {
-          return apiCall({
-            method: 'DELETE',
-            url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
-            headers : {
-              'Accept': 'application/json'
-            },
-            timeout: httpTimeoutMs,
-            cache: false
-          }, onSuccess, onError, showSpinner);
-        };
-        /*jslint unparam: false*/
       });
 }());

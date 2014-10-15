@@ -206,7 +206,7 @@ Inteded Areas Of Development (aka TODO)
 * handle multiple endpoints per region
 * investigate https://github.com/davemo/jasmine-only
 * investigate https://github.com/chjj/term.js
-
+* investigate http://jmdobry.github.io/angular-cache/ for novaExtensions etc
 
 Security
 ========

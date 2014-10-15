@@ -28,6 +28,7 @@
   });
 
 
+  // a module global to cache the nova extensions
   app.value('novaExtensions', {});
 
 
@@ -159,7 +160,7 @@
           // first fetch
           $scope.servers = data.servers;
         }
-      }, null, false);
+      }, {showSpinner: false});
       /*jslint unparam: false*/
     };
 
