@@ -91,8 +91,8 @@ views.
   https://github.com/grevory/angular-local-storage
 * angular-smart-table for tables documented at
   http://lorenzofox3.github.io/smart-table-website/
-* compass for compiled CSS
-  http://compass-style.org/help/
+* less for compiled CSS
+  http://lesscss.org/
 * karma and jasmine for testing documented at
   http://karma-runner.github.io/ and
   http://jasmine.github.io/1.3/introduction.html
@@ -164,14 +164,15 @@ grunt
 grunt is used as a task management tool. It has a number of tasks defined,
 all invokable as `grunt serve` or `grunt build` and so on:
 
-* `watch` for changes in the codebase and take action like compile the sass
-  CSS source files using `compass`.
 * `serve` the application to a browser (also performs a `watch` and will
   additionally play well with `liveReload` if you have that installed in your
   browser)
-* `test` to run the test suite under `karma` and `jasmine`
 * `build` the application for deployment, minifying (HTML, CSS and JS),
   cdn'ing, uglifying and so on and putting everything in the "dist" directory
+* `test` to run the test suite under `karma` and `jasmine`
+* `watch` for changes in the codebase and take action like compile the CSS
+  source files using `less`. This is done as part of `serve` so is unlikely
+  to be invoked directly.
 
 
 jslint
