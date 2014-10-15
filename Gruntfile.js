@@ -21,12 +21,12 @@
     require('time-grunt')(grunt);
 
     var jslintConfig = {
-      browser: true,
+      browser: true,      // assume the code is running in a browser
       predef: ['angular', 'document'],
-      indent: 2,
-      vars: true,
-      'continue': true,
-      plusplus: true
+      indent: 2,          // 2-space indentation
+      vars: true,         // allow multiple var statements in a function
+      'continue': true,   // allow use of "continue" keyword in loops (wat)
+      plusplus: true      // allow auto-increment (seriously)
     };
 
     var keystoneURL = 'http://119.9.27.d:5000/v2.0';

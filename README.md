@@ -185,11 +185,12 @@ by "grunt watch" (checking application code as it changes) and "grunt test"
 
 There are some configuration settings baked into grunt's run:
 
-    browser: true,  // assume the code is running in a browser
-    predef: ['angular'],
-    indent: 2,      // 2-space indentation
-    vars: true      // allow multiple var statements in a function
-
+    browser: true,      // assume the code is running in a browser
+    predef: ['angular', 'document'],
+    indent: 2,          // 2-space indentation
+    vars: true,         // allow multiple var statements in a function
+    'continue': true,   // allow use of "continue" keyword in loops (wat)
+    plusplus: true      // allow auto-increment (seriously)
 
 
 Inteded Areas Of Development (aka TODO)
