@@ -1,35 +1,84 @@
 <div data-ng-controller="SwiftContainersCtrl">
 
-    <script type="text/ng-template" id="viewDetails.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Container Details</h3>
-        </div>
-        <div class="modal-body">
-          <dl>
-            <dt>Container Name</dt>
-            <dd>{{containerDetails.name}}</dd>
-            <dt>Container Access</dt>
-            <dd ng-bind-html="containerDetails.access"></dd>
-            <dt>Object Count</dt>
-            <dd>{{containerDetails.count}}</dd>
-            <dt>Size</dt>
-            <dd>{{containerDetails.bytes}}</dd>
-          </dl>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-warning" ng-click="cancel()">Close</button>
-        </div>
-    </script>
+  <script type="text/ng-template" id="viewDetails.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Container Details</h3>
+    </div>
+    <div class="modal-body">
+      <dl>
+        <dt>Container Name</dt>
+        <dd>{{containerDetails.name}}</dd>
+        <dt>Container Access</dt>
+        <dd ng-bind-html="containerDetails.access"></dd>
+        <dt>Object Count</dt>
+        <dd>{{containerDetails.count}}</dd>
+        <dt>Size</dt>
+        <dd>{{containerDetails.bytes}}</dd>
+      </dl>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="createContainer.html">
+    <form role="form" name="createContainerForm" novalidate>
+      <div class="modal-header">
+        <h3 class="modal-title">Create Container</h3>
+      </div>
+      <div class="modal-body clearfix">
+
+          <div class="left">
+            <fieldset>
+
+              <div class="control-group form-field clearfix required">
+                <label for="id_name">Container Name:</label>
+
+
+                <span class="help-block" style="display: none;">   </span>
+                <div class="input">
+                  <input id="id_name" maxlength="255" name="name" ng-model="name" type="text" required>
+                </div>
+              </div>
+
+              <div class="control-group form-field clearfix required">
+                <label for="id_access">Container Access:</label>
+
+
+                <span class="help-block" style="display: none;">   </span>
+                <div class="input">
+                  <select id="id_access" name="access" ng-model="access">
+                    <option value="private">Private</option>
+                    <option value="public">Public</option>
+                  </select>
+                </div>
+              </div>
+
+
+            </fieldset>
+          </div>
+          <div class="right">
+            <h3>Description:</h3>
+            <p>A container is a storage compartment for your data and provides a way for you to organize your data. You can think of a container as a folder in Windows ® or a directory in UNIX ®. The primary difference between a container and these other file system concepts is that containers cannot be nested. You can, however, create an unlimited number of containers within your account. Data must be stored in a container so you must have at least one container defined in your account prior to uploading data.</p>
+            <p>Note: A Public Container will allow anyone with the Public URL to gain access to your objects in the container.</p>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-disabled="createContainerForm.$invalid" ng-click="create()">Create Container</button>
+      </div>
+    </form>
+  </script>
 
   <div class="content_wrapper pull-left">
-    <div class="table_header">
-      <h3>Containers</h3>
-    </div>
     <table class="table table-bordered table-hover table-striped" st-table="containers">
       <thead>
-          <th>Name</th>
-          <th>Details</th>
-          <th>Actions</th>
+          <th colspan="3">
+            <h3 class="table-header pull-left">Containers</h3>
+            <button class="btn btn-sm pull-right" ng-click="createContainer()">
+              <span class="fa  fa-plus"></span>
+              Containter</button>
+          </th>
       </thead>
       <tbody>
         <tr ng-repeat="container in containers">
@@ -50,8 +99,9 @@
                   More <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li><a href="#">Make Private</a></li>
-                  <li><a href="#">Delete</a></li>
+                  <li><a ng-if="!container.isPublic" ng-click="makePublic(container)">Make Public</a></li>
+                  <li><a ng-if="container.isPublic" ng-click="makePrivate(container)">Make Private</a></li>
+                  <li><a ng-if="container.count===0" ng-click="deleteContainer(container)">Delete</a></li>
                 </ul>
               </div>
             </div>
@@ -62,8 +112,34 @@
   </div>
   <div class="content_wrapper pull-left">
     <div class="table_header">
-      <h3>Objects</h3>
-      <table class="table table-bordered table-hover table-striped" st-table="objects">
+
+      <table ng-if="!currentContainer" class="table table-bordered table-hover table-striped" st-table="objects">
+        <thead>
+        <th>
+          <h3 class="table-header pull-left">Objects</h3>
+        </th>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Select a container to browse.</td>
+        </tr>
+        </tbody>
+      </table>
+
+
+      <table ng-if="currentContainer" class="table table-bordered table-hover table-striped" st-table="objects">
+        <thead>
+          <th colspan=3">
+            <h3 class="table-header pull-left">Objects</h3>
+            <button
+                title="Upload Object"
+                class="btn btn-sm pull-right"
+                id="objects__action_upload">
+              <span class="fa  fa-upload"></span>
+              Upload Object
+            </button>
+          </th>
+        </thead>
         <tbody>
           <tr ng-repeat="object in objects">
             <td ng-if="object.isFolder"><a href="#">{{object.name}}</a></td>
