@@ -182,29 +182,39 @@
           return simpleCall(svcName, 'DELETE', url, onSuccess, onError, showSpinner);
         };
 
-        function dataCall(svcName, method, url, data, onSuccess, onError, showSpinner) {
-          $log.debug(method, 'call', data);
+        function dataCall(svcName, method, url, data, onSuccess, onError, showSpinner, headers) {
+          $log.info('data call', data);
+          if (headers) {
+            angular.extend(
+              headers,
+              {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              }
+            );
+          } else {
+            headers = {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            };
+          }
           return apiCall({
             method: method,
             url: '/api/' + svcName + '/RegionOne/' + url,   // XXX REGION
             data: data,
-            headers : {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
+            headers : headers,
             timeout: httpTimeoutMs
           }, onSuccess, onError, showSpinner);
         }
 
-        this.PUT = function (svcName, url, data, onSuccess, onError, showSpinner) {
-          dataCall(svcName, 'PUT', url, data, onSuccess, onError, showSpinner);
+        this.PUT = function (svcName, url, data, onSuccess, onError, showSpinner, headers) {
+          dataCall(svcName, 'PUT', url, data, onSuccess, onError, showSpinner, headers);
         };
 
-        this.POST = function (svcName, url, data, onSuccess, onError, showSpinner) {
-          dataCall(svcName, 'POST', url, data, onSuccess, onError, showSpinner);
+        this.POST = function (svcName, url, data, onSuccess, onError, showSpinner, headers) {
+          dataCall(svcName, 'POST', url, data, onSuccess, onError, showSpinner, headers);
         };
 
-        /*jslint unparam: true*/
         this.HEAD = function (svcName, url, data, onSuccess, onError, showSpinner) {
           return apiCall({
             method: 'HEAD',
@@ -215,6 +225,18 @@
             timeout: httpTimeoutMs,
             cache: false,
             data: data
+          }, onSuccess, onError, showSpinner);
+        };
+
+        this.DELETE = function (svcName, url, onSuccess, onError, showSpinner) {
+          return apiCall({
+            method: 'DELETE',
+            url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
+            headers : {
+              'Accept': 'application/json'
+            },
+            timeout: httpTimeoutMs,
+            cache: false
           }, onSuccess, onError, showSpinner);
         };
         /*jslint unparam: false*/
