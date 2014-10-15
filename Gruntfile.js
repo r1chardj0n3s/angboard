@@ -68,10 +68,14 @@
           files: ['test/spec/{,*/}*.js'],
           tasks: ['newer:jshint:test', 'newer:jslint:test', 'karma']
         },
-        compass: {
-          files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-          tasks: ['compass:server', 'autoprefixer']
+        less: {
+          files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
+          tasks: ['less:dev', 'autoprefixer']
         },
+        // compass: {
+        //   files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        //   tasks: ['compass:server', 'autoprefixer']
+        // },
         gruntfile: {
           files: ['Gruntfile.js']
         },
@@ -224,31 +228,23 @@
         }
       },
 
-      // Compiles Sass to CSS and generates necessary files if requested
-      compass: {
-        options: {
-          sassDir: '<%= yeoman.app %>/styles',
-          cssDir: '.tmp/styles',
-          generatedImagesDir: '.tmp/images/generated',
-          imagesDir: '<%= yeoman.app %>/images',
-          javascriptsDir: '<%= yeoman.app %>/scripts',
-          fontsDir: '<%= yeoman.app %>/styles/fonts',
-          importPath: './bower_components',
-          httpImagesPath: '/images',
-          httpGeneratedImagesPath: '/images/generated',
-          httpFontsPath: '/styles/fonts',
-          relativeAssets: false,
-          assetCacheBuster: false,
-          raw: 'Sass::Script::Number.precision = 10\n'
+      // compile .less CSS
+      less: {
+        dev: {
+          options: {
+            paths: ['./bower_components']
+          },
+          files: {
+            '.tmp/styles/main.css': '<%= yeoman.app %>/styles/main.less'
+          }
         },
         dist: {
           options: {
-            generatedImagesDir: '<%= yeoman.dist %>/images/generated'
-          }
-        },
-        server: {
-          options: {
-            debugInfo: true
+            paths: ['./bower_components'],
+            cleancss: true
+          },
+          files: {
+            '.tmp/styles/main.css': '<%= yeoman.app %>/styles/main.less'
           }
         }
       },
@@ -418,13 +414,13 @@
       // Run some tasks in parallel to speed up the build process
       concurrent: {
         server: [
-          'compass:server'
+          'less:dev'
         ],
         test: [
-          'compass'
+          'less:dev'
         ],
         dist: [
-          'compass:dist',
+          'less:dist',
           'imagemin',
           'svgmin'
         ]
@@ -489,7 +485,7 @@
       'concat',
       'ngAnnotate',
       'copy:dist',
-      'cdnify',
+      // 'cdnify',
       'cssmin',
       'uglify',
       'filerev',

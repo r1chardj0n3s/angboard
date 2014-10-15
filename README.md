@@ -11,8 +11,6 @@ To set up:
 
     git clone https://github.com/r1chardj0n3s/angboard
     cd angboard
-    (install ruby / gem per your operating system)
-    gem install compass
     (install node / npm per your operating system)
     sudo npm install -g grunt-cli bower
     npm install
