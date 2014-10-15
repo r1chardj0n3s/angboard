@@ -201,7 +201,6 @@ Inteded Areas Of Development (aka TODO)
   * styling
 * cover off the OWASP top 10 (at a minimum) where possible/appropriate
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
-* implement creation and management of nova instances
 * *perhaps* investigate angular strap vs ui-bootstrap
 * region selection
 * handle multiple endpoints per region

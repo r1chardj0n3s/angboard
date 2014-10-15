@@ -120,7 +120,7 @@
   }
 
   app.controller('ServersCtrl', function ($scope, apiService, alertService,
-      $log, $interval, $modal, serverModal, imageModal, flavorModal) {
+      $interval, $modal, serverModal, imageModal, flavorModal) {
     var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
@@ -144,16 +144,12 @@
       var url, update = angular.isDefined(self.lastFetch);
       if (update) {
         url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
-        $log.debug('refresh servers', url);
       } else {
         url = 'servers/detail';
-        $log.debug('fetch servers', url);
       }
       /*jslint unparam: true*/
       apiService.GET('nova', url, function (data, status, headers) {
         self.lastFetch = new Date(headers('date'));
-        $log.debug('response date', headers('date'),
-          self.lastFetch.toISOString());
         if (update) {
           updateArray($scope.servers, data.servers);
         } else {

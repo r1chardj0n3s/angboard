@@ -113,7 +113,7 @@
 
         function apiCall(config, onSuccess, options) {
           var showSpinner = true;
-          if (angular.hasOwnProperty(options, 'showSpinner')) {
+          if (angular.isObject(options) && options.hasOwnProperty('showSpinner')) {
             showSpinner = options.showSpinner;
           }
           if (self.access) {
@@ -165,7 +165,7 @@
 
         function simpleCall(svcName, method, url, onSuccess, options) {
           var headers = {};
-          if (angular.hasOwnProperty(options, 'headers')) {
+          if (angular.isObject(options) && options.hasOwnProperty('headers')) {
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';
@@ -192,7 +192,7 @@
 
         function dataCall(svcName, method, url, data, onSuccess, options) {
           var headers = {};
-          if (angular.hasOwnProperty(options, 'headers')) {
+          if (angular.isObject(options) && options.hasOwnProperty('headers')) {
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';
