@@ -200,7 +200,19 @@
       );
     };
 
-    $scope.deleteServer = function (server) {
+    $scope.reboot = function (server) {
+      alertService.clearAlerts();
+      apiService.POST(
+        'nova',
+        'servers/' + server.id + '/action',
+        {reboot: {type: 'SOFT'}},
+        function () {
+          alertService.add('info', 'Server rebooting');
+        }
+      );
+    };
+
+    $scope.delete = function (server) {
       alertService.clearAlerts();
       apiService.DELETE(
         'nova',
@@ -252,7 +264,7 @@
       };
     };
 
-    $scope.showEdit = function (server) {
+    $scope.edit = function (server) {
       $modal.open({
         templateUrl: 'views/nova_server_edit.html',
         controller: ServerEditCtrl,
