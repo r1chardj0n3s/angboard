@@ -12,11 +12,8 @@
     var element,
       scope;
 
-    beforeEach(inject(function ($rootScope, $httpBackend) {
+    beforeEach(inject(function ($rootScope) {
       scope = $rootScope.$new();
-      // we $digest so we need to handle the nova run() extension fetch
-      $httpBackend.when('GET', '/api/nova/RegionOne/extensions')
-        .respond({extensions: []});
     }));
 
     it('should have a checkmark when true', inject(function ($compile) {

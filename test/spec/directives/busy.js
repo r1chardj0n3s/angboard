@@ -14,8 +14,7 @@
     beforeEach(function () {
       // mask the api service with something of our own fakery
       module(function ($provide) {
-        // this is a total hack but nova does a GET in its run()
-        $provide.value('apiService', {busy: 0, GET: function () {return; }});
+        $provide.value('apiService', {busy: 0});
       });
       inject(function ($rootScope, apiService) {
         scope = $rootScope.$new();

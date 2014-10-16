@@ -16,9 +16,10 @@
     $routeProvider.when('/keystone/logout', {
       resolve: {
         redirect: [
-          '$location', '$log', 'apiService',
-          function ($location, $log, apiService) {
+          '$rootScope', '$location', '$log', 'apiService',
+          function ($rootScope, $location, $log, apiService) {
             $log.info('log out');
+            $rootScope.$emit('logout');
             apiService.clearAccess('logout');
             $location.path('/keystone/login');
           }
@@ -71,9 +72,11 @@
           {'auth': $scope.auth},
           function (data, status) {
             if (status === 200) {
+              // do this immediately, since some of the login event listeners
+              // require it
               apiService.setAccess(data.access);
+              $scope.$emit('login', data.access);
               $location.path('/home');
-              menuService.visible = true;
             } else {
               throw 'bad status: ' + status;
             }

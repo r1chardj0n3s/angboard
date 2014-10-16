@@ -13,9 +13,6 @@
 
     // Initialize the controller and a mock scope
     beforeEach(inject(function ($controller, $rootScope, apiService, $httpBackend) {
-      // we $digest so we need to handle the nova run() extension fetch
-      $httpBackend.whenGET('/api/nova/RegionOne/extensions')
-        .respond({extensions: []});
       $httpBackend.expectGET('/api/nova/RegionOne/limits')
         .respond({limits: {absolute: 'limits yes'}});
       httpBackend = $httpBackend;

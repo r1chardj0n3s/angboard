@@ -32,20 +32,22 @@
   app.value('novaExtensions', {});
 
 
-  app.run(function (menuService, apiService, novaExtensions) {
-    // fetch the extensions
-    apiService.GET('nova', 'extensions', function (data) {
-      var i, extension, prop;
-      for (prop in novaExtensions) {
-        if (novaExtensions.hasOwnProperty(prop)) {
-          delete novaExtensions[prop];
+  app.run(function ($rootScope, menuService, apiService, novaExtensions) {
+    $rootScope.$on('login', function () {
+      // fetch the extensions
+      apiService.GET('nova', 'extensions', function (data) {
+        var i, extension, prop;
+        for (prop in novaExtensions) {
+          if (novaExtensions.hasOwnProperty(prop)) {
+            delete novaExtensions[prop];
+          }
         }
-      }
-      for (i = 0; i < data.extensions.length; i++) {
-        extension = data.extensions[i];
-        novaExtensions[extension.alias] = extension;
-      }
-    }, {showSpinner: false, onError: function () {return; }});
+        for (i = 0; i < data.extensions.length; i++) {
+          extension = data.extensions[i];
+          novaExtensions[extension.alias] = extension;
+        }
+      }, {showSpinner: false, onError: function () {return; }});
+    });
 
     var menu = {'title': 'Compute', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
