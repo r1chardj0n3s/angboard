@@ -72,10 +72,6 @@
           files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
           tasks: ['less:dev', 'autoprefixer']
         },
-        // compass: {
-        //   files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        //   tasks: ['compass:server', 'autoprefixer']
-        // },
         gruntfile: {
           files: ['Gruntfile.js']
         },
@@ -461,11 +457,6 @@
         'flask',
         'watch'
       ]);
-    });
-
-    grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
-      grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-      grunt.task.run(['serve:' + target]);
     });
 
     grunt.registerTask('test', [

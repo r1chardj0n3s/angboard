@@ -1,4 +1,4 @@
-/*global describe, beforeEach, inject, it, expect */
+/*global describe, beforeEach, inject, it, expect, module */
 (function () {
   'use strict';
 

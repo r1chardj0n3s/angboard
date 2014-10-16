@@ -1,23 +1,33 @@
-/*global describe, beforeEach, inject, it, expect */
-'use strict';
+/*global describe, beforeEach, inject, module, it, expect */
+(function () {
+  'use strict';
 
-describe('Controller: HomeCtrl', function () {
+  describe('Controller: HomeCtrl', function () {
 
-  // load the controller's module
-  beforeEach(module('angboardApp'));
+    // load the controller's module
+    beforeEach(module('angboardApp'));
 
-  var HomeCtrl,
-    scope;
+    var scope, httpBackend, createController;
 
-  // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
-    scope = $rootScope.$new();
-    HomeCtrl = $controller('HomeCtrl', {
-      $scope: scope
+    // Initialize the controller and a mock scope
+    beforeEach(inject(function ($controller, $rootScope, apiService, $httpBackend) {
+      // we $digest so we need to handle the nova run() extension fetch
+      $httpBackend.whenGET('/api/nova/RegionOne/extensions')
+        .respond({extensions: []});
+      $httpBackend.expectGET('/api/nova/RegionOne/limits')
+        .respond({limits: {absolute: 'limits yes'}});
+      httpBackend = $httpBackend;
+
+      scope = $rootScope.$new();
+      createController = function () {
+        return $controller('HomeCtrl', {$scope: scope, apiService: apiService});
+      };
+    }));
+
+    it('should fetch limits onto the scope', function () {
+      createController();
+      httpBackend.flush();
+      expect(scope.limits).toBe('limits yes');
     });
-  }));
-
-  it('should attach a list of awesomeThings to the scope', function () {
-    expect(scope.awesomeThings.length).toBe(3);
   });
-});
+}());

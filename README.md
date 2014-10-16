@@ -171,8 +171,9 @@ all invokable as `grunt serve` or `grunt build` and so on:
   cdn'ing, uglifying and so on and putting everything in the "dist" directory
 * `test` to run the test suite under `karma` and `jasmine`
 * `watch` for changes in the codebase and take action like compile the CSS
-  source files using `less`. This is done as part of `serve` so is unlikely
-  to be invoked directly.
+  source files using `less`, or re-run tests. It's automatically included in
+  `serve` but if you want automatic re-runnning of tests when you make
+  changes and *aren't* using `serve` then `grunt watch` is for you.
 
 
 jslint
