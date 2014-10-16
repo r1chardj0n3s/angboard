@@ -79,23 +79,18 @@ views.
 
 **angboard components and documentation**
 
-* AngularJS, https://docs.angularjs.org/guide
-  and because it's confusing, here's why ng-model always needs a dotted
-  name in its expression:
-  http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html
-* Bootstrap, http://getbootstrap.com/css/
-* Bootstrap-UI for Angular/Bootstrap integration
-* Font Awesome for iconography (class="fa fa-thumbs-up")
-  http://fortawesome.github.io/Font-Awesome/cheatsheet/
-* angular-local-storage for in-browser state
-  https://github.com/grevory/angular-local-storage
-* angular-smart-table for tables documented at
-  http://lorenzofox3.github.io/smart-table-website/
-* less for compiled CSS
-  http://lesscss.org/
-* karma and jasmine for testing documented at
-  http://karma-runner.github.io/ and
-  http://jasmine.github.io/1.3/introduction.html
+* [AngularJS for application structure](https://docs.angularjs.org/guide)
+  and because it's confusing, [here's why ng-model always needs a dotted
+  name in itsexpression](http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html)
+* [Bootstrap for page construction and layout](http://getbootstrap.com/css/)
+* [AngularUI for Angular/Bootstrap integration](http://angular-ui.github.io/bootstrap/)
+* [Font Awesome for iconography (class="fa fa-thumbs-up")](http://fortawesome.github.io/Font-Awesome/cheatsheet/)
+* [angular-local-storage for in-browser state](https://github.com/grevory/angular-local-storage)
+* [angular-smart-table for tables](http://lorenzofox3.github.io/smart-table-website/)
+* [less for compiled CSS](http://lesscss.org/)
+* [karma test runner](http://karma-runner.github.io/),
+  [mocha BDD structure](http://visionmedia.github.io/mocha/)
+  and [chai assertions library](http://chaijs.com/api/bdd/)
 * virtualenv - the npm version
   https://www.npmjs.org/package/virtualenv
 
@@ -169,7 +164,7 @@ all invokable as `grunt serve` or `grunt build` and so on:
   browser)
 * `build` the application for deployment, minifying (HTML, CSS and JS),
   cdn'ing, uglifying and so on and putting everything in the "dist" directory
-* `test` to run the test suite under `karma` and `jasmine`
+* `test` to run the test suite under `karma` (using `mocha` and `chai`)
 * `watch` for changes in the codebase and take action like compile the CSS
   source files using `less`, or re-run tests. It's automatically included in
   `serve` but if you want automatic re-runnning of tests when you make
@@ -193,6 +188,13 @@ There are some configuration settings baked into grunt's run:
     'continue': true,   // allow use of "continue" keyword in loops (wat)
     plusplus: true      // allow auto-increment (seriously)
 
+If you really need to squash an "unused parameter" message (most likely
+because Javascipt doesn't have keyword argument support) then you can surround a block of code with:
+
+    /*jslint unparam: true*/
+    ... code with unused parameter ...
+    /*jslint unparam: false*/
+
 
 Inteded Areas Of Development (aka TODO)
 =======================================
@@ -210,6 +212,7 @@ Inteded Areas Of Development (aka TODO)
 * investigate https://github.com/chjj/term.js
 * investigate http://jmdobry.github.io/angular-cache/ for novaExtensions etc
 
+
 Security
 ========
 
@@ -217,7 +220,6 @@ Specific areas of security that have been addressed:
 
 1. authentication through keystone username/password
 2. JSONP vulnerability of APIs in proxy
-
 
 
 Tabular Data

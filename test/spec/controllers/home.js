@@ -1,6 +1,8 @@
-/*global describe, beforeEach, inject, module, it, expect */
+/*global describe, beforeEach, inject, module, it, chai */
 (function () {
   'use strict';
+
+  var expect = chai.expect;
 
   describe('Controller: HomeCtrl', function () {
 
@@ -27,7 +29,7 @@
     it('should fetch limits onto the scope', function () {
       createController();
       httpBackend.flush();
-      expect(scope.limits).toBe('limits yes');
+      expect(scope.limits).to.equal('limits yes');
     });
   });
 }());

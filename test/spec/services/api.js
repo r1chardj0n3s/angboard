@@ -1,6 +1,8 @@
-/*global describe, beforeEach, inject, module, it, expect */
+/*global describe, beforeEach, it, inject, module, chai */
 (function () {
   'use strict';
+
+  var expect = chai.expect;
 
   describe('Service: api', function () {
     // load the service's module
@@ -26,7 +28,7 @@
 
     describe('in the default state', function () {
       it('should not be authenticated', function () {
-        expect(api.access).toBe(null);
+        expect(api.access).to.equal(null);
       });
     });
 
@@ -36,7 +38,7 @@
       });
 
       it('should be authenticated', function () {
-        expect(api.access).toBe('yes');
+        expect(api.access).to.equal('yes');
       });
     });
   });

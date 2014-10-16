@@ -1,6 +1,8 @@
-/*global describe, beforeEach, inject, module, it, expect, angular */
+/*global describe, beforeEach, inject, module, it, chai */
 (function () {
   'use strict';
+
+  var expect = chai.expect;
 
   describe('Service: alert', function () {
 
@@ -17,7 +19,7 @@
     it('should allow alerts to be added', function () {
       alert.add('info', 'hi');
       // seriously, this is how we compare values deeply :(
-      expect(angular.toJson(rootScope.alerts)).toBe(angular.toJson([{type: 'info', msg: 'hi'}]));
+      expect(rootScope.alerts).to.deep.equal([{type: 'info', msg: 'hi'}]);
     });
 
   });

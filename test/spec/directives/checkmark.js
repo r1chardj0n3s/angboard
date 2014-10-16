@@ -1,6 +1,8 @@
-/*global describe, beforeEach, inject, module, it, expect */
+/*global describe, beforeEach, inject, module, it, chai */
 (function () {
   'use strict';
+
+  var expect = chai.expect;
 
   describe('Directive: checkmark', function () {
 
@@ -22,7 +24,7 @@
       element = $compile(element)(scope);
       scope.checked = true;
       scope.$digest();
-      expect(element.html()).toBe('<span class="fa fa-check"></span>');
+      expect(element.html()).to.equal('<span class="fa fa-check"></span>');
     }));
 
     it('should have a cross when false', inject(function ($compile) {
@@ -30,7 +32,7 @@
       element = $compile(element)(scope);
       scope.checked = false;
       scope.$digest();
-      expect(element.html()).toBe('<span class="fa fa-times"></span>');
+      expect(element.html()).to.equal('<span class="fa fa-times"></span>');
     }));
   });
 }());
