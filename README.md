@@ -207,7 +207,6 @@ Inteded Areas Of Development (aka TODO)
 * *perhaps* investigate angular strap vs ui-bootstrap
 * region selection
 * handle multiple endpoints per region
-* investigate https://github.com/davemo/jasmine-only
 * investigate https://github.com/chjj/term.js
 * investigate http://jmdobry.github.io/angular-cache/ for novaExtensions etc
 
