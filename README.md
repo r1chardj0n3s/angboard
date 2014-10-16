@@ -73,6 +73,8 @@ generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>
    services should also be added to the <link> list in index.html.
 5. all API-calling functionality is implemented in the apiService which also
    handles storing the auth token.
+6. "login" and "logout" events to allow components to initialise themselves
+   when the user obtains access credentials / service catalog.
 
 API Services are supported through a pair of a controller and a number of
 views.
