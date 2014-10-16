@@ -91,8 +91,7 @@ views.
 * [karma test runner](http://karma-runner.github.io/),
   [mocha BDD structure](http://visionmedia.github.io/mocha/)
   and [chai assertions library](http://chaijs.com/api/bdd/)
-* virtualenv - the npm version
-  https://www.npmjs.org/package/virtualenv
+* [virtualenv - the npm version](https://www.npmjs.org/package/virtualenv)
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
