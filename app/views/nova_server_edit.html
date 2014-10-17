@@ -53,6 +53,27 @@
       </form>
     </tab>
 
+    <tab heading="Password">
+      <form name="form_password" role="form">
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <label for="password">New Admin Password</label>
+            <input type="text" class="form-control" name="password" ng-model="formData.password" id="password" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
+            <button type="submit" ng-click="changePassword(password)"
+                    class="btn btn-primary btn-right btn-md btn-md-block"
+                    ng-disabled="form_name.$invalid" id="btn-login">
+              Set Password <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </tab>
+
   </tabset>
 
 </div>

@@ -25,34 +25,45 @@
     $routeProvider.when('/nova/networks', {
       templateUrl: 'views/nova_networks.html'
     });
+    $routeProvider.when('/nova/extensions', {
+      templateUrl: 'views/nova_extensions.html'
+    });
   });
 
 
   // a module global to cache the nova extensions
   app.value('novaExtensions', {});
 
+  var fetchExtensions = function (apiService, novaExtensions) {
+    // fetch the extensions
+    apiService.GET('nova', 'extensions', function (data) {
+      var i, extension, prop;
+      for (prop in novaExtensions) {
+        if (novaExtensions.hasOwnProperty(prop)) {
+          delete novaExtensions[prop];
+        }
+      }
+      for (i = 0; i < data.extensions.length; i++) {
+        extension = data.extensions[i];
+        novaExtensions[extension.alias] = extension;
+      }
+    }, {showSpinner: false, onError: function () {return; }});
+  };
 
   app.run(function ($rootScope, menuService, apiService, novaExtensions) {
     $rootScope.$on('login', function () {
-      // fetch the extensions
-      apiService.GET('nova', 'extensions', function (data) {
-        var i, extension, prop;
-        for (prop in novaExtensions) {
-          if (novaExtensions.hasOwnProperty(prop)) {
-            delete novaExtensions[prop];
-          }
-        }
-        for (i = 0; i < data.extensions.length; i++) {
-          extension = data.extensions[i];
-          novaExtensions[extension.alias] = extension;
-        }
-      }, {showSpinner: false, onError: function () {return; }});
+      fetchExtensions(apiService, novaExtensions);
     });
+
+    if (apiService.access) {
+      fetchExtensions(apiService, novaExtensions);
+    }
 
     var menu = {'title': 'Compute', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
     menu.menus.push({'title': 'Flavors', 'action': '#/nova/flavors'});
     menu.menus.push({'title': 'Servers', 'action': '#/nova/servers'});
+    menu.menus.push({'title': 'Extensions', 'action': '#/nova/extensions'});
     menu.menus.push({
       'title': 'Networks',
       'action': '#/nova/networks',
@@ -121,8 +132,12 @@
     }
   }
 
+  app.controller('ExtensionsCtrl', function ($scope, novaExtensions) {
+    $scope.extensions = novaExtensions;
+  });
+
   app.controller('ServersCtrl', function ($scope, apiService, alertService,
-      $interval, $modal, serverModal, imageModal, flavorModal) {
+      $interval, $modal, serverModal, imageModal, flavorModal, consoleModal) {
     var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
@@ -162,7 +177,7 @@
       /*jslint unparam: false*/
     };
 
-    var refreshPromise = $interval(refreshServers, 2000);
+    var refreshPromise = $interval(refreshServers, 5000);
     refreshServers();
 
     // Cancel interval on page changes
@@ -246,7 +261,7 @@
         apiService.PUT(
           'nova',
           'servers/' + $scope.server.id,
-          {server: update},
+          update,
           function () {
             alertService.add('info', 'Server updated.');
             $modalInstance.dismiss('cancel');
@@ -255,15 +270,33 @@
       };
 
       $scope.editName = function () {
-        putUpdate({name: $scope.formData.name});
+        putUpdate({server: {name: $scope.formData.name}});
       };
 
       $scope.editAccess = function () {
-        putUpdate({
+        putUpdate({server: {
           accessIPv4: $scope.formData.accessIPv4,
           accessIPv6: $scope.formData.accessIPv6
-        });
+        }});
       };
+
+      var postEdit = function (update) {
+        alertService.clearAlerts();
+        apiService.POST(
+          'nova',
+          'servers/' + $scope.server.id + '/action',
+          update,
+          function () {
+            alertService.add('info', 'Server updated.');
+            $modalInstance.dismiss('cancel');
+          }
+        );
+      };
+
+      $scope.changePassword = function () {
+        postEdit({changePassword: {adminPass: $scope.formData.password}});
+      };
+
     };
 
     $scope.edit = function (server) {
@@ -279,6 +312,11 @@
     $scope.serverDetail = function (server) {
       alertService.clearAlerts();
       serverModal.open(server.id);
+    };
+
+    $scope.console = function (server) {
+      alertService.clearAlerts();
+      consoleModal.open(server.id);
     };
 
     $scope.imageDetail = function (image) {
@@ -328,6 +366,25 @@
     };
   });
 
+
+  app.service('consoleModal', function (alertService, apiService, $modal) {
+    this.open = function (serverId) {
+      alertService.clearAlerts();
+      apiService.POST(
+        'nova',
+        'servers/' + serverId + '/action',
+        {'os-getSerialConsole': {'type': 'serial'}},
+        function (data) {
+          $modal.open({
+            templateUrl: 'views/nova_server_console.html',
+            controller: ModalCtrl,
+            size: 'lg',
+            resolve: {data: function () {return data.console; }}
+          });
+        }
+      );
+    };
+  });
 
   app.controller('NetworksCtrl', function ($log, $scope, apiService, alertService, networkModal) {
     $scope.$root.pageHeading = 'Networks';

@@ -111,9 +111,16 @@
           alertService.add('warning', message);
         }
 
+        function suppliedOption(options, key) {
+          if (!angular.isObject(options)) {
+            return false;
+          }
+          return options.hasOwnProperty(key);
+        }
+
         function apiCall(config, onSuccess, options) {
           var showSpinner = true;
-          if (angular.isObject(options) && options.hasOwnProperty('showSpinner')) {
+          if (suppliedOption(options, 'showSpinner')) {
             showSpinner = options.showSpinner;
           }
           if (self.access) {
@@ -150,7 +157,7 @@
             }
 
             $log.error('apiCall error', status, response);
-            if (options.onError) {
+            if (suppliedOption(options, 'onError')) {
               try {
                 options.onError(response, status, headers);
               } catch (e) {
@@ -165,7 +172,7 @@
 
         function simpleCall(svcName, method, url, onSuccess, options) {
           var headers = {};
-          if (angular.isObject(options) && options.hasOwnProperty('headers')) {
+          if (suppliedOption(options, 'headers')) {
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';
@@ -192,7 +199,7 @@
 
         function dataCall(svcName, method, url, data, onSuccess, options) {
           var headers = {};
-          if (angular.isObject(options) && options.hasOwnProperty('headers')) {
+          if (suppliedOption(options, 'headers')) {
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';

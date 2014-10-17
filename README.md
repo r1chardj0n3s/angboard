@@ -1,17 +1,15 @@
-New dashboard for OpenStack using angularjs talking directly to the APIs.
-
-This is currently *very* raw, proof-of-concept.
+New dashboard for OpenStack using angularjs talking (almost) directly to the
+APIs.
 
 Installation
 ============
 
-**Note: requires python3.4 or higher**
+**Note: requires python3.4**
 
-To set up:
+To set up, first install node / npm per your operating system, and then:
 
     git clone https://github.com/r1chardj0n3s/angboard
     cd angboard
-    (install node / npm per your operating system)
     sudo npm install -g grunt-cli bower
     npm install
     bower install
@@ -30,9 +28,13 @@ For example:
 
     grunt serve --keystone-url=http://10.0.0.1:5000/v2.0
 
-This will open Chrome (or whatever) to view the site. Install the "live
-reload" browser extension / plugin and you'll see your changes LIVE when you
-make and save them to disk. Very premium.
+This will open Chrome (or whatever) to view the site, assuming you did all
+that on the same machine that you use as your browsing system. If it was not,
+then manually open a browser connection to port 9000 on the system you ran
+`grunt serve` on.
+
+Install the "live reload" browser extension / plugin and you'll see your
+changes LIVE when you make and save them to disk. Very premium.
 
 If you have an issue with the Flask proxy attempting to run on an already-
 used port, you may also specify `--proxy-port` to `grunt serve` to change to
