@@ -65,7 +65,7 @@ def proxy_request(service, region, file):
             url = mapped
 
     log.info('ATTEMPTING to %s\n\tURL %s\n\tWITH headers=%s\n\tDATA=%s',
-             request.method, url, request_headers, request_data)
+             request.method, url, request_headers, request_data if request_data and len(request_data) < 2000 else '...')
 
     if request.method == 'GET':
         upstream = requests.get(url, headers=request_headers)
@@ -89,12 +89,24 @@ def proxy_request(service, region, file):
             continue
         response_headers[key] = upstream.headers[key]
 
-    log.info('RESPONSE: %s %s\n%s', upstream.status_code, response_headers,
-             upstream.text)
+    # JSON responses require special handling (or more to the point jpegs
+    # get upset if you treat them as if they were json)
+    
+       
+    if 'Content-Type' in upstream.headers and \
+       upstream.headers['Content-Type'] == 'application/json':
+        
+        log.info('RESPONSE: %s %s\n%s', upstream.status_code, 
+                response_headers, upstream.text) 
 
+        response_text = response=")]}',\n" + upstream.text
+    else:
+#        response_text = upstream.text
+        response_text = upstream.content
+        
     # return the response plus the JSONP protection
     # (https://docs.angularjs.org/api/ng/service/$http)
-    response = Response(response=")]}',\n" + upstream.text,
+    response = Response(response_text,
                         status=upstream.status_code,
                         headers=response_headers,
                         content_type=upstream.headers['Content-Type'])

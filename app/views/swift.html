@@ -126,6 +126,8 @@
         </tbody>
       </table>
 
+      <button ng-click="alert('!')">Download</button>
+      <a ng-click="alert('!')">!!!</a>
 
       <table ng-if="currentContainer" class="table table-bordered table-hover table-striped" st-table="objects">
         <thead>
@@ -134,7 +136,8 @@
             <button
                 title="Upload Object"
                 class="btn btn-sm pull-right"
-                id="objects__action_upload">
+                id="objects__action_upload"
+                ng-click="alert('!!')">
               <span class="fa  fa-upload"></span>
               Upload Object
             </button>
@@ -146,7 +149,10 @@
             <td ng-if="!object.isFolder">{{object.name}}</td>
             <td ng-if="!object.isFolder">{{object.bytes | humanFileSize }}</td>
             <td ng-if="object.isFolder">{{object.type }}</td>
-            <td ng-if="!object.isFolder"><button>Download</button><button>More</button></td>
+            <td ng-if="!object.isFolder">
+              <button class="btn btn-default" ng-click="download(object.name)">Download</button>
+              <a ng-click="download(object.name)"><button class="btn btn-default">Download2</button></a>
+              <button>More</button></td>
             <td ng-if="object.isFolder"><button>Delete Object</button></td>
           </tr>
         </tbody>

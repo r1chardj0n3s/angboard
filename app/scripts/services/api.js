@@ -123,12 +123,16 @@
             self.busy += 1;
           }
 
+          if (angular.isObject(options) && options.hasOwnProperty('responseType')) {
+            config.responseType = options.responseType;
+          }
+
           $log.debug('API call', config.method, config.url);
           return $http(config).success(function (response, status, headers) {
             if (showSpinner) {
               self.busy -= 1;
             }
-            $log.debug('apiCall success', status, response);
+            $log.debug('apiCall success', status);
             try {
               onSuccess(response, status, headers, config);
             } catch (e) {
@@ -168,7 +172,11 @@
           if (angular.isObject(options) && options.hasOwnProperty('headers')) {
             headers = angular.copy(options.headers);
           }
-          headers.Accept = 'application/json';
+
+          if (!headers.hasOwnProperty('Accept')) {
+            headers.Accept = 'application/json';
+          }
+
           return apiCall({
             method: method,
             url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
@@ -185,11 +193,6 @@
         this.DELETE = function (svcName, url, onSuccess, options) {
           return simpleCall(svcName, 'DELETE', url, onSuccess, options);
         };
-
-        this.HEAD = function (svcName, url, onSuccess, options) {
-          return simpleCall(svcName, 'HEAD', url, onSuccess, options);
-        };
-
         function dataCall(svcName, method, url, data, onSuccess, options) {
           var headers = {};
           if (angular.isObject(options) && options.hasOwnProperty('headers')) {
@@ -207,6 +210,10 @@
             timeout: httpTimeoutMs
           }, onSuccess, options);
         }
+
+        this.HEAD = function (svcName, url, data, onSuccess, options) {
+          return dataCall(svcName, 'HEAD', url, data, onSuccess, options);
+        };
 
         this.PUT = function (svcName, url, data, onSuccess, options) {
           dataCall(svcName, 'PUT', url, data, onSuccess, options);
