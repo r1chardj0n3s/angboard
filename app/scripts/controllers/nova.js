@@ -15,21 +15,21 @@
   // hook fetching this data into the route resolution so it's loaded before
   // we switch route to the new page; also allows nicer sharing of the fetch
   // functionality between uses
-  function fetchImages(apiService, $q) {
+  var fetchImages = function (apiService, $q) {
     var defer = $q.defer();
     apiService.GET('nova', 'images/detail', function (data) {
       defer.resolve(data.images);
     });
     return defer.promise;
-  }
+  };
 
-  function fetchFlavors(apiService, $q) {
+  var fetchFlavors = function (apiService, $q) {
     var defer = $q.defer();
     apiService.GET('nova', 'flavors/detail', function (data) {
       defer.resolve(data.flavors);
     });
     return defer.promise;
-  }
+  };
 
   app.config(function ($routeProvider) {
     $routeProvider.when('/nova/images', {
@@ -322,7 +322,6 @@
       });
     };
 
-
     $scope.serverDetail = function (server) {
       alertService.clearAlerts();
       serverModal.open(server.id);
@@ -344,6 +343,7 @@
     };
   });
 
+
   var ServerModalCtrl = function ($scope, $modalInstance, data, networkModal, apiService, $log) {
     $scope.data = data;
     $scope.cancel = function () {
@@ -364,7 +364,6 @@
         });
     };
   };
-
 
   app.service('serverModal', function (apiService, $modal) {
     this.open = function (serverId) {
@@ -399,6 +398,7 @@
       );
     };
   });
+
 
   app.controller('NetworksCtrl', function ($log, $scope, apiService, alertService, networkModal) {
     $scope.$root.pageHeading = 'Networks';
