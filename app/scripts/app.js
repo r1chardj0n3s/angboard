@@ -25,7 +25,7 @@
       $rootScope.$on('$routeChangeStart', function () {
         // set the defaults for the index page elements - these are overridden
         // in the few controllers that need to
-        $rootScope.pageSubTitle = '';
+        $rootScope.pageHeading = '';
         if (!apiService.access) {
           $log.debug('no access', $location.path());
           if ($location.path() !== '/keystone/logout') {
