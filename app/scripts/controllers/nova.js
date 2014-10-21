@@ -31,32 +31,7 @@
     return defer.promise;
   };
 
-  app.config(function ($routeProvider) {
-    $routeProvider.when('/nova/images', {
-      controller: 'ImagesCtrl',
-      templateUrl: 'views/nova_images.html',
-      resolve: {images: fetchImages}
-    });
-    $routeProvider.when('/nova/flavors', {
-      controller: 'FlavorsCtrl',
-      templateUrl: 'views/nova_flavors.html',
-      resolve: {flavors: fetchFlavors}
-    });
-    $routeProvider.when('/nova/servers', {
-      controller: 'ServersCtrl',
-      templateUrl: 'views/nova_servers.html',
-      resolve: {images: fetchImages, flavors: fetchFlavors}
-    });
-    $routeProvider.when('/nova/networks', {
-      templateUrl: 'views/nova_networks.html'
-    });
-    $routeProvider.when('/nova/extensions', {
-      templateUrl: 'views/nova_extensions.html'
-    });
-  });
-
-
-  // a module global to cache the nova extensions
+ // a module global to cache the nova extensions
   app.value('novaExtensions', {});
 
   app.run(function ($rootScope, menuService, apiService, novaExtensions) {
@@ -96,7 +71,7 @@
   });
 
 
-  app.controller('ImagesCtrl', function ($scope, images, alertService, imageModal) {
+  var ImagesCtrl = function ($scope, images, alertService, imageModal) {
     $scope.$root.pageHeading = 'Images';
     alertService.clearAlerts();
     $scope.images = images;
@@ -105,10 +80,10 @@
       alertService.clearAlerts();
       imageModal.open(image.id);
     };
-  });
+  };
 
 
-  app.controller('FlavorsCtrl', function ($scope, flavors, alertService, flavorModal) {
+  var FlavorsCtrl = function ($scope, flavors, alertService, flavorModal) {
     $scope.$root.pageHeading = 'Flavors';
     alertService.clearAlerts();
     $scope.flavors = flavors;
@@ -117,7 +92,7 @@
       alertService.clearAlerts();
       flavorModal.open(flavor.id);
     };
-  });
+  };
 
 
   function updateArray(current, updates) {
@@ -153,8 +128,65 @@
   });
 
 
-  app.controller('ServersCtrl', function ($scope, images, flavors, apiService, alertService,
-      $interval, $modal, serverModal, imageModal, flavorModal, consoleModal) {
+  var ServerEditCtrl = function ($scope, $modalInstance, server, apiService, alertService) {
+    $scope.server = server;
+
+    // "Whenever you have ng-model there’s gotta be a dot in there somewhere.
+    // If you don’t have a dot, you’re doing it wrong."
+    $scope.formData = {
+      name: server.name,
+      accessIPv4: server.accessIPv4,
+      accessIPv6: server.accessIPv6
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+
+    var putUpdate = function (update) {
+      alertService.clearAlerts();
+      apiService.PUT(
+        'nova',
+        'servers/' + $scope.server.id,
+        update,
+        function () {
+          alertService.add('info', 'Server updated.');
+          $modalInstance.dismiss('cancel');
+        }
+      );
+    };
+
+    $scope.editName = function () {
+      putUpdate({server: {name: $scope.formData.name}});
+    };
+
+    $scope.editAccess = function () {
+      putUpdate({server: {
+        accessIPv4: $scope.formData.accessIPv4,
+        accessIPv6: $scope.formData.accessIPv6
+      }});
+    };
+
+    var postEdit = function (update) {
+      alertService.clearAlerts();
+      apiService.POST(
+        'nova',
+        'servers/' + $scope.server.id + '/action',
+        update,
+        function () {
+          alertService.add('info', 'Server updated.');
+          $modalInstance.dismiss('cancel');
+        }
+      );
+    };
+
+    $scope.changePassword = function () {
+      postEdit({changePassword: {adminPass: $scope.formData.password}});
+    };
+  };
+
+
+  var ServersCtrl = function ($scope, images, flavors, apiService, alertService, $interval, $modal, serverModal, imageModal, flavorModal, consoleModal) {
     var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
@@ -254,65 +286,6 @@
       );
     };
 
-
-    var ServerEditCtrl = function ($scope, $modalInstance, server, apiService, alertService) {
-      $scope.server = server;
-
-      // "Whenever you have ng-model there’s gotta be a dot in there somewhere.
-      // If you don’t have a dot, you’re doing it wrong."
-      $scope.formData = {
-        name: server.name,
-        accessIPv4: server.accessIPv4,
-        accessIPv6: server.accessIPv6
-      };
-
-      $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-      };
-
-      var putUpdate = function (update) {
-        alertService.clearAlerts();
-        apiService.PUT(
-          'nova',
-          'servers/' + $scope.server.id,
-          update,
-          function () {
-            alertService.add('info', 'Server updated.');
-            $modalInstance.dismiss('cancel');
-          }
-        );
-      };
-
-      $scope.editName = function () {
-        putUpdate({server: {name: $scope.formData.name}});
-      };
-
-      $scope.editAccess = function () {
-        putUpdate({server: {
-          accessIPv4: $scope.formData.accessIPv4,
-          accessIPv6: $scope.formData.accessIPv6
-        }});
-      };
-
-      var postEdit = function (update) {
-        alertService.clearAlerts();
-        apiService.POST(
-          'nova',
-          'servers/' + $scope.server.id + '/action',
-          update,
-          function () {
-            alertService.add('info', 'Server updated.');
-            $modalInstance.dismiss('cancel');
-          }
-        );
-      };
-
-      $scope.changePassword = function () {
-        postEdit({changePassword: {adminPass: $scope.formData.password}});
-      };
-
-    };
-
     $scope.edit = function (server) {
       $modal.open({
         templateUrl: 'views/nova_server_edit.html',
@@ -341,7 +314,7 @@
       alertService.clearAlerts();
       flavorModal.open(flavor.id);
     };
-  });
+  };
 
 
   var ServerModalCtrl = function ($scope, $modalInstance, data, networkModal, apiService, $log) {
@@ -455,5 +428,30 @@
         resolve: {data: function () {return network; }}
       });
     };
+  });
+
+
+  app.config(function ($routeProvider) {
+    $routeProvider.when('/nova/images', {
+      controller: ImagesCtrl,
+      templateUrl: 'views/nova_images.html',
+      resolve: {images: fetchImages}
+    });
+    $routeProvider.when('/nova/flavors', {
+      controller: FlavorsCtrl,
+      templateUrl: 'views/nova_flavors.html',
+      resolve: {flavors: fetchFlavors}
+    });
+    $routeProvider.when('/nova/servers', {
+      controller: ServersCtrl,
+      templateUrl: 'views/nova_servers.html',
+      resolve: {images: fetchImages, flavors: fetchFlavors}
+    });
+    $routeProvider.when('/nova/networks', {
+      templateUrl: 'views/nova_networks.html'
+    });
+    $routeProvider.when('/nova/extensions', {
+      templateUrl: 'views/nova_extensions.html'
+    });
   });
 }());
