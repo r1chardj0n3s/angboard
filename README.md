@@ -96,6 +96,7 @@ views.
   [mocha BDD structure](http://visionmedia.github.io/mocha/)
   and [chai assertions library](http://chaijs.com/api/bdd/)
 * [virtualenv - the npm version](https://www.npmjs.org/package/virtualenv)
+* [underscore.js](http://underscorejs.org/)
 
 Note that the minification used in our build tool includes `ngmin` support so
 you don't need to manually include the DI minification hacks usually needed
@@ -209,11 +210,12 @@ Inteded Areas Of Development (aka TODO)
 * cover off the OWASP top 10 (at a minimum) where possible/appropriate
   * XSRF per https://docs.angularjs.org/api/ng/service/$http 
 * *perhaps* investigate angular strap vs ui-bootstrap
+* or https://github.com/angular/material ?
 * region selection
 * handle multiple endpoints per region
-* investigate https://github.com/chjj/term.js
-* investigate http://jmdobry.github.io/angular-cache/ for novaExtensions etc
-
+* investigate caching mechanisms
+* look into further work refactoring fetching of API data (partial work
+  done in nova)
 
 Security
 ========

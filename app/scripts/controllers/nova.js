@@ -1,3 +1,4 @@
+/*global _*/
 (function () {
   'use strict';
 
@@ -11,16 +12,40 @@
 
   var app = angular.module('angboardApp');
 
+  // hook fetching this data into the route resolution so it's loaded before
+  // we switch route to the new page; also allows nicer sharing of the fetch
+  // functionality between uses
+  function fetchImages(apiService, $q) {
+    var defer = $q.defer();
+    apiService.GET('nova', 'images/detail', function (data) {
+      defer.resolve(data.images);
+    });
+    return defer.promise;
+  }
+
+  function fetchFlavors(apiService, $q) {
+    var defer = $q.defer();
+    apiService.GET('nova', 'flavors/detail', function (data) {
+      defer.resolve(data.flavors);
+    });
+    return defer.promise;
+  }
 
   app.config(function ($routeProvider) {
     $routeProvider.when('/nova/images', {
-      templateUrl: 'views/nova_images.html'
+      controller: 'ImagesCtrl',
+      templateUrl: 'views/nova_images.html',
+      resolve: {images: fetchImages}
     });
     $routeProvider.when('/nova/flavors', {
-      templateUrl: 'views/nova_flavors.html'
+      controller: 'FlavorsCtrl',
+      templateUrl: 'views/nova_flavors.html',
+      resolve: {flavors: fetchFlavors}
     });
     $routeProvider.when('/nova/servers', {
-      templateUrl: 'views/nova_servers.html'
+      controller: 'ServersCtrl',
+      templateUrl: 'views/nova_servers.html',
+      resolve: {images: fetchImages, flavors: fetchFlavors}
     });
     $routeProvider.when('/nova/networks', {
       templateUrl: 'views/nova_networks.html'
@@ -34,30 +59,26 @@
   // a module global to cache the nova extensions
   app.value('novaExtensions', {});
 
-  var fetchExtensions = function (apiService, novaExtensions) {
-    // fetch the extensions
-    apiService.GET('nova', 'extensions', function (data) {
-      var i, extension, prop;
-      for (prop in novaExtensions) {
-        if (novaExtensions.hasOwnProperty(prop)) {
-          delete novaExtensions[prop];
-        }
-      }
-      for (i = 0; i < data.extensions.length; i++) {
-        extension = data.extensions[i];
-        novaExtensions[extension.alias] = extension;
-      }
-    }, {showSpinner: false, onError: function () {return; }});
-  };
-
   app.run(function ($rootScope, menuService, apiService, novaExtensions) {
-    $rootScope.$on('login', function () {
-      fetchExtensions(apiService, novaExtensions);
-    });
-
-    if (apiService.access) {
-      fetchExtensions(apiService, novaExtensions);
+    function fetchExtensions() {
+      // fetch the extensions
+      apiService.GET('nova', 'extensions', function (data) {
+        var i, extension, prop;
+        for (prop in novaExtensions) {
+          if (novaExtensions.hasOwnProperty(prop)) {
+            delete novaExtensions[prop];
+          }
+        }
+        for (i = 0; i < data.extensions.length; i++) {
+          extension = data.extensions[i];
+          novaExtensions[extension.alias] = extension;
+        }
+      }, {showSpinner: false, onError: function () {return; }});
     }
+    if (_.isEmpty(novaExtensions) && apiService.access) {
+      fetchExtensions();
+    }
+    $rootScope.$on('login', fetchExtensions);
 
     var menu = {'title': 'Compute', 'action': '#', 'menus': []};
     menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
@@ -75,13 +96,10 @@
   });
 
 
-  app.controller('ImagesCtrl', function ($scope, apiService, alertService, imageModal) {
+  app.controller('ImagesCtrl', function ($scope, images, alertService, imageModal) {
     $scope.$root.pageHeading = 'Images';
     alertService.clearAlerts();
-
-    apiService.GET('nova', 'images/detail', function (data) {
-      $scope.images = data.images;
-    });
+    $scope.images = images;
 
     $scope.imageDetail = function (image) {
       alertService.clearAlerts();
@@ -90,13 +108,10 @@
   });
 
 
-  app.controller('FlavorsCtrl', function ($scope, apiService, alertService, flavorModal) {
+  app.controller('FlavorsCtrl', function ($scope, flavors, alertService, flavorModal) {
     $scope.$root.pageHeading = 'Flavors';
     alertService.clearAlerts();
-
-    apiService.GET('nova', 'flavors/detail', function (data) {
-      $scope.flavors = data.flavors;
-    });
+    $scope.flavors = flavors;
 
     $scope.flavorDetail = function (flavor) {
       alertService.clearAlerts();
@@ -132,29 +147,28 @@
     }
   }
 
+
   app.controller('ExtensionsCtrl', function ($scope, novaExtensions) {
     $scope.extensions = novaExtensions;
   });
 
-  app.controller('ServersCtrl', function ($scope, apiService, alertService,
+
+  app.controller('ServersCtrl', function ($scope, images, flavors, apiService, alertService,
       $interval, $modal, serverModal, imageModal, flavorModal, consoleModal) {
     var self = this;
     $scope.$root.pageHeading = 'Servers';
     alertService.clearAlerts();
 
-    apiService.GET('nova', 'flavors/detail', function (data) {
-      $scope.flavors = data.flavors;
-      $scope.flavorMap = {};
-      angular.forEach(data.flavors, function (flavor) {
-        $scope.flavorMap[flavor.id] = flavor;
-      });
+    $scope.flavors = flavors;
+    $scope.flavorMap = {};
+    angular.forEach(flavors, function (flavor) {
+      $scope.flavorMap[flavor.id] = flavor;
     });
-    apiService.GET('nova', 'images/detail', function (data) {
-      $scope.images = data.images;
-      $scope.imageMap = {};
-      angular.forEach(data.images, function (image) {
-        $scope.imageMap[image.id] = image;
-      });
+
+    $scope.images = images;
+    $scope.imageMap = {};
+    angular.forEach(images, function (image) {
+      $scope.imageMap[image.id] = image;
     });
 
     var refreshServers = function () {

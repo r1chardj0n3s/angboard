@@ -54,7 +54,7 @@
       function (alertService, $http, $log, $location, localStorageService) {
         var self = this;
         var httpTimeoutMs = 60000;
-        self.busy = 0;
+        self.busy = {count: 0};
 
         // store the entire "tokens" response from keystone
         self.access = localStorageService.get('access');
@@ -119,6 +119,9 @@
         }
 
         function apiCall(config, onSuccess, options) {
+          // grab a handle on this so an in-flight call doesn't
+          // screw up at force-reset new counter
+          var busy = self.busy;
           var showSpinner = true;
           if (suppliedOption(options, 'showSpinner')) {
             showSpinner = options.showSpinner;
@@ -127,13 +130,15 @@
             config.headers['X-Auth-Token'] = self.access.token.id;
           }
           if (showSpinner) {
-            self.busy += 1;
+            busy.count += 1;
+            $log.debug('busy += 1 ->', self.busy);
           }
 
           $log.debug('API call', config.method, config.url);
           return $http(config).success(function (response, status, headers) {
             if (showSpinner) {
-              self.busy -= 1;
+              busy.count -= 1;
+              $log.debug('busy -= 1 ->', self.busy);
             }
             $log.debug('apiCall success', status, response);
             try {
@@ -144,7 +149,8 @@
             }
           }).error(function (response, status, headers) {
             if (showSpinner) {
-              self.busy -= 1;
+              busy.count -= 1;
+              $log.debug('busy -= 1 ->', self.busy);
             }
             if (status === 401) {
               $log.warn('apiCall 401 response handler', response);

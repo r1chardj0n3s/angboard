@@ -50,11 +50,12 @@
     });
 
   app.controller('LoginCtrl',
-    function ($scope, $location, apiService, alertService, menuService) {
+    function ($scope, $location, $log, apiService, alertService, menuService) {
       $scope.$root.pageHeading = 'Login';
       menuService.visible = false;
       // we might have been forced here so forcibly reset busy to sane state
-      apiService.busy = 0;
+      apiService.busy = {count: 0};
+      $log.debug('busy = 0');
 
       $scope.auth = {
         'tenantName': 'demo',

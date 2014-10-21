@@ -34,6 +34,7 @@
     var jslintConfig = {
       browser: true,      // assume the code is running in a browser
       predef: ['angular', 'document'],
+      nomen: true,        // "Unexpected dangling '_' in '_' " orly jslint??
       indent: 2,          // 2-space indentation
       vars: true,         // allow multiple var statements in a function
       'continue': true,   // allow use of "continue" keyword in loops (wat)

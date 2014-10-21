@@ -22,14 +22,12 @@
 
       // listen for route changes to ensure we're logged in on all pages except
       // the login page
-      /*jslint unparam: true*/
       $rootScope.$on('$routeChangeStart', function () {
         // set the defaults for the index page elements - these are overridden
         // in the few controllers that need to
-        $rootScope.showNavBar = true;
         $rootScope.pageSubTitle = '';
         if (!apiService.access) {
-          $log.debug($location.path());
+          $log.debug('no access', $location.path());
           if ($location.path() !== '/keystone/logout') {
             $location.path('/keystone/login');
           }
