@@ -49,10 +49,12 @@
       resolve: {images: fetchImages, flavors: fetchFlavors}
     });
     $routeProvider.when('/nova/networks', {
+      controller: 'NovaNetworksCtrl',
       templateUrl: 'views/nova_networks.html'
     });
     $routeProvider.when('/nova/extensions', {
-      templateUrl: 'views/nova_extensions.html'
+      controller: 'NovaExtensionsCtrl',
+      template: '<pre>{{extensions|json}}</pre>'
     });
   });
 
@@ -151,7 +153,7 @@
   }
 
 
-  app.controller('ExtensionsCtrl', function ($scope, novaExtensions) {
+  app.controller('NovaExtensionsCtrl', function ($scope, novaExtensions) {
     $scope.extensions = novaExtensions;
   });
 
