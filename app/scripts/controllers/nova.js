@@ -2,15 +2,16 @@
 (function () {
   'use strict';
 
-  var ModalCtrl = function ($scope, $modalInstance, data) {
+  var app = angular.module('angboardApp');
+
+
+  app.controller('ModalCtrl', function ($scope, $modalInstance, data) {
     $scope.data = data;
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
-  };
+  });
 
-
-  var app = angular.module('angboardApp');
 
   // hook fetching this data into the route resolution so it's loaded before
   // we switch route to the new page; also allows nicer sharing of the fetch
@@ -31,7 +32,32 @@
     return defer.promise;
   };
 
- // a module global to cache the nova extensions
+  app.config(function ($routeProvider) {
+    $routeProvider.when('/nova/images', {
+      controller: 'NovaImagesCtrl',
+      templateUrl: 'views/nova_images.html',
+      resolve: {images: fetchImages}
+    });
+    $routeProvider.when('/nova/flavors', {
+      controller: 'NovaFlavorsCtrl',
+      templateUrl: 'views/nova_flavors.html',
+      resolve: {flavors: fetchFlavors}
+    });
+    $routeProvider.when('/nova/servers', {
+      controller: 'NovaServersCtrl',
+      templateUrl: 'views/nova_servers.html',
+      resolve: {images: fetchImages, flavors: fetchFlavors}
+    });
+    $routeProvider.when('/nova/networks', {
+      templateUrl: 'views/nova_networks.html'
+    });
+    $routeProvider.when('/nova/extensions', {
+      templateUrl: 'views/nova_extensions.html'
+    });
+  });
+
+
+  // a module global to cache the nova extensions
   app.value('novaExtensions', {});
 
   app.run(function ($rootScope, menuService, apiService, novaExtensions) {
@@ -71,28 +97,30 @@
   });
 
 
-  var ImagesCtrl = function ($scope, images, alertService, imageModal) {
+  app.controller('NovaImagesCtrl', function ($scope, images, alertService,
+      novaImageModal) {
     $scope.$root.pageHeading = 'Images';
     alertService.clearAlerts();
     $scope.images = images;
 
     $scope.imageDetail = function (image) {
       alertService.clearAlerts();
-      imageModal.open(image.id);
+      novaImageModal.open(image.id);
     };
-  };
+  });
 
 
-  var FlavorsCtrl = function ($scope, flavors, alertService, flavorModal) {
+  app.controller('NovaFlavorsCtrl', function ($scope, flavors, alertService,
+      novaFlavorModal) {
     $scope.$root.pageHeading = 'Flavors';
     alertService.clearAlerts();
     $scope.flavors = flavors;
 
     $scope.flavorDetail = function (flavor) {
       alertService.clearAlerts();
-      flavorModal.open(flavor.id);
+      novaFlavorModal.open(flavor.id);
     };
-  };
+  });
 
 
   function updateArray(current, updates) {
@@ -128,7 +156,140 @@
   });
 
 
-  var ServerEditCtrl = function ($scope, $modalInstance, server, apiService, alertService) {
+  app.controller('NovaServersCtrl', function ($scope, images, flavors,
+      apiService, alertService, $interval, $modal,
+      novaServerModal, novaImageModal, novaFlavorModal, novaConsoleModal) {
+    var self = this;
+    $scope.$root.pageHeading = 'Servers';
+    alertService.clearAlerts();
+
+    $scope.flavors = flavors;
+    $scope.flavorMap = {};
+    angular.forEach(flavors, function (flavor) {
+      $scope.flavorMap[flavor.id] = flavor;
+    });
+
+    $scope.images = images;
+    $scope.imageMap = {};
+    angular.forEach(images, function (image) {
+      $scope.imageMap[image.id] = image;
+    });
+
+    var refreshServers = function () {
+      var url, update = angular.isDefined(self.lastFetch);
+      if (update) {
+        url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
+      } else {
+        url = 'servers/detail';
+      }
+      /*jslint unparam: true*/
+      apiService.GET('nova', url, function (data, status, headers) {
+        self.lastFetch = new Date(headers('date'));
+        if (update) {
+          updateArray($scope.servers, data.servers);
+        } else {
+          // first fetch
+          $scope.servers = data.servers;
+        }
+      }, {showSpinner: false, onError: function () {return; }});
+      /*jslint unparam: false*/
+    };
+
+    var refreshPromise = $interval(refreshServers, 5000);
+    refreshServers();
+
+    // Cancel interval on page changes
+    $scope.$on('$destroy', function () {
+      if (angular.isDefined(refreshPromise)) {
+        $interval.cancel(refreshPromise);
+        refreshPromise = undefined;
+      }
+    });
+
+    $scope.showFault = function (server) {
+      $modal.open({
+        templateUrl: 'showFault.html',
+        controller: 'ModalCtrl',
+        size: 'lg',
+        resolve: {data: function () {return server; }}
+      });
+    };
+
+    // somewhere to store the new server stuffs
+    $scope.newServer = {};
+    $scope.createServer = function () {
+      alertService.clearAlerts();
+      apiService.POST(
+        'nova',
+        'servers',
+        {'server': $scope.newServer},
+        function (data) {
+          $scope.newServer = {};
+          $modal.open({
+            templateUrl: 'createResponse.html',
+            controller: 'ModalCtrl',
+            resolve: {data: function () {return data; }}
+          });
+        }
+      );
+    };
+
+    $scope.reboot = function (server) {
+      alertService.clearAlerts();
+      apiService.POST(
+        'nova',
+        'servers/' + server.id + '/action',
+        {reboot: {type: 'SOFT'}},
+        function () {
+          alertService.add('info', 'Server rebooting');
+        }
+      );
+    };
+
+    $scope.delete = function (server) {
+      alertService.clearAlerts();
+      apiService.DELETE(
+        'nova',
+        'servers/' + server.id,
+        function () {
+          alertService.add('info', 'Server deleted!');
+        }
+      );
+    };
+
+    $scope.edit = function (server) {
+      $modal.open({
+        templateUrl: 'views/nova_server_edit.html',
+        controller: 'NovaServerEditCtrl',
+        size: 'lg',
+        resolve: {server: function () {return server; }}
+      });
+    };
+
+    $scope.serverDetail = function (server) {
+      alertService.clearAlerts();
+      novaServerModal.open(server.id);
+    };
+
+    $scope.console = function (server) {
+      alertService.clearAlerts();
+      novaConsoleModal.open(server.id);
+    };
+
+    $scope.imageDetail = function (image) {
+      alertService.clearAlerts();
+      novaImageModal.open(image.id);
+    };
+
+    $scope.flavorDetail = function (flavor) {
+      alertService.clearAlerts();
+      novaFlavorModal.open(flavor.id);
+    };
+  });
+
+
+  app.controller('NovaServerEditCtrl', function ($scope, $modalInstance, server,
+      apiService, alertService) {
     $scope.server = server;
 
     // "Whenever you have ng-model there’s gotta be a dot in there somewhere.
@@ -183,141 +344,11 @@
     $scope.changePassword = function () {
       postEdit({changePassword: {adminPass: $scope.formData.password}});
     };
-  };
+  });
 
 
-  var ServersCtrl = function ($scope, images, flavors, apiService, alertService, $interval, $modal, serverModal, imageModal, flavorModal, consoleModal) {
-    var self = this;
-    $scope.$root.pageHeading = 'Servers';
-    alertService.clearAlerts();
-
-    $scope.flavors = flavors;
-    $scope.flavorMap = {};
-    angular.forEach(flavors, function (flavor) {
-      $scope.flavorMap[flavor.id] = flavor;
-    });
-
-    $scope.images = images;
-    $scope.imageMap = {};
-    angular.forEach(images, function (image) {
-      $scope.imageMap[image.id] = image;
-    });
-
-    var refreshServers = function () {
-      var url, update = angular.isDefined(self.lastFetch);
-      if (update) {
-        url = 'servers/detail?changes-since=' + self.lastFetch.toISOString();
-      } else {
-        url = 'servers/detail';
-      }
-      /*jslint unparam: true*/
-      apiService.GET('nova', url, function (data, status, headers) {
-        self.lastFetch = new Date(headers('date'));
-        if (update) {
-          updateArray($scope.servers, data.servers);
-        } else {
-          // first fetch
-          $scope.servers = data.servers;
-        }
-      }, {showSpinner: false, onError: function () {return; }});
-      /*jslint unparam: false*/
-    };
-
-    var refreshPromise = $interval(refreshServers, 5000);
-    refreshServers();
-
-    // Cancel interval on page changes
-    $scope.$on('$destroy', function () {
-      if (angular.isDefined(refreshPromise)) {
-        $interval.cancel(refreshPromise);
-        refreshPromise = undefined;
-      }
-    });
-
-
-    $scope.showFault = function (server) {
-      $modal.open({
-        templateUrl: 'showFault.html',
-        controller: ModalCtrl,
-        size: 'lg',
-        resolve: {data: function () {return server; }}
-      });
-    };
-
-    // somewhere to store the new server stuffs
-    $scope.newServer = {};
-    $scope.createServer = function () {
-      alertService.clearAlerts();
-      apiService.POST(
-        'nova',
-        'servers',
-        {'server': $scope.newServer},
-        function (data) {
-          $scope.newServer = {};
-          $modal.open({
-            templateUrl: 'createResponse.html',
-            controller: ModalCtrl,
-            resolve: {data: function () {return data; }}
-          });
-        }
-      );
-    };
-
-    $scope.reboot = function (server) {
-      alertService.clearAlerts();
-      apiService.POST(
-        'nova',
-        'servers/' + server.id + '/action',
-        {reboot: {type: 'SOFT'}},
-        function () {
-          alertService.add('info', 'Server rebooting');
-        }
-      );
-    };
-
-    $scope.delete = function (server) {
-      alertService.clearAlerts();
-      apiService.DELETE(
-        'nova',
-        'servers/' + server.id,
-        function () {
-          alertService.add('info', 'Server deleted!');
-        }
-      );
-    };
-
-    $scope.edit = function (server) {
-      $modal.open({
-        templateUrl: 'views/nova_server_edit.html',
-        controller: ServerEditCtrl,
-        size: 'lg',
-        resolve: {server: function () {return server; }}
-      });
-    };
-
-    $scope.serverDetail = function (server) {
-      alertService.clearAlerts();
-      serverModal.open(server.id);
-    };
-
-    $scope.console = function (server) {
-      alertService.clearAlerts();
-      consoleModal.open(server.id);
-    };
-
-    $scope.imageDetail = function (image) {
-      alertService.clearAlerts();
-      imageModal.open(image.id);
-    };
-
-    $scope.flavorDetail = function (flavor) {
-      alertService.clearAlerts();
-      flavorModal.open(flavor.id);
-    };
-  };
-
-
-  var ServerModalCtrl = function ($scope, $modalInstance, data, networkModal, apiService, $log) {
+  app.controller('NovaServerModalCtrl', function ($scope, $modalInstance, data,
+      networkModal, apiService, $log) {
     $scope.data = data;
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
@@ -336,15 +367,15 @@
           }
         });
     };
-  };
+  });
 
-  app.service('serverModal', function (apiService, $modal) {
+  app.service('novaServerModal', function (apiService, $modal) {
     this.open = function (serverId) {
       apiService.GET('nova', 'servers/' + serverId,
         function (data) {
           $modal.open({
             templateUrl: 'views/nova_server_detail.html',
-            controller: ServerModalCtrl,
+            controller: 'NovaServerModalCtrl',
             size: 'lg',
             resolve: {data: function () {return data.server; }}
           });
@@ -353,7 +384,7 @@
   });
 
 
-  app.service('consoleModal', function (alertService, apiService, $modal) {
+  app.service('novaConsoleModal', function (alertService, apiService, $modal) {
     this.open = function (serverId) {
       alertService.clearAlerts();
       apiService.POST(
@@ -363,7 +394,7 @@
         function (data) {
           $modal.open({
             templateUrl: 'views/nova_server_console.html',
-            controller: ModalCtrl,
+            controller: 'ModalCtrl',
             size: 'lg',
             resolve: {data: function () {return data.console; }}
           });
@@ -373,7 +404,8 @@
   });
 
 
-  app.controller('NetworksCtrl', function ($log, $scope, apiService, alertService, networkModal) {
+  app.controller('NovaNetworksCtrl', function ($log, $scope, apiService,
+      alertService, networkModal) {
     $scope.$root.pageHeading = 'Networks';
     alertService.clearAlerts();
 
@@ -389,13 +421,13 @@
   });
 
 
-  app.service('imageModal', function (apiService, $modal) {
+  app.service('novaImageModal', function (apiService, $modal) {
     this.open = function (imageId) {
       apiService.GET('nova', 'images/' + imageId,
         function (data) {
           $modal.open({
             templateUrl: 'views/nova_image_detail.html',
-            controller: ModalCtrl,
+            controller: 'ModalCtrl',
             size: 'lg',
             resolve: {data: function () {return data.image; }}
           });
@@ -404,13 +436,13 @@
   });
 
 
-  app.service('flavorModal', function (apiService, $modal) {
+  app.service('novaFlavorModal', function (apiService, $modal) {
     this.open = function (flavorId) {
       apiService.GET('nova', 'flavors/' + flavorId,
         function (data) {
           $modal.open({
             templateUrl: 'views/nova_flavor_detail.html',
-            controller: ModalCtrl,
+            controller: 'ModalCtrl',
             size: 'lg',
             resolve: {data: function () {return data.flavor; }}
           });
@@ -423,35 +455,10 @@
     this.open = function (network) {
       $modal.open({
         templateUrl: 'views/nova_network_detail.html',
-        controller: ModalCtrl,
+        controller: 'ModalCtrl',
         size: 'lg',
         resolve: {data: function () {return network; }}
       });
     };
-  });
-
-
-  app.config(function ($routeProvider) {
-    $routeProvider.when('/nova/images', {
-      controller: ImagesCtrl,
-      templateUrl: 'views/nova_images.html',
-      resolve: {images: fetchImages}
-    });
-    $routeProvider.when('/nova/flavors', {
-      controller: FlavorsCtrl,
-      templateUrl: 'views/nova_flavors.html',
-      resolve: {flavors: fetchFlavors}
-    });
-    $routeProvider.when('/nova/servers', {
-      controller: ServersCtrl,
-      templateUrl: 'views/nova_servers.html',
-      resolve: {images: fetchImages, flavors: fetchFlavors}
-    });
-    $routeProvider.when('/nova/networks', {
-      templateUrl: 'views/nova_networks.html'
-    });
-    $routeProvider.when('/nova/extensions', {
-      templateUrl: 'views/nova_extensions.html'
-    });
   });
 }());
