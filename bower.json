@@ -13,11 +13,13 @@
     "angular-animate": "~1.2.26",
     "angular-sanitize": "~1.2.26",
     "boot": "~3.2.0",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "ng-websocket": "~0.1.5"
   },
   "devDependencies": {
     "angular-mocks": "~1.2.0",
-    "angular-scenario": "~1.2.0"
+    "angular-scenario": "~1.2.0",
+    "require": "*"
   },
   "appPath": "app",
   "resolutions": {

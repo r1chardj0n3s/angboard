@@ -1,4 +1,4 @@
-/*global Terminal,WebSocket,Blob,FileReader */
+/*global Terminal,Blob,FileReader */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
    * # console
    */
   angular.module('angboardApp')
-    .directive('console', function ($log) {
+    .directive('console', function ($log, $websocket) {
       return {
         scope: {
           connection: '=connection'
@@ -21,33 +21,33 @@
           $log.info('open console to', scope.connection);
 
           var term = new Terminal();
-          var socket = new WebSocket(scope.connection.url, ['binary', 'base64']);
+          var socket = $websocket.$new(scope.connection.url, ['binary', 'base64']);
 
           // turn the angular jQlite element into a raw DOM element
           element = angular.element(element)[0];
           term.open(element.ownerDocument.getElementById('term'));
 
           term.on('data', function (data) {
-            socket.send(data);
+            socket.$$ws.send(data);
           });
 
-          socket.onmessage = function (e) {
-            if (e.data instanceof Blob) {
+          socket.$on('$message', function (message) {
+            if (message instanceof Blob) {
               var f = new FileReader();
               f.onload = function () {term.write(f.result); };
-              f.readAsText(e.data);
+              f.readAsText(message);
             } else {
-              term.write(e.data);
+              term.write(message);
             }
-          };
+          });
 
           scope.status = function () {
-            return STATES[socket.readyState];
+            return STATES[socket.$status()];
           };
 
           scope.$on('$destroy', function () {
             $log.info('closing console to', scope.connection);
-            socket.close();
+            socket.$close();
           });
         }
       };

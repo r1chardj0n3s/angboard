@@ -5715,8 +5715,8 @@ Terminal.on = on;
 Terminal.off = off;
 Terminal.cancel = cancel;
 
-if (typeof module !== 'undefined') {
-  module.exports = Terminal;
+if (typeof exports !== 'undefined') {
+  exports.exports = Terminal;
 } else {
   this.Terminal = Terminal;
 }

@@ -25,6 +25,7 @@ module.exports = function (config) {
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-smart-table/dist/smart-table.min.js',
       'bower_components/underscore/underscore.js',
+      'bower_components/ng-websocket/ng-websocket.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
