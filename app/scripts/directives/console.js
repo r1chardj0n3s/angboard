@@ -23,7 +23,8 @@
           var term = new Terminal();
           var socket = $websocket.$new(scope.connection.url, ['binary', 'base64']);
 
-          // turn the angular jQlite element into a raw DOM element
+          // turn the angular jQlite element into a raw DOM element so we can
+          // attach the Terminal to it
           element = angular.element(element)[0];
           term.open(element.ownerDocument.getElementById('term'));
 
