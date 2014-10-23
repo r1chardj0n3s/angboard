@@ -9,13 +9,7 @@
       controller: 'HomeCtrl',
       templateUrl: 'views/home.html',
       resolve: {
-        limits: function (apiService, $q) {
-          var defer = $q.defer();
-          apiService.GET('nova', 'limits', function (data) {
-            defer.resolve(data.limits.absolute);
-          });
-          return defer.promise;
-        }
+        limits: function (nova) {return nova.limits(); }
       }
     });
   });
@@ -30,6 +24,6 @@
   // Login Controller
   app.controller('HomeCtrl', function ($scope, limits) {
     $scope.$root.pageHeading = 'Home';
-    $scope.limits = limits;
+    $scope.limits = limits.absolute;
   });
 }());

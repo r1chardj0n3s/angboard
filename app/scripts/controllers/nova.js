@@ -116,19 +116,20 @@
   app.service('nova', function (apiService, $q, $interval, $log) {
     var self = this;
 
-    var fetch = function (name, showSpinner) {
+    var fetch = function (name, url, showSpinner) {
       if (!angular.isDefined(showSpinner)) {
         showSpinner = true;
       }
       var defer = $q.defer();
-      apiService.GET('nova', name + '/detail', function (data) {
+      apiService.GET('nova', url, function (data) {
         defer.resolve(data[name]);
       }, {showSpinner: showSpinner});
       return defer.promise;
     };
 
-    self.images = function (showSpinner) {return fetch('images', showSpinner); };
-    self.flavors = function (showSpinner) {return fetch('flavors', showSpinner); };
+    self.limits = function (showSpinner) {return fetch('limits', 'limits', showSpinner); };
+    self.images = function (showSpinner) {return fetch('images', 'images/detail', showSpinner); };
+    self.flavors = function (showSpinner) {return fetch('flavors', 'flavors/detail', showSpinner); };
     self.servers = function (showSpinner) {
       if (!angular.isDefined(showSpinner)) {
         showSpinner = true;
@@ -194,9 +195,9 @@
     menu.menus.push({'title': 'Servers', 'action': '#/nova/servers'});
     menu.menus.push({'title': 'Extensions', 'action': '#/nova/extensions'});
     menu.menus.push({
-      'title': 'Networks',
-      'action': '#/nova/networks',
-      'show': function () {
+      title: 'Networks',
+      action: '#/nova/networks',
+      show: function () {
         return nova.extensions.hasOwnProperty('os-networks');
       }
     });
@@ -392,6 +393,7 @@
         });
     };
   });
+
 
   app.service('novaServerModal', function (apiService, $modal) {
     this.open = function (serverId) {
