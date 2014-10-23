@@ -16,10 +16,9 @@
     $routeProvider.when('/keystone/logout', {
       resolve: {
         redirect:
-          function ($rootScope, $location, $log, $cookieStore, apiService) {
+          function ($rootScope, $location, $log, apiService) {
             $log.info('log out');
             $rootScope.$emit('logout');
-            $cookieStore.remove('x-auth-token');
             apiService.clearAccess('logout');
             $location.path('/keystone/login');
           }
@@ -40,10 +39,11 @@
   });
 
   app.controller('DetailsCtrl',
-    function ($scope, apiService) {
+    function ($scope, $cookieStore, apiService) {
       $scope.$root.pageHeading = 'Access Details';
       $scope.apiService = apiService;
       $scope.invalidateToken = function () {
+        $cookieStore.put('x-auth-token', 'invalid');
         apiService.access.token.id = 'invalid';
       };
     });

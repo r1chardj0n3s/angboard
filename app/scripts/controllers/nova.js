@@ -46,48 +46,11 @@
     });
     $routeProvider.when('/nova/extensions', {
       controller: 'NovaExtensionsCtrl',
-      template: '<pre>{{extensions|json}}</pre>'
-    });
-  });
-
-
-  // a module global to cache the nova extensions
-  app.value('novaExtensions', {});
-
-  app.run(function ($rootScope, menuService, apiService, novaExtensions) {
-    function fetchExtensions() {
-      // fetch the extensions
-      apiService.GET('nova', 'extensions', function (data) {
-        var i, extension, prop;
-        for (prop in novaExtensions) {
-          if (novaExtensions.hasOwnProperty(prop)) {
-            delete novaExtensions[prop];
-          }
-        }
-        for (i = 0; i < data.extensions.length; i++) {
-          extension = data.extensions[i];
-          novaExtensions[extension.alias] = extension;
-        }
-      }, {showSpinner: false, onError: function () {return; }});
-    }
-    if (_.isEmpty(novaExtensions) && apiService.access) {
-      fetchExtensions();
-    }
-    $rootScope.$on('login', fetchExtensions);
-
-    var menu = {'title': 'Compute', 'action': '#', 'menus': []};
-    menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
-    menu.menus.push({'title': 'Flavors', 'action': '#/nova/flavors'});
-    menu.menus.push({'title': 'Servers', 'action': '#/nova/servers'});
-    menu.menus.push({'title': 'Extensions', 'action': '#/nova/extensions'});
-    menu.menus.push({
-      'title': 'Networks',
-      'action': '#/nova/networks',
-      'show': function () {
-        return novaExtensions.hasOwnProperty('os-networks');
+      template: '<pre>{{extensions|json}}</pre>',
+      resolve: {
+        images: function (nova) {return nova.extensions; }
       }
     });
-    menuService.push(menu);
   });
 
 
@@ -145,23 +108,20 @@
   }
 
 
-  app.controller('NovaExtensionsCtrl', function ($scope, novaExtensions) {
-    $scope.extensions = novaExtensions;
+  app.controller('NovaExtensionsCtrl', function ($scope, nova) {
+    $scope.extensions = nova.extensions;
   });
 
 
   app.service('nova', function (apiService, $q, $interval, $log) {
     var self = this;
-    self.lastFetch = {};
 
-    /*jslint unparam: true*/
     var fetch = function (name, showSpinner) {
       if (!angular.isDefined(showSpinner)) {
         showSpinner = true;
       }
       var defer = $q.defer();
-      apiService.GET('nova', name + '/detail', function (data, status, headers) {
-        self.lastFetch[name] = new Date(headers('date'));
+      apiService.GET('nova', name + '/detail', function (data) {
         defer.resolve(data[name]);
       }, {showSpinner: showSpinner});
       return defer.promise;
@@ -174,6 +134,7 @@
         showSpinner = true;
       }
       var defer = $q.defer();
+      /*jslint unparam: true*/
       apiService.GET('nova', 'servers/detail', function (data, status, headers) {
         var obj = data.servers;
         obj.lastFetch = new Date(headers('date'));
@@ -197,11 +158,49 @@
         };
         defer.resolve(data.servers);
       }, {showSpinner: showSpinner});
+      /*jslint unparam: false*/
       return defer.promise;
     };
 
-    /*jslint unparam: false*/
+    self.extensions = {};
+    self.fetchExtensions = function () {
+      // fetch the extensions
+      apiService.GET('nova', 'extensions', function (data) {
+        var i, extension, prop;
+        // clear (don't replace; that'll confuse $digest)
+        for (prop in self.extensions) {
+          if (self.extensions.hasOwnProperty(prop)) {
+            delete self.extensions[prop];
+          }
+        }
+        for (i = 0; i < data.extensions.length; i++) {
+          extension = data.extensions[i];
+          self.extensions[extension.alias] = extension;
+        }
+      }, {showSpinner: false, onError: function () {return; }});
+    };
+  });
 
+
+  app.run(function ($rootScope, menuService, apiService, nova) {
+    if (_.isEmpty(nova.extensions) && apiService.access) {
+      nova.fetchExtensions();
+    }
+    $rootScope.$on('login', nova.fetchExtensions);
+
+    var menu = {'title': 'Compute', 'action': '#', 'menus': []};
+    menu.menus.push({'title': 'Images', 'action': '#/nova/images'});
+    menu.menus.push({'title': 'Flavors', 'action': '#/nova/flavors'});
+    menu.menus.push({'title': 'Servers', 'action': '#/nova/servers'});
+    menu.menus.push({'title': 'Extensions', 'action': '#/nova/extensions'});
+    menu.menus.push({
+      'title': 'Networks',
+      'action': '#/nova/networks',
+      'show': function () {
+        return nova.extensions.hasOwnProperty('os-networks');
+      }
+    });
+    menuService.push(menu);
   });
 
 

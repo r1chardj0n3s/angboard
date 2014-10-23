@@ -51,7 +51,8 @@
     })
 
     .service('apiService',
-      function (alertService, $http, $log, $location, localStorageService) {
+      function (alertService, $http, $log, $location, localStorageService,
+          $cookieStore) {
         var self = this;
         var httpTimeoutMs = 60000;
         self.busy = {count: 0};
@@ -80,6 +81,7 @@
         };
         this.clearAccess = function (reason) {
           $log.info('clearAccess:', reason);
+          $cookieStore.remove('x-auth-token');
           localStorageService.remove('access');
           self.access = null;
           self.services = {};
