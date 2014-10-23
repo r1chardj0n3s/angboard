@@ -179,8 +179,8 @@
         obj.lastFetch = new Date(headers('date'));
         obj.refreshPromise = undefined;
         data.servers.startRefresh = function (period) {
-          $log.debug('starting server refresh for', this);
-          self.refreshPromise = $interval(function () {
+          $log.debug('starting server refresh');
+          obj.refreshPromise = $interval(function () {
             var url = 'servers/detail?changes-since=' + obj.lastFetch.toISOString();
             apiService.GET('nova', url, function (data, status, headers) {
               obj.lastFetch = new Date(headers('date'));

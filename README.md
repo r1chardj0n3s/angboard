@@ -217,7 +217,7 @@ Inteded Areas Of Development (aka TODO)
 * look into further work refactoring fetching of API data (partial work
   done in nova)
 * use [itsdangerous](http://pythonhosted.org/itsdangerous/) to obscure the
-  x-auth-token 
+  x-auth-token cookie?
 
 Security
 ========
