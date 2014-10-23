@@ -126,9 +126,6 @@
           if (suppliedOption(options, 'showSpinner')) {
             showSpinner = options.showSpinner;
           }
-          if (self.access) {
-            config.headers['X-Auth-Token'] = self.access.token.id;
-          }
           if (showSpinner) {
             busy.count += 1;
             $log.debug('busy += 1 ->', self.busy);

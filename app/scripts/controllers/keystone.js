@@ -15,15 +15,14 @@
 
     $routeProvider.when('/keystone/logout', {
       resolve: {
-        redirect: [
-          '$rootScope', '$location', '$log', 'apiService',
-          function ($rootScope, $location, $log, apiService) {
+        redirect:
+          function ($rootScope, $location, $log, $cookieStore, apiService) {
             $log.info('log out');
             $rootScope.$emit('logout');
+            $cookieStore.remove('x-auth-token');
             apiService.clearAccess('logout');
             $location.path('/keystone/login');
           }
-        ]
       }
     });
   });
