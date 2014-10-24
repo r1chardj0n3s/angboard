@@ -455,7 +455,7 @@
       grunt.task.run([
         'clean:server',
         'wiredep',
-        'configureProxies',
+        'configureProxies:server',
         'concurrent:server',
         'autoprefixer',
         'connect:livereload',
