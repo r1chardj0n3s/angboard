@@ -130,6 +130,7 @@ Tools
 
 Tools used in maintenance of this application:
 
+
 bower
 -----
 
@@ -156,6 +157,7 @@ that might be needed are:
 2. Updating a component:
 
     bower update <name of component>
+
 
 grunt
 -----
@@ -218,6 +220,7 @@ Inteded Areas Of Development (aka TODO)
   done in nova)
 * use [itsdangerous](http://pythonhosted.org/itsdangerous/) to obscure the
   x-auth-token cookie?
+
 
 Security
 ========
