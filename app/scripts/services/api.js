@@ -128,7 +128,7 @@
           }
 
           $log.debug('API call', config.method, config.url);
-          return $http(config).success(function (response, status, headers) {
+          return $http(config).success(function (response, status, headers, config) {
             if (showSpinner) {
               self.busy -= 1;
             }
@@ -199,7 +199,10 @@
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';
-          headers['Content-Type'] = 'application/json';
+
+          if (!headers.hasOwnProperty('Content-Type')) {
+            headers['Content-Type'] = 'application/json';
+          }
 
           $log.info('data call', data);
           return apiCall({

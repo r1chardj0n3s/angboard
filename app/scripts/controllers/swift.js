@@ -26,6 +26,18 @@
     menuService.push(menu);
   });
 
+  var CopyObjectCtrl = function ($scope, $modalInstance, $log, object, containers, currentContainer) {
+    $log.debug('copy object details', object);
+    $log.debug('currentContiner =');
+    $log.debug(currentContainer);
+    $scope.object = object;
+    $scope.containers = containers;
+    $scope.destination = currentContainer;
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
 
   var ViewDetailsCtrl = function ($scope, $modalInstance, $log, containerDetails) {
     $log.debug('container view details', containerDetails);
@@ -36,11 +48,104 @@
     };
   };
 
-  var UploadObjectCtrl = function ($scope, $modalInstance) {
+  var ViewObjectDetailsCtrl = function ($scope, $modalInstance, $log, object) {
+    $log.debug('view object details', object);
+    $scope.object = object;
+
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
   };
+
+  var UploadObjectCtrl = function ($scope, $modalInstance, $log, apiService, alertService,
+                                   containerName, selectContainer, pseudoFolder
+      ) {
+
+      $scope.containerName = containerName;
+      $scope.selectContainer = selectContainer;
+      $scope.pseudoFolder = pseudoFolder;
+      $scope.fileDetails = {};
+
+
+      $scope.uploadObject = function () {
+        var options = {
+          'headers': {
+            'Content-Type': $scope.fileDetails.data.type,
+            'x-object-meta-original-filename': $scope.fileDetails.data.name
+          }
+        },
+          url;
+
+        $log.debug('upload object');
+
+        if ($scope.objectName) {
+          if ($scope.pseudoFolder) {
+            url = $scope.containerName + '/' + $scope.pseudoFolder + $scope.objectName;
+          } else {
+            url = $scope.containerName + '/' + $scope.objectName;
+          }
+
+          apiService.PUT(
+            'swift',
+            url,
+            $scope.fileDetails.data,
+            function () {
+              $scope.selectContainer($scope.containerName);
+              alertService.add('info', 'File uploaded');
+            },
+            options
+          );
+
+          $modalInstance.close();
+        } else {
+          alertService('error', 'Please give the object a name before you try to upload it');
+        }
+      };
+
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+    };
+
+  var EditObjectCtrl = function ($scope, $modalInstance, $log, apiService, alertService,
+                                 object, containerName, selectContainer) {
+      $scope.object = object;
+      $scope.containerName = containerName;
+      $scope.selectContainer = selectContainer;
+
+
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.save = function () {
+        var options = {
+          'headers': {
+            'Content-Type': $scope.fileDetails.data.type,
+            'x-object-meta-original-filename': $scope.fileDetails.data.name
+          }
+        };
+
+        $log.debug('edit object');
+
+        if ($scope.object.name) {
+          apiService.PUT(
+            'swift',
+            $scope.containerName + '/' + $scope.object.name,
+            $scope.fileDetails.data,
+            function () {
+              $scope.selectContainer($scope.containerName);
+              alertService.add('info', 'File edited');
+            },
+            options
+          );
+
+          $modalInstance.close();
+        } else {
+          alertService('error', 'Please give the object a name before you try to upload it');
+        }
+      };
+    };
 
   var CreateContainerCtrl = function ($scope, $modalInstance, $log, apiService, getContainers) {
     $log.debug('create container');
@@ -69,7 +174,6 @@
     };
   };
 
-
   app.controller('SwiftContainersCtrl',
     function ($scope, apiService, alertService, $modal, $log) {
       $scope.$root.pageHeading = 'Containers';
@@ -77,14 +181,23 @@
 
       $scope.apiService = apiService;
       $scope.currentContainer = null;
+      $scope.pseudoFolder = null;
 
-      $scope.open = function (containerDetails) {
+      $scope.copyObject = function (object) {
+        var url = $scope.currentContainer + '/' + object.name;
+
         $modal.open({
-          templateUrl: 'viewDetails.html',
-          controller: ViewDetailsCtrl,
+          templateUrl: 'copyObject.html',
+          controller: CopyObjectCtrl,
           resolve: {
-            containerDetails: function () {
-              return containerDetails;
+            object: function () {
+              return object;
+            },
+            containers: function () {
+              return $scope.containers;
+            },
+            currentContainer: function () {
+              return $scope.currentContainer;
             }
           }
         });
@@ -120,6 +233,41 @@
         );
       };
 
+      $scope.deleteObject = function (object) {
+        var deleteURL = $scope.currentContainer + '/' + object.name;
+        $log.info('deleteObject called on...');
+        $log.info(object);
+
+        apiService.DELETE('swift', deleteURL, function () {
+          alertService.add('info', deleteURL + ' deleted.');
+          $scope.selectContainer($scope.currentContainer);
+        });
+      };
+
+      $scope.download = function (name) {
+        var url = $scope.currentContainer + '/' + name;
+
+        $scope.downloadFile(url, name);
+      };
+
+      $scope.editObject = function (object) {
+        $modal.open({
+          templateUrl: 'editObject.html',
+          controller: EditObjectCtrl,
+          resolve: {
+            containerName: function () {
+              return $scope.currentContainer;
+            },
+            'object': function () {
+              return object;
+            },
+            selectContainer: function () {
+              return $scope.selectContainer;
+            }
+          }
+        });
+      };
+
       $scope.makePrivate = function (container) {
         $log.info('makePrivate called on');
         $log.info(container);
@@ -150,30 +298,22 @@
         );
       };
 
-      $scope.uploadObject = function () {
+      $scope.open = function (containerDetails) {
         $modal.open({
-          templateUrl: 'uploadObject.html',
-          controller: UploadObjectCtrl
+          templateUrl: 'viewDetails.html',
+          controller: ViewDetailsCtrl,
+          resolve: {
+            containerDetails: function () {
+              return containerDetails;
+            }
+          }
         });
-      };
-
-      $scope.download = function (name) {
-        var url = $scope.currentContainer + '/' + name;
-//        apiService.GET(
-//          'swift',
-//          url,
-//          function (data, status, headers) {
-//            $log.info(data);
-//            $log.info(status);
-//            $log.info(headers())
-//            $log.info('downloaded');
-//          });
-
-        $scope.downloadFile(url);
       };
 
       $scope.selectContainer = function (name) {
         $scope.currentContainer = name;
+        $scope.pseudoFolder = null;
+
 
         function SwiftObject(object) {
           var isFolder = object.hasOwnProperty('subdir');
@@ -190,7 +330,7 @@
 
         apiService.GET(
           'swift',
-          name + '?delimiter=/',
+            name + '?delimiter=/',
           function (data) {
             var i = 0,
               object,
@@ -215,6 +355,95 @@
             $scope.objects = folders.concat(files);
           }
         );
+      };
+
+      $scope.selectPseudoFolder = function (name) {
+        $scope.pseudoFolder = name;
+        $log.info(name);
+
+        function SwiftObject(object) {
+          var isFolder = object.hasOwnProperty('subdir');
+
+          if (isFolder) {
+            this.name = object.subdir;
+          } else {
+            this.name = object.name;
+            this.bytes = object.bytes;
+          }
+
+          this.isFolder = isFolder;
+        }
+
+        apiService.GET(
+          'swift',
+            $scope.currentContainer + '/?prefix=' + name + '&delimiter=/',
+          function (data) {
+            var i = 0,
+              object,
+              folders = [],
+              files = [];
+
+            // To mimic horizon we want to return a list of object with the pseudo-folders
+            // first followed by the files.
+            // First we need to classify the objects returned by swift as either folders or
+            // files.
+            for (i = 0; i < data.length; i++) {
+              object = new SwiftObject(data[i]);
+
+              if (object.isFolder) {
+                folders.push(object);
+              } else {
+                files.push(object);
+              }
+            }
+
+            // Add the files after the subfolders
+            $scope.objects = folders.concat(files);
+          }
+        );
+      };
+
+      $scope.uploadObject = function () {
+        $modal.open({
+          templateUrl: 'uploadObject.html',
+          controller: UploadObjectCtrl,
+          resolve: {
+            containerName: function () {
+              return $scope.currentContainer;
+            },
+            pseudoFolder: function () {
+              return $scope.pseudoFolder;
+            },
+            selectContainer: function () {
+              return $scope.selectContainer;
+            }
+          }
+        });
+      };
+
+      $scope.viewObject = function (object) {
+        var url = $scope.currentContainer + '/' + object.name;
+
+        apiService.GET(
+          'swift',
+          url,
+          function (response, status, headers) {
+            object.lastModified = headers('last-modified');
+            object.hash = headers('etag');
+            object.type = headers('content-type');
+          },
+          null
+        );
+
+        $modal.open({
+          templateUrl: 'viewObjectDetails.html',
+          controller: ViewObjectDetailsCtrl,
+          resolve: {
+            object: function () {
+              return object;
+            }
+          }
+        });
       };
 
       /*jslint unparam: true*/
@@ -271,8 +500,8 @@
           // Get the headers
           headers = headers();
 
-          // Get the filename from the x-filename header or default to "download.bin"
-          var filename = headers['x-object-meta-orig-filename'] || 'download.bin';
+          // Get the filename from the config url or default to "download.bin"
+          var filename = config.url.split('/').pop();
 
           // Determine the content type from the header or default to "application/octet-stream"
           var contentType = headers['content-type'] || octetStreamMime;
@@ -357,7 +586,7 @@
             window.open(httpPath, '_blank', '');
           }
         },
-        config
+          config
           );
       };
 
@@ -369,5 +598,4 @@
     );
 
 
-  ///////////////////
 }());

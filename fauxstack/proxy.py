@@ -24,7 +24,8 @@ def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
 
-    for h in ['X-Requested-With', 'Authorization', 'Accept', 'X-Auth-Token', 'X-Container-Read']:
+    for h in ['X-Requested-With', 'Authorization', 'Accept', 'Content-Type',
+              'X-Auth-Token', 'X-Container-Read']:
         if h in request.headers:
             request_headers[h] = request.headers[h]
 
@@ -32,7 +33,7 @@ def proxy_request(service, region, file):
     # any key starting with X-Object-Meta- should be allowed.
     for h in request.headers:
         if h[0].startswith('X-Object-Meta-'):
-            request_headers[h[0]]= request.headers[h]
+            request_headers[h[0]]= request.headers[h[0]]
 
     access_token = request.headers.get('X-Auth-Token')
 
@@ -43,7 +44,9 @@ def proxy_request(service, region, file):
 
     if request.method in ("POST", "PUT"):
         request_data = request.data
-        request_headers["Content-Type"] = 'application/json'
+        
+        if not 'Content-Type' in request_headers:
+            request_headers["Content-Type"] = 'application/json'
     else:
         request_data = None
 
