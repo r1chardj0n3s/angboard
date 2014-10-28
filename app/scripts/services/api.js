@@ -51,10 +51,11 @@
     })
 
     .service('apiService',
-      function (alertService, $http, $log, $location, localStorageService) {
+      function (alertService, $http, $log, $location, localStorageService,
+          $cookieStore) {
         var self = this;
         var httpTimeoutMs = 60000;
-        self.busy = 0;
+        self.busy = {count: 0};
 
         // store the entire "tokens" response from keystone
         self.access = localStorageService.get('access');
@@ -80,6 +81,7 @@
         };
         this.clearAccess = function (reason) {
           $log.info('clearAccess:', reason);
+          $cookieStore.remove('x-auth-token');
           localStorageService.remove('access');
           self.access = null;
           self.services = {};
@@ -111,16 +113,24 @@
           alertService.add('warning', message);
         }
 
+        function suppliedOption(options, key) {
+          if (!angular.isObject(options)) {
+            return false;
+          }
+          return options.hasOwnProperty(key);
+        }
+
         function apiCall(config, onSuccess, options) {
+          // grab a handle on this so an in-flight call doesn't
+          // screw up at force-reset new counter
+          var busy = self.busy;
           var showSpinner = true;
-          if (angular.isObject(options) && options.hasOwnProperty('showSpinner')) {
+          if (suppliedOption(options, 'showSpinner')) {
             showSpinner = options.showSpinner;
           }
-          if (self.access) {
-            config.headers['X-Auth-Token'] = self.access.token.id;
-          }
           if (showSpinner) {
-            self.busy += 1;
+            busy.count += 1;
+            $log.debug('busy += 1 ->', self.busy);
           }
 
           if (angular.isObject(options) && options.hasOwnProperty('responseType')) {
@@ -130,7 +140,8 @@
           $log.debug('API call', config.method, config.url);
           return $http(config).success(function (response, status, headers, config) {
             if (showSpinner) {
-              self.busy -= 1;
+              busy.count -= 1;
+              $log.debug('busy -= 1 ->', self.busy);
             }
             $log.debug('apiCall success', status);
             try {
@@ -141,7 +152,8 @@
             }
           }).error(function (response, status, headers) {
             if (showSpinner) {
-              self.busy -= 1;
+              busy.count -= 1;
+              $log.debug('busy -= 1 ->', self.busy);
             }
             if (status === 401) {
               $log.warn('apiCall 401 response handler', response);
@@ -154,7 +166,7 @@
             }
 
             $log.error('apiCall error', status, response);
-            if (options.onError) {
+            if (suppliedOption(options, 'onError')) {
               try {
                 options.onError(response, status, headers);
               } catch (e) {
@@ -169,7 +181,7 @@
 
         function simpleCall(svcName, method, url, onSuccess, options) {
           var headers = {};
-          if (angular.isObject(options) && options.hasOwnProperty('headers')) {
+          if (suppliedOption(options, 'headers')) {
             headers = angular.copy(options.headers);
           }
 
@@ -195,7 +207,7 @@
         };
         function dataCall(svcName, method, url, data, onSuccess, options) {
           var headers = {};
-          if (angular.isObject(options) && options.hasOwnProperty('headers')) {
+          if (suppliedOption(options, 'headers')) {
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';

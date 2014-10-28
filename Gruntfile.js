@@ -11,6 +11,17 @@
 
   var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
+  // these are the set of Javascript files to watch and lint
+  // most notably, this excludes the vendored stuff that we don't really
+  // want to have to edit to pass linting
+  var JS_FILES = [
+    '<%= yeoman.app %>/scripts/controllers/*.js',
+    '<%= yeoman.app %>/scripts/directives/*.js',
+    '<%= yeoman.app %>/scripts/filters/*.js',
+    '<%= yeoman.app %>/scripts/services/*.js',
+    '<%= yeoman.app %>/scripts/app.js',
+    'Gruntfile.js'
+  ];
 
   module.exports = function (grunt) {
 
@@ -23,6 +34,7 @@
     var jslintConfig = {
       browser: true,      // assume the code is running in a browser
       predef: ['angular', 'document'],
+      nomen: true,        // "Unexpected dangling '_' in '_' " orly jslint??
       indent: 2,          // 2-space indentation
       vars: true,         // allow multiple var statements in a function
       'continue': true,   // allow use of "continue" keyword in loops (wat)
@@ -58,7 +70,7 @@
           tasks: ['wiredep']
         },
         js: {
-          files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'Gruntfile.js'],
+          files: JS_FILES,
           tasks: ['newer:jshint:all', 'newer:jslint:all'],
           options: {
             livereload: '<%= connect.options.livereload %>'
@@ -100,8 +112,7 @@
         ],
         options: {
           port: 9000,
-          // Change this to '0.0.0.0' to access the server from outside.
-          hostname: 'localhost',
+          hostname: '0.0.0.0',
           livereload: 35729
         },
         livereload: {
@@ -154,10 +165,7 @@
           reporter: require('jshint-stylish')
         },
         all: {
-          src: [
-            'Gruntfile.js',
-            '<%= yeoman.app %>/scripts/{,*/}*.js'
-          ]
+          src: JS_FILES
         },
         test: {
           options: {
@@ -171,10 +179,7 @@
       jslint: {
         all: {
           directives: jslintConfig,
-          src: [
-            'Gruntfile.js',
-            '<%= yeoman.app %>/scripts/{,*/}*.js'
-          ]
+          src: JS_FILES
         },
         test: {
           directives: jslintConfig,
@@ -450,11 +455,11 @@
       grunt.task.run([
         'clean:server',
         'wiredep',
-        'configureProxies',
+        'flask',
+        'configureProxies:server',
         'concurrent:server',
         'autoprefixer',
         'connect:livereload',
-        'flask',
         'watch'
       ]);
     });

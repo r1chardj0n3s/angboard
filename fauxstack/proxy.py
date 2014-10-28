@@ -25,7 +25,7 @@ def proxy_request(service, region, file):
     request_headers = {}
 
     for h in ['X-Requested-With', 'Authorization', 'Accept', 'Content-Type',
-              'X-Auth-Token', 'X-Container-Read']:
+            'X-Container-Read']:
         if h in request.headers:
             request_headers[h] = request.headers[h]
 
@@ -33,9 +33,11 @@ def proxy_request(service, region, file):
     # any key starting with X-Object-Meta- should be allowed.
     for h in request.headers:
         if h[0].startswith('X-Object-Meta-'):
-            request_headers[h[0]]= request.headers[h[0]]
+            request_headers[h[0]] = request.headers[h]
 
-    access_token = request.headers.get('X-Auth-Token')
+    access_token = request.cookies.get('x-auth-token')
+    if access_token:
+        request_headers['X-Auth-Token'] = access_token
 
     if request.query_string:
         path = "%s?%s" % (file, request.query_string.decode('utf8'))
@@ -121,6 +123,7 @@ def proxy_request(service, region, file):
         data = upstream.json()
 
         access_token = data['access']['token']['id']
+        response.set_cookie('x-auth-token', access_token)
         for service in data['access']['serviceCatalog']:
             mapping = user_mappings.setdefault(access_token, {})
             s = mapping[service['name']] = {}

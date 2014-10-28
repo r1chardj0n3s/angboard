@@ -15,15 +15,13 @@
 
     $routeProvider.when('/keystone/logout', {
       resolve: {
-        redirect: [
-          '$rootScope', '$location', '$log', 'apiService',
+        redirect:
           function ($rootScope, $location, $log, apiService) {
             $log.info('log out');
             $rootScope.$emit('logout');
             apiService.clearAccess('logout');
             $location.path('/keystone/login');
           }
-        ]
       }
     });
   });
@@ -41,20 +39,22 @@
   });
 
   app.controller('DetailsCtrl',
-    function ($scope, apiService) {
+    function ($scope, $cookieStore, apiService) {
       $scope.$root.pageHeading = 'Access Details';
       $scope.apiService = apiService;
       $scope.invalidateToken = function () {
+        $cookieStore.put('x-auth-token', 'invalid');
         apiService.access.token.id = 'invalid';
       };
     });
 
   app.controller('LoginCtrl',
-    function ($scope, $location, apiService, alertService, menuService) {
+    function ($scope, $location, $log, apiService, alertService, menuService) {
       $scope.$root.pageHeading = 'Login';
       menuService.visible = false;
       // we might have been forced here so forcibly reset busy to sane state
-      apiService.busy = 0;
+      apiService.busy = {count: 0};
+      $log.debug('busy = 0');
 
       $scope.auth = {
         'tenantName': 'demo',

@@ -1,4 +1,4 @@
-<div data-ng-controller="FlavorsCtrl">
+<div>
   <table class="table table-bordered table-hover table-striped" st-table="flavors">
     <thead>
         <th>ID</th>
@@ -16,7 +16,7 @@
         <tr ng-repeat="flavor in flavors">
             <td>{{ flavor.id }}</td>
             <td>
-              <button class="btn btn-link" ng-click="flavorInfo(flavor)">
+              <button class="btn btn-link" ng-click="flavorDetail(flavor)">
                 {{ flavor.name }}
                 <span class="fa fa-info-circle"></span>
               </button>

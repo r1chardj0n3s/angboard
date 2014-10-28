@@ -6,7 +6,11 @@
 
   app.config(function ($routeProvider) {
     $routeProvider.when('/home', {
-      templateUrl: 'views/home.html'
+      controller: 'HomeCtrl',
+      templateUrl: 'views/home.html',
+      resolve: {
+        limits: function (nova) {return nova.limits(); }
+      }
     });
   });
 
@@ -18,14 +22,8 @@
 
 
   // Login Controller
-  app.controller('HomeCtrl', function ($scope, apiService) {
+  app.controller('HomeCtrl', function ($scope, limits) {
     $scope.$root.pageHeading = 'Home';
-    apiService.GET(
-      'nova',
-      'limits',
-      function (data) {
-        $scope.limits = data.limits.absolute;
-      }
-    );
+    $scope.limits = limits.absolute;
   });
 }());
