@@ -455,11 +455,11 @@
       grunt.task.run([
         'clean:server',
         'wiredep',
+        'flask',
         'configureProxies:server',
         'concurrent:server',
         'autoprefixer',
         'connect:livereload',
-        'flask',
         'watch'
       ]);
     });
