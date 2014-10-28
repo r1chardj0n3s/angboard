@@ -4,7 +4,7 @@
 
   var expect = chai.expect;
 
-  describe('Controller: ModalCtrl', function () {
+  describe('Controller: CinderCtrl', function () {
 
     // load the controller's module
     beforeEach(module('angboardApp'));
@@ -15,7 +15,7 @@
     beforeEach(inject(function ($controller, $rootScope) {
       scope = $rootScope.$new();
       createController = function () {
-        return $controller('ModalCtrl', {$scope: scope});
+        return $controller('CinderCtrl', {$scope: scope});
       };
     }));
 

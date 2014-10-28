@@ -4,19 +4,19 @@
 
   var expect = chai.expect;
 
-  describe('Service: nova', function () {
+  describe('Service: cinder', function () {
 
     // load the service's module
     beforeEach(module('angboardApp'));
 
     // instantiate service
-    var nova;
-    beforeEach(inject(function (_nova_) {
-      nova = _nova_;
+    var cinder;
+    beforeEach(inject(function (_cinder_) {
+      cinder = _cinder_;
     }));
 
     it('should do something', function () {
-      expect(!!nova).toBe(true);
+      expect(!!cinder).toBe(true);
     });
 
   });

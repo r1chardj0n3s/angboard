@@ -1,0 +1,27 @@
+<div>
+  <table class="table table-bordered table-hover table-striped" st-table="volumes">
+    <thead>
+      <tr>
+        <th>Volume</th>
+        <th>Description</th>
+        <th>Availability Zone</th>
+        <th>Size</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="volume in volumes">
+        <td>
+          <button class="btn btn-link" ng-click="volumeDetail(volume)">
+            {{ volume.name }}
+            <span class="fa fa-info-circle"></span>
+          </button>
+        </td>
+        <td>{{ volume.description }}</td>
+        <td>{{ volume.availability_zone }}</td>
+        <td>{{ volume.size | humanFileSize }}</td>
+        <td>{{ server.created_at | date : mediumDate }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
