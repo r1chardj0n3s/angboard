@@ -61,7 +61,10 @@ angboard (ANGular dashBOARD)
 The angboard application has a structure created by the angularjs generator
 at <https://github.com/yeoman/generator-angular>. For some background on how
 yoeman works, this is a nice introduction though it uses a different
-generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>
+generator: <https://www.youtube.com/watch?v=gKiaLSJW5xI>. Note that the "yo
+angular:controller" and similar commands produce something very nearly
+suitable - you'll still need to make some changes to satisfy the code
+linting.
 
 1. app.js which is the root application; this file should be as small as
    possible. If you add functionality to the $rootScope, consider whether it
@@ -98,9 +101,35 @@ views.
 * [virtualenv - the npm version](https://www.npmjs.org/package/virtualenv)
 * [underscore.js](http://underscorejs.org/)
 
-Note that the minification used in our build tool includes `ngmin` support so
-you don't need to manually include the DI minification hacks usually needed
-in AngularJS applications.
+
+**Notes**
+
+The minification used in our build tool includes `ngmin` support so you don't
+need to manually include the DI minification hacks usually needed in
+AngularJS applications. This means that instead of having to write this::
+
+  app.service('cinder', ['apiService', '$q'], function cinder(apiService, $q) {
+
+we can just write this::
+
+  app.service('cinder', function cinder(apiService, $q) {
+
+In many views, we hook fetching this data into the route resolution (using
+the resolve property) so it's loaded before we switch route to the new page.
+This results in less strange variation in loaded pages as data comes in and
+also allows nicer sharing of the fetch functionality between uses. For
+example, in cinder::
+
+    $routeProvider.when('/cinder/volumes', {
+      controller: 'CinderVolumesCtrl',
+      templateUrl: 'views/cinder_volumes.html',
+      resolve: {
+        volumes: function (cinder) {return cinder.volumes(false); }
+      }
+    });
+
+The volumes data will be loaded before the routing switches view to the new
+page.
 
 
 fauxstack (fake OpenStack)

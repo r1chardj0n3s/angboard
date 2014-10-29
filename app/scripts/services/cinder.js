@@ -25,7 +25,9 @@
     };
 
 
-    self.volumes = function (showSpinner) {return fetch('volumes', 'volumes/detail', showSpinner); };
+    self.volumes = function (showSpinner) {
+      return fetch('volumes', 'volumes/detail', showSpinner);
+    };
 
   });
 }());

@@ -17,9 +17,6 @@
   });
 
 
-  // hook fetching this data into the route resolution so it's loaded before
-  // we switch route to the new page; also allows nicer sharing of the fetch
-  // functionality between uses
   app.config(function ($routeProvider) {
     $routeProvider.when('/cinder/volumes', {
       controller: 'CinderVolumesCtrl',

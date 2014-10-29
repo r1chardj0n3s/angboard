@@ -1,5 +1,6 @@
 <div>
-  <table class="table table-bordered table-hover table-striped" st-table="volumes">
+  <table class="table table-bordered table-hover table-striped"
+         st-table="volumes">
     <thead>
       <tr>
         <th>Volume</th>
@@ -12,7 +13,8 @@
     <tbody>
       <tr ng-repeat="volume in volumes">
         <td>
-          <button class="btn btn-link" ng-click="volumeDetail(volume)">
+          <button class="btn btn-link"
+                  ng-click="volumeDetail(volume)">
             {{ volume.name }}
             <span class="fa fa-info-circle"></span>
           </button>
