@@ -15,7 +15,10 @@ To set up, first install node / npm per your operating system, and then:
 5. `bower install`
 
 `npm install` installs stuff in the `packages.json` file and `bower install`
-installs things from the `bower.json` file.
+installs things from the `bower.json` file. The separate `npm install -g`
+command is necessary because the core of the grunt and bower command-line
+programs must be installed "globally" in /usr/local (out of our hands,
+unfortunately).
 
 Note: Python from `requirements.txt` for Flask are installed in
 `.node-virtualenv` by the above.
