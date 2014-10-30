@@ -8,11 +8,11 @@ Installation
 
 To set up, first install node / npm per your operating system, and then:
 
-    git clone https://github.com/r1chardj0n3s/angboard
-    cd angboard
-    sudo npm install -g grunt-cli bower
-    npm install
-    bower install
+1. `git clone https://github.com/r1chardj0n3s/angboard`
+2. `cd angboard`
+3. `sudo npm install -g grunt-cli bower`
+4. `npm install`
+5. `bower install`
 
 `npm install` installs stuff in the `packages.json` file and `bower install`
 installs things from the `bower.json` file.
