@@ -29,7 +29,7 @@
     require('load-grunt-tasks')(grunt);
 
     // Time how long tasks take. Can help when optimizing build times
-    require('time-grunt')(grunt);
+    // require('time-grunt')(grunt);
 
     var jslintConfig = {
       browser: true,      // assume the code is running in a browser
@@ -223,8 +223,8 @@
           src: ['<%= yeoman.app %>/index.html'],
           ignorePath:  /\.\.\//
         },
-        sass: {
-          src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        less: {
+          src: ['<%= yeoman.app %>/styles/{,*/}*.less'],
           ignorePath: /(\.\.\/){1,2}bower_components\//
         }
       },
@@ -400,7 +400,7 @@
           }, {
             expand: true,
             cwd: '.',
-            src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
+            src: 'bower_components/boot/fonts/*',
             dest: '<%= yeoman.dist %>'
           }]
         },

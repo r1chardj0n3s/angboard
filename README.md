@@ -234,8 +234,6 @@ because Javascipt doesn't have keyword argument support) then you can surround a
 Inteded Areas Of Development (aka TODO)
 =======================================
 
-* FIX SASS REFERENCES IN GRUNTFILE
-
 * investigate fully external packages extending functionality
 * fix the menu
   * admin actions
