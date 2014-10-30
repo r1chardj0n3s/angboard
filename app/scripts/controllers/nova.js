@@ -4,7 +4,6 @@
 
   var app = angular.module('angboardApp');
 
-
   app.run(function ($rootScope, menuService, apiService, nova) {
     if (_.isEmpty(nova.extensions) && apiService.access) {
       nova.fetchExtensions();

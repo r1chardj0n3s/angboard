@@ -4,7 +4,7 @@ APIs.
 Installation
 ============
 
-**Note: requires python3.4**
+**Note: requires python3**  (3.4 is recommended)
 
 To set up, first install node / npm per your operating system, and then:
 

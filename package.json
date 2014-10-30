@@ -49,7 +49,7 @@
   },
   "virtualenv": {
     "flags": [
-      "--python=python3.4"
+      "--python=python3"
     ]
   }
 }
