@@ -133,13 +133,17 @@
             $log.debug('busy += 1 ->', self.busy);
           }
 
+          if (angular.isObject(options) && options.hasOwnProperty('responseType')) {
+            config.responseType = options.responseType;
+          }
+
           $log.debug('API call', config.method, config.url);
-          return $http(config).success(function (response, status, headers) {
+          return $http(config).success(function (response, status, headers, config) {
             if (showSpinner) {
               busy.count -= 1;
               $log.debug('busy -= 1 ->', self.busy);
             }
-            $log.debug('apiCall success', status, response);
+            $log.debug('apiCall success', status);
             try {
               onSuccess(response, status, headers, config);
             } catch (e) {
@@ -180,7 +184,11 @@
           if (suppliedOption(options, 'headers')) {
             headers = angular.copy(options.headers);
           }
-          headers.Accept = 'application/json';
+
+          if (!headers.hasOwnProperty('Accept')) {
+            headers.Accept = 'application/json';
+          }
+
           return apiCall({
             method: method,
             url: '/api/' + svcName + '/RegionOne/' + url, // XXX REGION
@@ -194,12 +202,12 @@
           return simpleCall(svcName, 'GET', url, onSuccess, options);
         };
 
-        this.DELETE = function (svcName, url, onSuccess, options) {
-          return simpleCall(svcName, 'DELETE', url, onSuccess, options);
+        this.COPY = function (svcName, url, onSuccess, options) {
+          return simpleCall(svcName, 'COPY', url, onSuccess, options);
         };
 
-        this.HEAD = function (svcName, url, onSuccess, options) {
-          return simpleCall(svcName, 'HEAD', url, onSuccess, options);
+        this.DELETE = function (svcName, url, onSuccess, options) {
+          return simpleCall(svcName, 'DELETE', url, onSuccess, options);
         };
 
         function dataCall(svcName, method, url, data, onSuccess, options) {
@@ -208,7 +216,10 @@
             headers = angular.copy(options.headers);
           }
           headers.Accept = 'application/json';
-          headers['Content-Type'] = 'application/json';
+
+          if (!headers.hasOwnProperty('Content-Type')) {
+            headers['Content-Type'] = 'application/json';
+          }
 
           $log.info('data call', data);
           return apiCall({
@@ -219,6 +230,10 @@
             timeout: httpTimeoutMs
           }, onSuccess, options);
         }
+
+        this.HEAD = function (svcName, url, data, onSuccess, options) {
+          return dataCall(svcName, 'HEAD', url, data, onSuccess, options);
+        };
 
         this.PUT = function (svcName, url, data, onSuccess, options) {
           dataCall(svcName, 'PUT', url, data, onSuccess, options);
