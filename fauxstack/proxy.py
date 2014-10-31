@@ -19,13 +19,13 @@ user_mappings = {}
              methods=["GET", "POST", "HEAD", "PUT"],
              defaults={'file': None})
 @proxy.route('/api/<service>/<region>/<path:file>',
-             methods=["GET", "POST", "DELETE", "PUT"])
+             methods=["GET", "POST", "DELETE", "PUT", "COPY"])
 def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
 
-    for h in ['X-Requested-With', 'Authorization', 'Accept',
-            'X-Container-Read']:
+    for h in ['X-Requested-With', 'Authorization', 'Accept', 'Content-Type',
+            'X-Container-Read', 'Destination']:
         if h in request.headers:
             request_headers[h] = request.headers[h]
 
@@ -33,7 +33,7 @@ def proxy_request(service, region, file):
     # any key starting with X-Object-Meta- should be allowed.
     for h in request.headers:
         if h[0].startswith('X-Object-Meta-'):
-            request_headers[h[0]] = request.headers[h]
+            request_headers[h[0]] = request.headers[h[0]]
 
     access_token = request.cookies.get('x-auth-token')
     if access_token:
@@ -46,7 +46,9 @@ def proxy_request(service, region, file):
 
     if request.method in ("POST", "PUT"):
         request_data = request.data
-        request_headers["Content-Type"] = 'application/json'
+        
+        if not 'Content-Type' in request_headers:
+            request_headers["Content-Type"] = 'application/json'
     else:
         request_data = None
 
@@ -68,7 +70,7 @@ def proxy_request(service, region, file):
             url = mapped
 
     log.info('ATTEMPTING to %s\n\tURL %s\n\tWITH headers=%s\n\tDATA=%s',
-             request.method, url, request_headers, request_data)
+             request.method, url, request_headers, request_data if request_data and len(request_data) < 2000 else '...')
 
     if request.method == 'GET':
         upstream = requests.get(url, headers=request_headers)
@@ -82,6 +84,9 @@ def proxy_request(service, region, file):
     elif request.method == 'PUT':
         upstream = requests.put(url, data=request_data,
             headers=request_headers)
+    elif request.method == 'COPY':
+        upstream = requests.request('copy', url, data=request_data,
+            headers=request_headers)
     else:
         raise ValueError('Unhandled request.method (%s)' % request.method)
 
@@ -92,12 +97,24 @@ def proxy_request(service, region, file):
             continue
         response_headers[key] = upstream.headers[key]
 
-    log.info('RESPONSE: %s %s\n%s', upstream.status_code, response_headers,
-             upstream.text)
+    # JSON responses require special handling (or more to the point jpegs
+    # get upset if you treat them as if they were json)
+    
+       
+    if 'Content-Type' in upstream.headers and \
+       upstream.headers['Content-Type'] == 'application/json':
+        
+        log.info('RESPONSE: %s %s\n%s', upstream.status_code, 
+                response_headers, upstream.text) 
 
+        response_text = response=")]}',\n" + upstream.text
+    else:
+#        response_text = upstream.text
+        response_text = upstream.content
+        
     # return the response plus the JSONP protection
     # (https://docs.angularjs.org/api/ng/service/$http)
-    response = Response(response=")]}',\n" + upstream.text,
+    response = Response(response_text,
                         status=upstream.status_code,
                         headers=response_headers,
                         content_type=upstream.headers['Content-Type'])

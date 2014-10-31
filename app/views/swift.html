@@ -1,5 +1,57 @@
 <div data-ng-controller="SwiftContainersCtrl">
+<script type="text/ng-template" id="copyObject.html">
+  <form id="copy_object_form" name="copyObjectForm" class="ng-pristine ng-valid" method="POST">
+    <div class="modal-header">
+      <h3 class="modal-title">Copy Object: {{object.name}}</h3>
+    </div>
+    <div class="modal-body clearfix">
 
+      <div class="left">
+        <fieldset>
+          <div class="control-group form-field clearfix required">
+            <label for="id_name">Destination Container:</label>
+            <span class="help-block" style="display: none;">   </span>
+            <div class="input">
+              <select ng-model="form.destination"
+                      ng-options="container.name as container.name for container in containers">
+              </select>
+            </div>
+          </div>
+          <div class="control-group form-field clearfix required">
+            <label for="id_name">Path:</label>
+            <span class="help-block" style="display: none;">   </span>
+            <div class="input">
+              <input id="id_path"
+                     maxlength="255" name="path" ng-model="form.path" type="text">
+            </div>
+          </div>
+          <div class="control-group form-field clearfix required">
+            <label for="id_name">Destination Object Name:</label>
+            <span class="help-block" style="display: none;">   </span>
+            <div class="input">
+              <input id="id_object_name"
+                     maxlength="255" name="object_name" ng-model="form.name" type="text" required>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="right">
+        <h3>Description:</h3>
+        <p>
+          Make a new copy of an existing object to store in this or another container. You may also specify a
+          path at which the new copy should live inside of the selected container.
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+      <button class="btn btn-primary" ng-disabled="copyObjectForm.$invalid"
+              ng-click="copyObject()">
+        Copy Object
+      </button>
+    </div>
+  </form>
+</script>
   <script type="text/ng-template" id="viewDetails.html">
     <div class="modal-header">
       <h3 class="modal-title">Container Details</h3>
@@ -20,7 +72,28 @@
       <button class="btn btn-warning" ng-click="cancel()">Close</button>
     </div>
   </script>
-
+  <script type="text/ng-template" id="viewObjectDetails.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Object Details</h3>
+    </div>
+    <div class="modal-body">
+      <dl>
+        <dt>Name</dt>
+        <dd>{{object.name.split('/').pop()}}</dd>
+        <dt>Hash</dt>
+        <dd>{{object.hash}}</dd>
+        <dt>Content Type</dt>
+        <dd>{{object.type}}</dd>
+        <dt>Last Modified</dt>
+        <dd>{{object.lastModified}}</dd>
+        <dt>Size</dt>
+        <dd>{{object.bytes | humanFileSize}}</dd>
+      </dl>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    </div>
+  </script>
   <script type="text/ng-template" id="createContainer.html">
     <form role="form" name="createContainerForm" novalidate>
       <div class="modal-header">
@@ -28,40 +101,49 @@
       </div>
       <div class="modal-body clearfix">
 
-          <div class="left">
-            <fieldset>
+        <div class="left">
+          <fieldset>
 
-              <div class="control-group form-field clearfix required">
-                <label for="id_name">Container Name:</label>
+            <div class="control-group form-field clearfix required">
+              <label for="id_name">Container Name:</label>
 
 
-                <span class="help-block" style="display: none;">   </span>
-                <div class="input">
-                  <input id="id_name" maxlength="255" name="name" ng-model="name" type="text" required>
-                </div>
+              <span class="help-block" style="display: none;">   </span>
+              <div class="input">
+                <input id="id_name" maxlength="255" name="name" ng-model="name" type="text" required>
               </div>
+            </div>
 
-              <div class="control-group form-field clearfix required">
-                <label for="id_access">Container Access:</label>
+            <div class="control-group form-field clearfix required">
+              <label for="id_access">Container Access:</label>
 
 
-                <span class="help-block" style="display: none;">   </span>
-                <div class="input">
-                  <select id="id_access" name="access" ng-model="access">
-                    <option value="private">Private</option>
-                    <option value="public">Public</option>
-                  </select>
-                </div>
+              <span class="help-block" style="display: none;">   </span>
+              <div class="input">
+                <select id="id_access" name="access" ng-model="access">
+                  <option value="private">Private</option>
+                  <option value="public">Public</option>
+                </select>
               </div>
+            </div>
 
 
-            </fieldset>
-          </div>
-          <div class="right">
-            <h3>Description:</h3>
-            <p>A container is a storage compartment for your data and provides a way for you to organize your data. You can think of a container as a folder in Windows ® or a directory in UNIX ®. The primary difference between a container and these other file system concepts is that containers cannot be nested. You can, however, create an unlimited number of containers within your account. Data must be stored in a container so you must have at least one container defined in your account prior to uploading data.</p>
-            <p>Note: A Public Container will allow anyone with the Public URL to gain access to your objects in the container.</p>
-          </div>
+          </fieldset>
+        </div>
+        <div class="right">
+          <h3>Description:</h3>
+          <p>
+            A container is a storage compartment for your data and provides a way for you to organize your data. You
+            can think of a container as a folder in Windows ® or a directory in UNIX ®. The primary difference between
+            a container and these other file system concepts is that containers cannot be nested. You can, however,
+            create an unlimited number of containers within your account. Data must be stored in a container so you
+            must have at least one container defined in your account prior to uploading data.
+          </p>
+          <p>
+            Note: A Public Container will allow anyone with the Public URL to gain access to your objects in the
+            container.
+          </p>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
@@ -69,7 +151,138 @@
       </div>
     </form>
   </script>
+  <script type="text/ng-template" id="uploadObject.html">
+    <form id="upload_object_form" name="uploadForm" autocomplete="" class="ng-scope ng-pristine ng-valid" method="POST"
+          enctype="multipart/form-data">
+      <div class="modal-header">
+        <h3 class="modal-title">Upload Object To Container: {{containerName}}</h3>
+      </div>
+      <div class="modal-body clearfix">
 
+        <div class="left">
+          <fieldset>
+
+            <div class="control-group form-field clearfix required">
+              <label for="id_name">Object Name:</label>
+
+
+              <span class="help-block" style="display: none;">   </span>
+              <div class="input">
+                <input id="id_object_name"
+                       maxlength="255" name="object_name" ng-model="objectName" type="text" required>
+              </div>
+            </div>
+
+            <div class="control-group form-field clearfix required">
+              <label for="id_file">File:</label>
+
+
+              <span class="help-block" style="display: none;">   </span>
+              <div class="input">
+                <input type="file" fileread="fileDetails.data" ng-model="filename"/>
+              </div>
+            </div>
+
+
+          </fieldset>
+        </div>
+        <div class="right">
+          <h3>Description:</h3>
+          <p>
+            <strong>Object:</strong> An object is the basic storage entity that represents a file you store in the
+            OpenStack Object Storage system. When you upload data to OpenStack Object Storage, the data is stored as-is
+            (no compression or encryption) and consists of a location (container), the object's name, and any metadata
+            consisting of key/value pairs.
+          </p>
+          <p>
+            <strong>Pseudo-folder:</strong> Within a container you can group your objects into pseudo-folders, which
+            behave similarly to folders in your desktop operating system, with the exception that they are virtual
+            collections defined by a common prefix on the object's name. A slash (/) character is used as the delimiter
+            for pseudo-folders in the Object Store.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-disabled="uploadForm.$invalid"
+                ng-click="uploadObject()">
+          Upload Object
+        </button>
+      </div>
+    </form>
+  </script>
+  <script type="text/ng-template" id="editObject.html">
+    <form id="edit_object_form" name="editObjectForm" autocomplete="" class="ng-scope ng-pristine ng-valid" method="POST"
+          enctype="multipart/form-data">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Object</h3>
+      </div>
+      <div class="modal-body clearfix">
+
+        <div class="left">
+          <fieldset>
+
+            <div class="control-group form-field clearfix required">
+              <label for="id_name">Object Name:</label>
+
+
+              <span class="help-block" style="display: none;">   </span>
+              <div class="input">
+                <input id="id_object_name"
+                       maxlength="255" name="object_name" ng-model="object.name" type="text" required>
+              </div>
+            </div>
+
+            <div class="control-group form-field clearfix required">
+              <label for="id_file">File:</label>{{filename}}
+
+
+              <span class="help-block" style="display: none;">   </span>
+              <div class="input">
+                <input type="file" fileread="fileDetails.data" ng-model="filename" required/>
+              </div>
+            </div>
+
+
+          </fieldset>
+        </div>
+        <div class="right">
+          <h3>Description:</h3>
+          <p>
+            <strong>Object:</strong> An object is the basic storage entity that represents a file you store in the
+            OpenStack Object Storage system. When you upload data to OpenStack Object Storage, the data is stored as-is
+            (no compression or encryption) and consists of a location (container), the object's name, and any metadata
+            consisting of key/value pairs.
+          </p>
+          <p>
+            <strong>File:</strong> A new uploaded file will replace the content of the current object.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-disabled="editObjectForm.$invalid"
+                ng-click="save()">
+          Upload Object
+        </button>
+      </div>
+    </form>
+  </script>
+
+  <div class="page_title table_header">
+    <div>
+      <h3 ng-if="currentContainer">
+        <ul class="nav nav-pills">
+          <li><a href="" ng-click="selectContainer(currentContainer)">{{currentContainer}} :</a></li>
+          <li ng-repeat="folder in pseudoFolder.split('/')" ng-if="folder">
+            <a href="" ng-click="selectPseudoFolder(pseudoFolder.split('/').slice(0,  $index + 1).join('/') + '/')">
+              {{folder}} /
+            </a>
+          </li>
+        </ul>
+      </h3>
+    </div>
+  </div>
   <div class="content_wrapper pull-left">
     <table class="table table-bordered table-hover table-striped" st-table="containers">
       <thead>
@@ -126,28 +339,52 @@
         </tbody>
       </table>
 
-
       <table ng-if="currentContainer" class="table table-bordered table-hover table-striped" st-table="objects">
         <thead>
           <th colspan=3">
-            <h3 class="table-header pull-left">Objects</h3>
+            <h3 class="table-header pull-left">Objects&nbsp;</h3>
+            <div class="table_search"><input ng-model="searchText" placeholder="Filter"/></div>
+            <button
+                title="Create Pseudofolder"
+                class="btn btn-sm pull-left"
+                id="objects_action_create_pf"
+                ng-click="createPseudoFolder(currentContainer)">
+              <span class="fa  fa-plus"></span>
+              Create Pseudo-folder
+            </button>
             <button
                 title="Upload Object"
                 class="btn btn-sm pull-right"
-                id="objects__action_upload">
+                id="objects__action_upload"
+                ng-click="uploadObject(currentContainer)">
               <span class="fa  fa-upload"></span>
               Upload Object
             </button>
           </th>
         </thead>
         <tbody>
-          <tr ng-repeat="object in objects">
-            <td ng-if="object.isFolder"><a href="#">{{object.name}}</a></td>
-            <td ng-if="!object.isFolder">{{object.name}}</td>
+          <tr ng-repeat="object in objects | filter:{name:searchText}">
+            <td ng-if="object.isFolder"><a ng-click="selectPseudoFolder(object.name)" href="">
+              {{object.name.slice(object.name.slice(0, -1).lastIndexOf('/') +1, -1)}}
+            </a></td>
+            <td ng-if="!object.isFolder">{{object.name.split('/').pop()}}</td>
             <td ng-if="!object.isFolder">{{object.bytes | humanFileSize }}</td>
             <td ng-if="object.isFolder">{{object.type }}</td>
-            <td ng-if="!object.isFolder"><button>Download</button><button>More</button></td>
-            <td ng-if="object.isFolder"><button>Delete Object</button></td>
+            <td ng-if="!object.isFolder">
+              <button class="btn btn-default" ng-click="download(object.name)">Download</button>
+              <div class="btn-group" dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+                  More <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a ng-click="editObject(object)">Edit</a></li>
+                  <li><a ng-click="copyObject(object)">Copy</a></li>
+                  <li><a ng-click="viewObject(object)">View Details</a></li>
+                  <li><a ng-click="deleteObject(object)">Delete Object</a></li>
+                </ul>
+              </div>
+            </td>
+            <td ng-if="object.isFolder"><button class="btn btn-default">Delete Object</button></td>
           </tr>
         </tbody>
       </table>
