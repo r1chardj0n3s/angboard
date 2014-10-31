@@ -202,9 +202,14 @@
           return simpleCall(svcName, 'GET', url, onSuccess, options);
         };
 
+        this.COPY = function (svcName, url, onSuccess, options) {
+          return simpleCall(svcName, 'COPY', url, onSuccess, options);
+        };
+
         this.DELETE = function (svcName, url, onSuccess, options) {
           return simpleCall(svcName, 'DELETE', url, onSuccess, options);
         };
+
         function dataCall(svcName, method, url, data, onSuccess, options) {
           var headers = {};
           if (suppliedOption(options, 'headers')) {

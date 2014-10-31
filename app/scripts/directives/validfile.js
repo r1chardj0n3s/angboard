@@ -13,6 +13,7 @@
       return {
         require: 'ngModel',
         link: function (scope, el, attrs, ngModel) {
+          /*jslint unparam: true */
           //change event is fired when file is selected
           el.bind('change', function () {
             scope.$apply(function () {

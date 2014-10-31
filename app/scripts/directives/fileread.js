@@ -15,6 +15,7 @@
           fileread: '='
         },
         link: function (scope, element, attrs, ngModel) {
+          /*jslint unparam: true */
           element.bind('change', function (changeEvent) {
 
             scope.$apply(function () {

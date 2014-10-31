@@ -1,7 +1,6 @@
 <div data-ng-controller="SwiftContainersCtrl">
 <script type="text/ng-template" id="copyObject.html">
-  <form id="copy_object_form" name="copyObjectForm" autocomplete="" class="ng-scope ng-pristine ng-valid" method="POST"
-        enctype="multipart/form-data">
+  <form id="copy_object_form" name="copyObjectForm" class="ng-pristine ng-valid" method="POST">
     <div class="modal-header">
       <h3 class="modal-title">Copy Object: {{object.name}}</h3>
     </div>
@@ -13,9 +12,8 @@
             <label for="id_name">Destination Container:</label>
             <span class="help-block" style="display: none;">   </span>
             <div class="input">
-              <select id="id_destination"
-                     name="destination" ng-model="destination required
-                     ng-options="container.name for container in containers">
+              <select ng-model="form.destination"
+                      ng-options="container.name as container.name for container in containers">
               </select>
             </div>
           </div>
@@ -24,7 +22,7 @@
             <span class="help-block" style="display: none;">   </span>
             <div class="input">
               <input id="id_path"
-                     maxlength="255" name="path" ng-model="path" type="text" required>
+                     maxlength="255" name="path" ng-model="form.path" type="text">
             </div>
           </div>
           <div class="control-group form-field clearfix required">
@@ -32,7 +30,7 @@
             <span class="help-block" style="display: none;">   </span>
             <div class="input">
               <input id="id_object_name"
-                     maxlength="255" name="object_name" ng-model="object.name" type="text" required>
+                     maxlength="255" name="object_name" ng-model="form.name" type="text" required>
             </div>
           </div>
         </fieldset>
@@ -48,7 +46,7 @@
     <div class="modal-footer">
       <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
       <button class="btn btn-primary" ng-disabled="copyObjectForm.$invalid"
-              ng-click="save()">
+              ng-click="copyObject()">
         Copy Object
       </button>
     </div>

@@ -26,18 +26,44 @@
     menuService.push(menu);
   });
 
-  var CopyObjectCtrl = function ($scope, $modalInstance, $log, object, containers, currentContainer) {
-    $log.debug('copy object details', object);
-    $log.debug('currentContiner =');
-    $log.debug(currentContainer);
-    $scope.object = object;
-    $scope.containers = containers;
-    $scope.destination = currentContainer;
+  var CopyObjectCtrl = function ($scope, $modalInstance, $log, apiService, alertService, object,
+                                 containers, currentContainer) {
 
-    $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
+      // FIXME: This won't work with pseudo folders because the proxy helpfuly decodes or urlencoding
+
+      $log.debug('copy object details', object);
+      $log.debug('currentContainer =');
+      $log.debug(currentContainer);
+      $scope.object = object;
+
+      $scope.form = {
+        name: object.name.split('/').pop(),
+        path: object.name.split('/').slice(0, -1).join('/') + '/',
+        destination: currentContainer
+      };
+      $scope.containers = containers;
+      $scope.currentContainer = currentContainer;
+
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.copyObject = function () {
+        var destination = encodeURIComponent($scope.form.destination) + $scope.form.path +
+            encodeURIComponent($scope.form.name);
+
+        apiService.COPY(
+          'swift',
+          encodeURIComponent($scope.currentContainer) + '/' + encodeURIComponent($scope.object.name),
+          function () {
+            alertService.add('info', 'File copied'); // FIXME: Should refresh view of container now
+          },
+          { headers: {'Destination': destination} }
+        );
+
+        $modalInstance.close();
+      };
     };
-  };
 
   var ViewDetailsCtrl = function ($scope, $modalInstance, $log, containerDetails) {
     $log.debug('container view details', containerDetails);
@@ -184,8 +210,6 @@
       $scope.pseudoFolder = null;
 
       $scope.copyObject = function (object) {
-        var url = $scope.currentContainer + '/' + object.name;
-
         $modal.open({
           templateUrl: 'copyObject.html',
           controller: CopyObjectCtrl,
@@ -199,7 +223,8 @@
             currentContainer: function () {
               return $scope.currentContainer;
             }
-          }
+          },
+          size: 'lg'
         });
       };
 
@@ -330,7 +355,7 @@
 
         apiService.GET(
           'swift',
-            name + '?delimiter=/',
+          name + '?delimiter=/',
           function (data) {
             var i = 0,
               object,
@@ -376,7 +401,7 @@
 
         apiService.GET(
           'swift',
-            $scope.currentContainer + '/?prefix=' + name + '&delimiter=/',
+          $scope.currentContainer + '/?prefix=' + name + '&delimiter=/',
           function (data) {
             var i = 0,
               object,
@@ -428,6 +453,7 @@
           'swift',
           url,
           function (response, status, headers) {
+            /*jslint unparam: true */
             object.lastModified = headers('last-modified');
             object.hash = headers('etag');
             object.type = headers('content-type');

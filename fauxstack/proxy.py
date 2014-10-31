@@ -19,13 +19,13 @@ user_mappings = {}
              methods=["GET", "POST", "HEAD", "PUT"],
              defaults={'file': None})
 @proxy.route('/api/<service>/<region>/<path:file>',
-             methods=["GET", "POST", "DELETE", "PUT"])
+             methods=["GET", "POST", "DELETE", "PUT", "COPY"])
 def proxy_request(service, region, file):
     # a few headers to pass on
     request_headers = {}
 
     for h in ['X-Requested-With', 'Authorization', 'Accept', 'Content-Type',
-            'X-Container-Read']:
+            'X-Container-Read', 'Destination']:
         if h in request.headers:
             request_headers[h] = request.headers[h]
 
@@ -33,7 +33,7 @@ def proxy_request(service, region, file):
     # any key starting with X-Object-Meta- should be allowed.
     for h in request.headers:
         if h[0].startswith('X-Object-Meta-'):
-            request_headers[h[0]] = request.headers[h]
+            request_headers[h[0]] = request.headers[h[0]]
 
     access_token = request.cookies.get('x-auth-token')
     if access_token:
@@ -83,6 +83,9 @@ def proxy_request(service, region, file):
             headers=request_headers)
     elif request.method == 'PUT':
         upstream = requests.put(url, data=request_data,
+            headers=request_headers)
+    elif request.method == 'COPY':
+        upstream = requests.request('copy', url, data=request_data,
             headers=request_headers)
     else:
         raise ValueError('Unhandled request.method (%s)' % request.method)
