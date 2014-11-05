@@ -1,19 +1,29 @@
 <div>
 
-  <dl class="dl-horizontal">
-    <dt>Cores Used</dt><dd>{{limits.totalCoresUsed}} / {{limits.maxTotalCores}}</dd>
-    <dt>Floating Ips Used</dt><dd>{{limits.totalFloatingIpsUsed}} / {{limits.maxTotalFloatingIps}}</dd>
-    <dt>Instances Used</dt><dd>{{limits.totalInstancesUsed}} / {{limits.maxTotalInstances}}</dd>
-    <dt>RAM Size Used</dt><dd>{{limits.totalRAMSizeUsed}} / {{limits.maxTotalRAMSize}}</dd>
-    <dt>Server Groups Used</dt><dd>{{limits.totalServerGroupsUsed}} / {{limits.maxServerGroups}}</dd>
-    <dt>Security Groups Used</dt><dd>{{limits.totalSecurityGroupsUsed}} / {{limits.maxSecurityGroups}}</dd>
-    <dt>Max Server Group Members</dt><dd>{{limits.maxServerGroupMembers}}</dd>
-    <dt>Max Server Meta</dt><dd>{{limits.maxServerMeta}}</dd>
-    <dt>Max Personality</dt><dd>{{limits.maxPersonality}}</dd>
-    <dt>Max Image Meta</dt><dd>{{limits.maxImageMeta}}</dd>
-    <dt>Max Personality Size</dt><dd>{{limits.maxPersonalitySize}}</dd>
-    <dt>Max Security Group Rules</dt><dd>{{limits.maxSecurityGroupRules}}</dd>
-    <dt>Max Total Keypairs</dt><dd>{{limits.maxTotalKeypairs}}</dd>
-  </dl>
+  <div class="row">
+      <dl class="dl-horizontal">
+        <dt>Cores Used</dt><dd>{{limits.totalCoresUsed}} / {{limits.maxTotalCores}}</dd>
+        <dt>Floating Ips Used</dt><dd>{{limits.totalFloatingIpsUsed}} / {{limits.maxTotalFloatingIps}}</dd>
+        <dt>Instances Used</dt><dd>{{limits.totalInstancesUsed}} / {{limits.maxTotalInstances}}</dd>
+        <dt>RAM Size Used</dt><dd>{{limits.totalRAMSizeUsed}} / {{limits.maxTotalRAMSize}}</dd>
+        <dt>Server Groups Used</dt><dd>{{limits.totalServerGroupsUsed}} / {{limits.maxServerGroups}}</dd>
+        <dt>Security Groups Used</dt><dd>{{limits.totalSecurityGroupsUsed}} / {{limits.maxSecurityGroups}}</dd>
+        <dt>Max Server Group Members</dt><dd>{{limits.maxServerGroupMembers}}</dd>
+        <dt>Max Server Meta</dt><dd>{{limits.maxServerMeta}}</dd>
+        <dt>Max Personality</dt><dd>{{limits.maxPersonality}}</dd>
+        <dt>Max Image Meta</dt><dd>{{limits.maxImageMeta}}</dd>
+        <dt>Max Personality Size</dt><dd>{{limits.maxPersonalitySize}}</dd>
+        <dt>Max Security Group Rules</dt><dd>{{limits.maxSecurityGroupRules}}</dd>
+        <dt>Max Total Keypairs</dt><dd>{{limits.maxTotalKeypairs}}</dd>
+      </dl>
+  </div>
+
+  <div class="row">
+      <button class="btn btn-primary" ng-click="changeLanguage('en')">English</button>
+      <button class="btn btn-primary" ng-click="changeLanguage('de')">Deutsch</button>
+  </div>
+
+  <p translate>This is a paragraph.</p>
+
 
 </div>

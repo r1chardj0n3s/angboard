@@ -1,8 +1,9 @@
 (function () {
   'use strict';
 
-  var app = angular.module('angboardApp', ['ui.bootstrap', 'ngRoute', 'smart-table',
-    'LocalStorageModule', 'ngWebsocket', 'ngCookies']);
+  var app = angular.module('angboardApp', ['ui.bootstrap', 'ngRoute',
+    'smart-table', 'LocalStorageModule', 'ngWebsocket', 'ngCookies',
+    'pascalprecht.translate']);
 
   app.config(function ($routeProvider) {
     // set up the default route
@@ -13,7 +14,6 @@
       redirectTo: '/home'
     });
   });
-
 
   app.run(
     function ($rootScope, $location, $log, apiService, alertService, menuService) {
