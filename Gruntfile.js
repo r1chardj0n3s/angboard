@@ -438,13 +438,15 @@
 
     grunt.registerTask('flask', 'Run flask server.', function () {
       grunt.log.writeln('Starting Flask proxy server.');
-      var virtualenv = require('virtualenv');
-      var packagePath = require.resolve('./package.json');
-      var env = virtualenv(packagePath);
-      // stdio: 'inherit' let us see flask output in grunt
-      var PIPE = {stdio: 'inherit'};
-      env.spawnPython(['run_fauxstack.py', '-P', proxyPort, '-l', 'flask.log',
-        keystoneURL], PIPE);
+      grunt.util.spawn({
+        cmd: './run_fauxstack.sh',
+        args: ['-P', proxyPort, '-l', 'flask.log', keystoneURL],
+        opts: {stdio: 'inherit'}
+      }, function(error, result, code) {
+        grunt.log.writeln('Error:', error);
+        grunt.log.writeln('Result:', result);
+        grunt.log.writeln('Code:', code);
+      });
     });
 
     grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {

@@ -7,7 +7,7 @@ from threading import Thread
 
 from flask import has_request_context, Flask, abort, Response, request
 
-from .proxy import proxy
+from proxy import proxy
 
 ALL_HTTP_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 

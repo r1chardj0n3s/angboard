@@ -13,26 +13,14 @@ To set up, first install node / npm per your operating system, and then:
 
 1. `git clone https://github.com/r1chardj0n3s/angboard`
 2. `cd angboard`
-3. `sudo npm install -g grunt-cli bower`
-4. `npm install`
-5. `bower install`
+3. `tox -e grunt serve --keystone-url=<URL to keystone>`
 
-`npm install` installs stuff in the `packages.json` file and `bower install`
-installs things from the `bower.json` file. The separate `npm install -g`
-command is necessary because the core of the grunt and bower command-line
-programs must be installed "globally" in /usr/local (out of our hands,
-unfortunately).
+This installs all the packages in the `packages.json` file (using npm), the
+`bower.json` file (using bower) and the `requirements.txt` (using pip).
 
-Note: Python from `requirements.txt` for Flask are installed in
-`.node-virtualenv` by the above.
+The keystone URL should be for your OpenStack installation. For example:
 
-And use a separate shell to fire up the grunt server:
-
-    grunt serve --keystone-url=<URL to keystone>
-
-For example:
-
-    grunt serve --keystone-url=http://10.0.0.1:5000/v2.0
+    tox -e grunt serve --keystone-url=http://10.0.0.1:5000/v2.0
 
 This will open Chrome (or whatever) to view the site, assuming you did all
 that on the same machine that you use as your browsing system. If it was not,
@@ -239,6 +227,9 @@ because Javascipt doesn't have keyword argument support) then you can surround a
 
 Inteded Areas Of Development (aka TODO)
 =======================================
+
+* menu as variable, not service
+* server actions list as variable
 
 * investigate fully external packages extending functionality
 * fix the menu
