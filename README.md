@@ -20,14 +20,14 @@ And then:
 
 1. `git clone https://github.com/r1chardj0n3s/angboard`
 2. `cd angboard`
-3. `tox -e grunt serve --keystone-url=<URL to keystone>`
+3. `tox -e grunt -- serve --keystone-url=<URL to keystone>`
 
 This installs all the packages in the `packages.json` file (using npm), the
 `bower.json` file (using bower) and the `requirements.txt` (using pip).
 
 The keystone URL should be for your OpenStack installation. For example:
 
-    tox -e grunt serve --keystone-url=http://10.0.0.1:5000/v2.0
+    tox -e grunt -- serve --keystone-url=http://10.0.0.1:5000/v2.0
 
 This will open Chrome (or whatever) to view the site, assuming you did all
 that on the same machine that you use as your browsing system. If it was not,
