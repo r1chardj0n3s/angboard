@@ -1,0 +1,5 @@
+Rackspace "angboard" prototype
+Copyright 2014 Rackspace, US, Inc.
+
+This product includes software developed at
+Rackspace, US, Inc. (http://rackspace.com/)
