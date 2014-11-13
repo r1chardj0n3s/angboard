@@ -9,7 +9,14 @@ Installation
 
 **Note: requires python3**  (3.4 is recommended)
 
-To set up, first install node / npm per your operating system, and then:
+To set up, first install the following as per your operating system:
+
+1. Python 3
+2. virtualenv
+3. tox
+4. git
+
+And then:
 
 1. `git clone https://github.com/r1chardj0n3s/angboard`
 2. `cd angboard`
