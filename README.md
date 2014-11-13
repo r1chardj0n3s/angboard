@@ -4,6 +4,12 @@ APIs.
 A very quick presentation was given at the 2014 OpenStack Summit to Horizon
 developers <http://www.slideshare.net/r1chardj0n3s/angboard>
 
+License
+=======
+
+See LICENSE.txt
+
+
 Installation
 ============
 
