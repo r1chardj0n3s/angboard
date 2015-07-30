@@ -1,3 +1,6 @@
+
+**THIS PROJECT IS ABANDONED**
+
 New dashboard for OpenStack using angularjs talking (almost) directly to the
 APIs.
 
